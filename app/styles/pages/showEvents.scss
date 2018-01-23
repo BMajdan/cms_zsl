@@ -1,0 +1,64 @@
+.show-events{
+
+	.jumbotron{
+		padding:20px
+	}
+
+	.container{
+		padding: 0px; 
+		margin: 0px;
+	}
+
+	.events-container{
+		padding: 5px; 
+		margin: 0px;
+		margin-bottom: 10px;
+		border-radius: 5px;
+		cursor: pointer;
+	}
+
+	.events-image{
+		padding: 0px; 
+		padding: 10px;
+	}
+
+	.events-info{
+		padding: 0px;
+		margin: 0px;
+		padding-top: 10px;
+		.events-header{
+			color: black;
+			padding: 0px;
+			margin: 0px;
+		}
+
+		.events-data-info{
+			padding: 5px;
+			font-size: 13px;
+			span{
+				margin-right: 5px;
+			}
+		}
+
+		h6 strong{
+			padding: 5px;
+			margin-right: 5px;
+		}
+
+		h6 span{
+			margin-right: 5px;
+		}
+
+		.events-title{
+			margin: 0px;
+			padding: 5px;
+			font-size: 16px;
+			color: black;
+		}
+
+		.events-buttons{
+			margin-top: 15px;
+			background: red;
+		}
+	}
+}

@@ -1,0 +1,68 @@
+<div class="dashboard-page">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="sidebar-icon">
+        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+      </div>
+
+      <dashboard-menu></dashboard-menu>
+      
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      	<div class="user-profile-page">
+			<h2>Zarządzanie profilem użytkownika</h2>
+			<span class="glyphicon glyphicon-dashboard bg-fade"></span>
+			<div class="jumbotron">
+				<div class="container">
+					<form class="form-basic" method="post" action="#">
+
+			            <div class="form-title-row">
+			                <h1>Edytuj użytkownika:</h1>
+			            </div>
+
+			            <div class="form-row">
+			                <label>
+			                    <span>Nazwa użytkownika: </span>
+			                    <input type="text" name="name" ng-model="userLogin">
+			                </label>
+			            </div>
+
+			           	<div class="form-row">
+			                <label>
+			                    <span>Adres email: </span>
+			                    <input type="email" name="email" value="email@example.com">
+			                </label>
+			            </div>
+
+			            <div class="form-row">
+		                    <label>
+		                        <span>Stare hasło: </span>
+		                        <input type="password" name="password" ng-model="userOldPassword">
+		                    </label>
+		                </div>
+
+		                <div class="form-row">
+		                    <label>
+		                        <span>Nowe hasło: </span>
+		                        <input type="password" name="password" ng-model="userNewPassword">
+		                    </label>
+		                </div>
+
+		                <div class="form-row">
+		                    <label>
+		                        <span>Nowe hasło: </span>
+		                        <input type="password" name="password" ng-model="userNewPasswordRepeat">
+		                    </label>
+		                </div>
+
+			            <div class="form-row">
+			                <button type="submit">Wprowadź zmiany!</button>
+			            </div>
+			        </form>
+				</div>
+			</div>
+		</div>
+      </div>
+
+    </div>
+  </div>
+</div>

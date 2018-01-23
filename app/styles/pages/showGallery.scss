@@ -1,0 +1,64 @@
+.show-gallery{
+
+	.jumbotron{
+		padding:20px
+	}
+
+	.container{
+		padding: 0px; 
+		margin: 0px;
+	}
+
+	.gallery-container{
+		padding: 5px; 
+		margin: 0px;
+		margin-bottom: 10px;
+		border-radius: 5px;
+		cursor: pointer;
+	}
+
+	.gallery-image{
+		padding: 0px; 
+		padding: 10px;
+	}
+
+	.gallery-info{
+		padding: 0px;
+		margin: 0px;
+		padding-top: 10px;
+		.gallery-header{
+			color: black;
+			padding: 0px;
+			margin: 0px;
+		}
+
+		.gallery-data-info{
+			padding: 5px;
+			font-size: 13px;
+			span{
+				margin-right: 5px;
+			}
+		}
+
+		h6 strong{
+			padding: 5px;
+			margin-right: 5px;
+		}
+
+		h6 span{
+			margin-right: 5px;
+		}
+
+		.gallery-title{
+			margin: 0px;
+			padding: 5px;
+			font-size: 16px;
+			color: black;
+		}
+
+		.gallery-buttons{
+			margin-top: 15px;
+			background: red;
+		}
+	}
+}

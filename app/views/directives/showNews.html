@@ -1,0 +1,23 @@
+<div class="show-news">
+	<div class="jumbotron" ng-repeat="news in newsData">
+		<div class="container">
+			<div class="news-container col-md-12 col-sm-12 col-xs-12">
+				<div class="news-image col-md-3 col-sm-4 col-xs-4">
+					<img ng-src="{{news.miniature}}" alt="{{news.title}} post image" class="img-responsive">
+				</div>
+				<div class="news-info col-md-9 col-sm-8 col-xs-8 ">
+					<h2 class="news-header">{{news.title}}</h2>
+					<p class="news-data-info"><span class="glyphicon glyphicon-time"></span>Data modyfikacji: {{news.data}}</p>
+					<h6><strong>Kategorie: </strong> 
+						<span class="label label-default" ng-repeat="tag in news.tags">{{tag}}</span>
+					</h6>
+					<p class="news-short">{{news.shortText}}</p>
+					<div class="news-buttons">
+						<a ng-click="removePost(news.postIdent)" class="pull-right btn btn-danger btn-outline btn-rounded">Usuń Post</a>
+						<a ng-click="editPost(news.postIdent)" class="pull-right btn btn-warning btn-outline btn-rounded">Edytuj Post</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

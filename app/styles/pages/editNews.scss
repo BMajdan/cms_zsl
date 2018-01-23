@@ -1,0 +1,69 @@
+.edit-news{
+
+	.jumbotron{
+		padding: 10px;
+	}
+
+	.edtiNewsForm{
+		width: 100%;
+		margin: 0px;
+		padding: 0px;
+	}
+
+	.edtiNewsForm .row{
+		margin-bottom: 20px;
+	}
+
+	.standardButton{
+		width: 100%;
+		padding: 15px;
+		font-weight: bold;
+	}
+
+	.hiddenInput{
+		display: none;
+	}
+
+	.labelBox{
+		text-align: left;
+		padding: 10px;
+	}
+
+	.formLabel{
+		vertical-align: middle;
+		font-size: 20px;
+		color: black;
+		width: 100%;
+
+		.charCounter{
+			font-size: 13px;
+			text-align: right;
+			color: grey;
+		}
+	}
+
+	.postMiniature{
+		height: 200px;
+		vertical-align: middle;
+		line-height: 200px;
+	}
+
+	.inputBox{
+		line-height: 50px;
+		vertical-align: middle;
+		padding: 0px;
+		margin: 0px;
+	}
+
+	.formInput{
+		width: 100%;
+		padding: 10px;
+		margin: 0px;
+		height: 30px;
+	}
+
+	.editPostMiniature{
+		width: 200px;
+		height: 200px;
+	}
+}
