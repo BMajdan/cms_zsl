@@ -12,15 +12,21 @@
 @import 'pages/showNews';
 
 @import 'pages/editNews';
+@import 'pages/editEvents';
+
+@import 'pages/addNews';
+@import 'pages/addEvents';
 
 @import 'pages/dashboard';
 @import 'pages/overview';
+@import 'pages/news';
 @import 'pages/userProfile';
 
 @import 'widgets/input-underline';
 @import 'widgets/bootstrap-btn-outline-rounded';
 @import 'widgets/colorpicker';
 @import 'widgets/tags';
+@import 'widgets/post-widegets';
 
 @import 'transitions/all';
 

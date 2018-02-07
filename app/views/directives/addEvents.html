@@ -1,0 +1,87 @@
+<div class="add-events">
+	<div class="jumbotron">
+		<div class="container">
+			<div class="events-container col-md-12 col-sm-12 col-xs-12">
+				<form class="addEventsForm" enctype="multipart/form-data">
+					<div class="row">
+						<div class="col-md-3 labelBox">
+							<label class="formLabel">Tytuł wydarzenia: <br><span class="charCounter">({{addEventTitle.length}} / 80)</span></label>
+						</div>
+						<div class="col-md-9 inputBox">
+							<div class="editor" ui-tinymce="oneLineEditorOptions" ng-model="addEventTitle"></div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-3 labelBox">
+							<label class="formLabel">Opis skrócony wydarzenia: <br><span class="charCounter">({{addEventShortText.length}} / 300)</span></label>
+						</div>
+						<div class="col-md-9 inputBox">
+							<div class="editor" ui-tinymce="oneLineEditorOptions" ng-model="addEventShortText"></div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-3 labelBox eventMiniature">
+							<label class="formLabel">Miniatura wydarzenia: </label>
+						</div>
+
+						<div class="col-md-9 eventMiniature">
+							<div class="eventImage">
+								<img ng-src="images/placeholder.jpg" alt="Event image" class="addEventMiniature img-responsive" ng-click="changeEventMiniature(); $event.stopPropagation();" id="addEventMiniatureImage">
+							</div>
+							
+							<input type="file" id="addEventMiniature" file-model="addEventMiniature" class="hiddenInput" accept="image/*">
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-3 labelBox">
+							<label class="formLabel">Tagi: </label>
+						</div>
+
+						<div class="col-md-9">
+							<tags-input ng-model="addEventTags"></tags-input>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-3 labelBox">
+							<label class="formLabel">Nauczyciel: </label>
+						</div>
+
+						<div class="col-md-9 inputBox">
+							<input ng-model="newEvent.eventTeacher" placeholder="Wpisz imię i nazwisko nauczyciela" list="teachers">
+							<datalist id="teachers">
+								<option ng-repeat="teacher in teachers" value="{{teacher.name + ' ' + teacher.surname}}">
+							</datalist>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-12 inputBox">
+							<div ui-tinymce="addTextEditorOptions" ng-model="addEventText" class="bigEditor"></div>
+						</div>
+					</div>
+
+				</form>
+
+				<div class="row">
+					<div class="col-md-12 plusButton" >
+						<i class="fa fa-plus plusButtonClick" aria-hidden="true" ng-click="openWidgetMenu()"></i>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<a class="standardButton btn btn-primary btn-outline" ng-click="addEvent(true)">Opublikuj</a>
+					</div>
+
+					<div class="col-md-6">
+						<a class="standardButton btn btn-warning btn-outline" ng-click="addEvent(false)">Podgląd na stronie</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

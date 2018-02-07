@@ -13,14 +13,11 @@
   },
   "dependencies": {
     "angular-animate": "^1.6.8",
+    "angular-file-model": "^0.3.1",
     "angular-touch": "^1.6.8",
     "angular-ui-bootstrap": "^2.5.6",
-    "body-parser": "^1.18.2",
     "bootstrap-sass": "^3.3.7",
     "cross-env": "^3.1.1",
-    "crypto": "^1.0.1",
-    "express": "^4.16.2",
-    "mongoose": "^5.0.0-rc0",
     "ng-tags-input": "^3.2.0"
   },
   "devDependencies": {
@@ -43,7 +40,6 @@
     "del": "^2.1.0",
     "envify": "^3.4.0",
     "eslint": "3.7.1",
-    "express": "^4.13.3",
     "gulp": "^3.9.0",
     "gulp-angular-templatecache": "^2.0.0",
     "gulp-autoprefixer": "^3.1.0",

@@ -1,0 +1,219 @@
+@import '../bootstrap/bootstrap/_variables.scss';
+@import '../_vars';
+
+.overlay{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	min-height: 100% !important;
+	height: auto;
+	background: rgba(0, 0, 0, 0.7);
+	transition: opacity 500ms;
+	visibility: visible;
+	display: block;
+	opacity: 1;
+	z-index: 999;
+
+	.popup{
+		width: 70%;
+		height: auto;
+		position: absolute;
+		left: 15%;
+		top: 20px;
+		background: #fff;
+		border: 2px solid #fff;
+		border-radius: 10px;
+		z-index: 999;
+		color: black;
+		padding: 40px;
+
+		@include breakpoint(mobileonly){
+			padding: 10px;
+			top: 20px;
+		}
+
+		@include breakpoint(phablet){
+			padding: 10px;
+			top: 20px;
+		}
+
+		@include breakpoint(tablet){
+			padding: 20px;
+			top: 20px;
+		}
+
+		@include breakpoint(laptop){
+			padding: 20px;
+			top: 20px;
+		}
+
+		.exitButton{
+			font-size: 25px;
+			position: absolute;
+			right: 20px;
+			top: 10px;
+			cursor: pointer;
+		}
+
+		.header{
+			width: 100%;
+			text-align: center;
+			margin-top: 40px;
+
+			@include breakpoint(mobileonly){
+				width: auto;
+			}
+
+			@include breakpoint(phablet){
+				width: auto;
+			}
+
+			@include breakpoint(tablet){
+				margin-top: 20px;
+				margin-bottom: 20px;
+			}
+
+			.innerElement{
+				font-size: 40px;
+				font-weight: bolder;
+				text-align: center;
+
+				@include breakpoint(mobileonly){
+					font-size: 15px;
+					margin-top: 20px;
+				}
+
+				@include breakpoint(phablet){
+					font-size: 20px;
+					margin-top: 20px;
+				}
+
+				@include breakpoint(tablet){
+					font-size: 20px;
+					margin-top: 10px;
+				}
+
+				@include breakpoint(laptop){
+					font-size: 30px;
+					margin-top: 10px;
+				}
+			}
+		}
+
+		.element{
+			margin-top: 30px;
+			height: 140px;
+
+			@include breakpoint(mobileonly){
+				margin-top: 10px;
+				height: 100px;
+			}
+
+			@include breakpoint(phablet){
+				margin-top: 10px;
+				height: 100px;
+			}
+
+			@include breakpoint(tablet){
+				margin-top: 10px;
+				height: 100px;
+			}
+
+			.innerElement{
+				height: 100%;
+				background: lighten($brand-primary, 0%);
+				text-align: center;
+				color: white;
+				line-height: 0px;
+				vertical-align: middle;
+				font-size: 20px;
+				font-weight: italic;
+				border-radius: 5px;
+				cursor: pointer;
+
+				i{
+					line-height: 100px;
+					display: block;
+
+					@include breakpoint(mobileonly){
+						line-height: 75px;
+					}
+
+					@include breakpoint(phablet){
+						line-height: 75px;
+					}
+
+					@include breakpoint(tablet){
+						line-height: 75px;
+					}
+				}
+			}
+
+			.innerElement:hover{
+				background: darken($brand-primary, 5%);
+			}
+		}
+	}
+}
+
+.widgetIndent{
+	margin: 30px;
+	font-size: 25px;
+	font-weight: bold;
+	color: black;
+	display: block;
+	@include breakpoint(mobileonly){
+		font-size: 15px;
+		margin: 0px;
+		padding: 0px;
+
+		span{
+			display: block;
+			padding: 5px;
+			margin-bottom: 15px;
+		}
+	}
+
+	@include breakpoint(phablet){
+		font-size: 15px;
+		margin: 0px;
+		padding: 0px;
+
+		span{
+			display: block;
+			padding: 5px;
+			margin-bottom: 15px;
+		}
+	}
+
+	@include breakpoint(tablet){
+		font-size: 20px;
+		margin: 0px;
+		margin-bottom: 10px;
+		padding: 0px;
+
+		span{
+			padding: 5px;
+			margin-bottom: 15px;
+		}
+	}
+
+}
+
+.removeWidget{
+	font-size: 13px;
+	text-decoration: underline;
+	color: red;
+	cursor: pointer;
+	font-style: italic;
+	font-weight: normal;
+	margin-left: 20px;
+	@include breakpoint(mobileonly){
+		margin: 0px;
+	}
+
+	@include breakpoint(phablet){
+		margin: 0px;
+	}
+}

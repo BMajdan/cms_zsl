@@ -1,22 +1,30 @@
-function DashboardController($scope, $location, UserExpireTime) {
+function DashboardController($scope, $compile, $rootScope, $location, UserExpireTime, AppSettings) {
     'ngInject';
 
-    if(UserExpireTime.chechUserExpire()){
-      $scope.userName = localStorage.getItem('userName');
-      $scope.userPermission = localStorage.getItem('userData')
-    }
+    $scope.galleryUrl = AppSettings.galleryUrl;
+    $scope.newsManage = angular.element(document.querySelector('#news-manage'))
+    $scope.eventsManage = angular.element(document.querySelector('#events-manage'))
+
+    $scope.addTextColumn = [];
+    $scope.addImageInput = [];
 
     if(($location.path().split('/')[2]) == 'edytuj-post'){
-      document.querySelector('show-news').style.display = 'none'
-      document.querySelector('add-news').style.display = 'none'
+      $scope.newsManage.append($compile('<edit-news></edit-news>')($scope))
     }else if(($location.path().split('/')[2]) == 'dodaj-nowy-post'){
-      document.querySelector('show-news').style.display = 'none'
-      document.querySelector('edit-news').style.display = 'none'
+      $scope.newsManage.append($compile('<add-news></add-news>')($scope))
     }else if(($location.path().split('/')[1]) == 'aktualnosci'){
-      document.querySelector('edit-news').style.display = 'none'
-      document.querySelector('add-news').style.display = 'none'
+      $scope.newsManage.append($compile('<show-news></show-news>')($scope))
     }
 
+    if(($location.path().split('/')[2]) == 'edytuj-wydarzenie'){
+      $scope.eventsManage.append($compile('<edit-events></edit-events>')($scope))
+    }else if(($location.path().split('/')[2]) == 'dodaj-nowe-wydarzenie'){
+      $scope.eventsManage.append($compile('<add-events></add-events>')($scope))
+    }else if(($location.path().split('/')[1]) == 'wydarzenia'){
+      $scope.eventsManage.append($compile('<show-events></show-events>')($scope))
+    }
+
+    UserExpireTime.checkStorage();
     UserExpireTime.userExpire();
 
 }

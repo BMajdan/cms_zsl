@@ -9,6 +9,7 @@ import 'angular-touch';
 import 'angular-ui-bootstrap/dist/ui-bootstrap';
 import 'ng-tags-input/build/ng-tags-input.min'
 import 'angular-animate';
+import 'angular-file-model';
 import './tinymce/tinymce';
 import './templates';
 import './filters';
@@ -23,6 +24,7 @@ const requires = [
   'ngAnimate',
   'templates',
   'ngTagsInput',
+  'file-model',
   'ui.tinymce',
   'ui.bootstrap',
   'app.filters',

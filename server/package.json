@@ -1,0 +1,23 @@
+{
+  "name": "node_server_zsl",
+  "version": "1.0.0",
+  "description": "Serwer Zespolu Szkol Lacznosci w Krakowie",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Bartosz Majdan",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "crypto": "^1.0.1",
+    "express": "^4.16.2",
+    "express-fileupload": "^0.4.0",
+    "jimp": "^0.2.28",
+    "mkdirp": "^0.5.1",
+    "mongoose": "^5.0.2",
+    "path": "^0.12.7",
+    "rimraf": "^2.6.2"
+  }
+}

@@ -60,6 +60,22 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
       }
     )
     .state(
+      'AddEvents', {
+        url: '/wydarzenia/dodaj-nowe-wydarzenie',
+        controller: 'DashboardController',
+        templateUrl: 'events.html',
+        title: 'Panel konfiguracyjny CMS.'
+      }
+    )
+    .state(
+      'EditEvents', {
+        url: '/wydarzenia/edytuj-wydarzenie/:id',
+        controller: 'DashboardController',
+        templateUrl: 'events.html',
+        title: 'Panel konfiguracyjny CMS.'
+      }
+    )
+    .state(
       'Specializations', {
         url: '/specjalizacje',
         controller: 'DashboardController',

@@ -1,22 +1,39 @@
 <div class="show-events">
-	<div class="jumbotron">
+	<div class="jumbotron" ng-repeat="events in eventsData">
 		<div class="container">
 			<div class="events-container col-md-12 col-sm-12 col-xs-12">
-				<div class="events-image col-md-3 col-sm-4 col-xs-4">
-					<img src="http://via.placeholder.com/200" alt="placeholder" class="img-responsive">
-				</div>
-				<div class="events-info col-md-9 col-sm-8 col-xs-8 ">
-					<h2 class="events-header">Tytuł Wydarzenia</h2>
-					<p class="events-data-info"><span class="glyphicon glyphicon-time"></span>Data modyfikacji: 23/12/2017</p>
-					<h6><strong>Kategorie: </strong> 
-						<span class="label label-default">One Example Tag</span>
-						<span class="label label-default">One Example Tag</span>
-						<span class="label label-default">One Example Tag</span>
-					</h6>
-					<p class="events-title">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam sit cupiditate ipsam voluptatibus velit, hic molestias, deserunt, fuga, nulla recusandae provident delectus nam quis quae rerum consequuntur fugit vel pariatur...</p>
-					<div class="events-buttons">
-						<a ui-sref="removeEventButton" ng-click="removeEvent(Event_id)" class="pull-right btn btn-danger btn-outline btn-rounded">Usuń Wydarzenie</a>
-						<a ui-sref="editEventButton" ng-click="editEvent(Event_id)" class="pull-right btn btn-warning btn-outline btn-rounded">Edytuj Wydarzenie</a>
+				<div class="row">
+					<div class="events-image col-md-3 col-sm-12 col-xs-12">
+						<img ng-src="{{galleryUrl}}/eventsGallery/{{events.eventMiniatureSmall}}" alt="{{events.eventTitle}} event image" class="img-responsive">
+					</div>
+					<div class="events-info col-md-9 col-sm-12 col-xs-12 ">
+						<h2 class="events-header">{{events.eventTitle}}</h2>
+						<p class="events-data-info">
+							Data modyfikacji: <strong><small>{{events.eventData}}</small></strong><br>
+							Autor: <strong><small>{{events.eventAuthor}}</small></strong> <br>
+							Nauczyciel: <strong><small>{{events.eventTeacher}}</small></strong> <br>
+							Opublikowany: 
+							<strong>
+								<small ng-if="events.eventPublished" class="green">TAK</small>
+								<small ng-if="!events.eventPublished" class="orange">NIE</small>
+							</strong></p>
+						<p class="categories"><strong>Kategorie: </strong> 
+							<span class="label label-default" ng-repeat="tag in events.eventTags">{{tag.text}}</span>
+						</p>
+					</div>
+					<div class="row shortInfo">
+						<div class="col-md-12 text">{{events.eventShort}}</div>
+					</div>
+
+					<div class="row buttonsRow">
+						<div class="events-buttons">
+							<div class="col-md-offset-6 col-md-3 col-sm-6 col-xs-6">
+								<a ng-click="removeEvent(events.eventIdent)" class="pull-right btn btn-danger btn-outline btn-rounded"><i class="fa fa-trash"></i> Usuń wydarzenie</a>
+							</div>
+							<div class="col-md-3 col-sm-6 col-xs-6">
+								<a ng-click="editEvent(events.eventIdent)" class="pull-right btn btn-warning btn-outline btn-rounded"><i class="fa fa-edit"></i> Edytuj wydarzenie</a>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

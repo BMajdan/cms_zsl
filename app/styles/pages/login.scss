@@ -1,7 +1,6 @@
 @import '../bootstrap/bootstrap/_variables.scss';
 
 .login-page {
-
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -9,10 +8,8 @@
 	bottom: 0;
 	overflow: auto;
 	background: $brand-primary;
-
 	text-align: center;
 	color: #fff;
-
 	padding: 3em;
 
 	h1 {

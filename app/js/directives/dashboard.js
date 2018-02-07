@@ -7,7 +7,7 @@ function dashboardMenu($location, VisualSiteService, DatabaseManageData) {
 	    link: (scope) => {
 		    
 	    	scope.logOut = function(){
-	    		DatabaseManageData.logOutUser();
+	    		DatabaseManageData.logOutUser(true);
 	    	}
 
 		    if(angular.element(document.querySelector('.sidebar'))[0] != undefined){

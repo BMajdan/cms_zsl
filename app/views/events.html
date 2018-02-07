@@ -7,17 +7,21 @@
 
       <dashboard-menu></dashboard-menu>
       
-      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-      	<div class="events-page">
-			<a ui-sref="addEventButton" class="pull-right btn btn-success btn-outline btn-rounded">Dodaj nowe wydarzenie</a>
-			<h2>Zarządzanie wydarzeniami na stronie</h2>
-			<span class="glyphicon glyphicon-dashboard bg-fade"></span>
+      <div class="col-xs-12 col-sm-9 col-md-10 col-sm-offset-3 col-md-offset-2 main">
+    		<div class="news-page">
+    			<a href="/wydarzenia/dodaj-nowe-wydarzenie" id="addNewEventButton" class="col-md-2 pull-right btn btn-success btn-outline btn-rounded newEventButton"><i class="fa fa-plus"></i> Dodaj wydarzenie</a>
+    			<h2>Wydarzenia</h2>
+    			
+          <div id="events-manage"></div>
 
-			<show-events></show-events>
-
-		</div>
+    		</div>
       </div>
+
+
 
     </div>
   </div>
 </div>
+
+<div id="widget-manage"></div>
+

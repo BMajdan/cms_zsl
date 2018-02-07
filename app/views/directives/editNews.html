@@ -1,14 +1,14 @@
 <div class="edit-news">
 	<div class="jumbotron">
 		<div class="container">
-			<div class="events-container col-md-12 col-sm-12 col-xs-12">
-				<form class="edtiNewsForm">
+			<div class="news-container col-md-12 col-sm-12 col-xs-12">
+				<form class="editNewsForm" enctype="multipart/form-data">
 					<div class="row">
 						<div class="col-md-3 labelBox">
 							<label class="formLabel">Tytuł posta: <br><span class="charCounter">({{editArticleTitle.length}} / 80)</span></label>
 						</div>
 						<div class="col-md-9 inputBox">
-							<div ui-tinymce="oneLineEditorOptions" ng-model="editArticleTitle"></div>
+							<div class="editor" ui-tinymce="oneLineEditorOptions" ng-model="editArticleTitle"></div>
 						</div>
 					</div>
 
@@ -17,7 +17,7 @@
 							<label class="formLabel">Opis skrócony posta: <br><span class="charCounter">({{editArticleShortText.length}} / 300)</span></label>
 						</div>
 						<div class="col-md-9 inputBox">
-							<div ui-tinymce="oneLineEditorOptions" ng-model="editArticleShortText"></div>
+							<div class="editor" ui-tinymce="oneLineEditorOptions" ng-model="editArticleShortText"></div>
 						</div>
 					</div>
 
@@ -27,8 +27,11 @@
 						</div>
 
 						<div class="col-md-9 postMiniature">
-							<img ng-src="{{oneNewsData.miniature}}" alt="{{oneNewsData.title}} image" class="editPostMiniature img-responsive" id="editPostMiniatureImage">
-							<input type="file" accept="image/*">
+							<div class="postImage">
+								<img ng-src="{{galleryUrl}}/newsGallery/{{editPost.postMiniature}}" alt="Post image" class="editPostMiniature img-responsive" ng-click="changePostMiniature(); $event.stopPropagation();" id="editPostMiniatureImage">
+							</div>
+							
+							<input type="file" id="editPostMiniature" file-model="editPostMiniature" class="hiddenInput" accept="image/*">
 						</div>
 					</div>
 
@@ -43,14 +46,38 @@
 					</div>
 
 					<div class="row">
+						<div class="col-md-3 labelBox">
+							<label class="formLabel">Nauczyciel: </label>
+						</div>
+
+						<div class="col-md-9 inputBox">
+							<input ng-model="editPost.postTeacher" placeholder="Wpisz imię i nazwisko nauczyciela" list="teachers">
+							<datalist id="teachers">
+								<option ng-repeat="teacher in teachers" value="{{teacher.name + ' ' + teacher.surname}}">
+							</datalist>
+						</div>
+					</div>
+
+					<div class="row">
 						<div class="col-md-12 inputBox">
-							<div ui-tinymce="editTextEditorOptions" ng-model="editArticleLongText"></div>
+							<div ui-tinymce="addTextEditorOptions" ng-model="editArticlePostText" class="bigEditor"></div>
 						</div>
 					</div>
 
 				</form>
 
-				<a class="standardButton btn btn-primary btn-outline">Edytuj posta</a>
+				<div class="row">
+					<div class="col-md-12 plusButton" >
+						<i class="fa fa-plus plusButtonClick" aria-hidden="true" ng-click="openWidgetMenu()"></i>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<a class="standardButton btn btn-primary btn-outline" ng-click="editNews()" ng-if="editPost.postPublished">Edytuj</a>
+						<a class="standardButton btn btn-primary btn-outline" ng-click="editNews()" ng-if="!editPost.postPublished">Publikuj</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -1,26 +1,66 @@
+@import '../_vars';
+
 .overview-page{
 
+	h2{
+		@include breakpoint(mobileonly){
+			font-size: 16px;
+			color: black;
+			text-align: center;
+		}
+	}
+
+	.newPostButton{
+		@include breakpoint(mobileonly){
+			width: 100%;
+			margin: 0 auto;
+			margin-bottom: 20px;
+		}
+	}
+
 	.jumbotron{
-		padding: 35px;
-		margin-right: 10px;
-		height: 250px;
-	}
+		padding: 30px;
 
-	.overview-icon{
-		text-align: center;
-	}
+		@include breakpoint(mobileonly){
+			padding: 0px;
+			padding-top: 15px;
+		}
 
-	.overview-icon i{
-		font-size: 80px;
-		text-align: center;
-	}
+		.overview-container{
+			height: 230px;
+			padding: 10px;
+			margin-bottom: 10px;
+			border-radius: 10px;
+		}
 
-	.overview-info{
-		text-align: center;
-	}
+		.overview-icon{
+			text-align: center;
+			height: 50%;
+			padding: 0px;
+			margin: 0px;
+			background: #DCDCDC;
 
-	.overview-info h3{
-		color: black;
-		text-align: center;
+			i{
+				padding-top: 30px;
+				font-size: 80px;
+				text-align: center;
+				color: black;
+			}
+		}
+
+		.overview-info{
+			text-align: center;
+			height: 50%;
+			background: #DCDCDC;
+			padding: 0px;
+			margin: 0px;
+			p{
+				padding-top: 30px;
+				color: black;
+				text-align: center;
+
+			}
+		}
+
 	}
 }

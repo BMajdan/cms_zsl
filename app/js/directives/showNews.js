@@ -18,16 +18,18 @@ function showNews($location, $filter, DatabaseManageData) {
 	    	});
     	}
 
-    	scope.editPost = (postIdent) => {
+    	scope.editPosts = (postIdent) => {
     		$location.path('/aktualnosci/edytuj-post/' + postIdent);
     		return false;
     	}
 
     	scope.removePost = (postIdent) => {
     		DatabaseManageData.deleteNews(postIdent).then(function(data){
-          alert(data.deleteNewsMessage)
-          var found = $filter('ArrayFilter')('postIdent', postIdent, scope.newsData);
-          scope.newsData.splice(found, 1)
+          if(data.deleteNewsStatus){
+            alert(data.deleteNewsMessage)
+            let found = $filter('ArrayFilter')('postIdent', postIdent, scope.newsData);
+            scope.newsData.splice(found, 1)
+          }
         })
     	}
     }

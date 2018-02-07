@@ -1,4 +1,5 @@
 @import '../bootstrap/bootstrap/_variables.scss';
+@import '../_vars';
 
 .dashboard-page {
 
@@ -23,10 +24,10 @@
       font-size: 80px;
       position: absolute;
       left: 10px;
-      top: 50%;
-      bottom: 50%;
+      top: 40%;
+      bottom: 40%;
       cursor: pointer;
-      z-index: 999;
+      z-index: 997;
       color: black;
     }
 
@@ -35,7 +36,7 @@
       top: 0px;
       bottom: 0;
       left: 0;
-      z-index: 1000;
+      z-index: 998;
       display: block;
       padding: 0 20px 20px 20px;
       width: 200px;
@@ -95,6 +96,14 @@
       .jumbotron {
         background: #FFF;
         margin-top: 20px;
+      }
+
+      @include breakpoint(mobileonly){
+        padding: 0px;
+      }
+
+      @include breakpoint(phablet){
+        padding: 10px;
       }
     }
 

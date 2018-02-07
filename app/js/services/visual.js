@@ -5,9 +5,8 @@ function VisualSiteService($location) {
 
   service.responsiveMenu = () => {
 
-    var openMenuStatus = false;
-
-    if(window.innerWidth <= 745 && angular.element(document.querySelector('.sidebar'))[0] != undefined){
+    let openMenuStatus = false;
+    if(window.innerWidth <= 767 && angular.element(document.querySelector('.sidebar'))[0] != undefined){
         angular.element(document.querySelector('.sidebar'))[0].style.left = '-200px'
         angular.element(document.querySelector('.sidebar-icon'))[0].style.display = 'block'
 
