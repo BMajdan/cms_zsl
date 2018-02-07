@@ -68,6 +68,14 @@ let newsSchema = mongoose.Schema({
     widgets: Array
 }, { strict: false });
 
+let specializationsSchema = mongoose.Schema({
+    specializationName: String,
+    specializationIdent: String,
+    specializationText: String,
+    specializationSchool: String,
+    widgets: Array
+}, { strict: false });
+
 let eventsSchema = mongoose.Schema({
     eventTitle: String,
     eventIdent: String,
@@ -89,6 +97,7 @@ let eventsSchema = mongoose.Schema({
 
 let Users = mongoose.model('Users', usersSchema, 'Users');
 let News = mongoose.model('News', newsSchema, 'News');
+let Specializations = mongoose.model('Specializations', specializationsSchema, 'Specializations');
 let Events = mongoose.model('Events', eventsSchema, 'Events');
 let Teachers = mongoose.model('Teachers', teachersSchema, 'Teachers');
 
@@ -198,6 +207,24 @@ app.get('/api/loadAllNews', function(req, res){
     });
 });
 
+app.get('/api/loadAllSpecializations', function (req, res) {
+    Specializations.find({}, function (err, obj) {
+        if (obj == null) {
+            let resendObject = {
+                loadSpecializationsStatus: false,
+                loadSpecializationsMessage: 'Brak istniejących specjalizacji'
+            };
+            res.json(resendObject);
+        } else {
+            let resendObject = {
+                loadSpecializationsStatus: true,
+                loadSpecializationsData: obj
+            };
+            res.json(resendObject);
+        }
+    });
+});
+
 app.get('/api/loadAllEvents', function(req, res){
     Events.find({}, null, {sort: {eventData: -1}}, function(err, obj){
         if(obj == null){
@@ -239,13 +266,31 @@ app.get('/api/loadOneNews', function(req, res){
         if(obj == null){
             let resendObject = {
                 loadNewsStatus: false,
-                loadNewsMessage: 'Brak istniejących postów'
+                loadNewsMessage: 'Brak istniejącego posta'
             };
             res.json(resendObject);
         }else{
             let resendObject = {
                 loadNewsStatus: true,
                 loadNewsData: obj
+            };
+            res.json(resendObject);
+        }
+    });
+});
+
+app.get('/api/loadOneSpecialization', function (req, res) {
+    Specializations.find({ specializationIdent: req.query.specializationIdent }, function (err, obj) {
+        if (obj == null) {
+            let resendObject = {
+                loadSpecializationsStatus: false,
+                loadSpecializationsMessage: 'Brak istniejącej specjalizacji'
+            };
+            res.json(resendObject);
+        } else {
+            let resendObject = {
+                loadSpecializationsStatus: true,
+                loadSpecializationsData: obj
             };
             res.json(resendObject);
         }
@@ -290,6 +335,28 @@ app.delete('/api/deleteNews', function(req, res){
         });
     }else
     res.status(501).send('Error 501');
+});
+
+app.delete('/api/deleteSpecialization', function (req, res) {
+    if (req.query.pHYcSW % 2 == 0 && req.query.pHYcSW >= 541 && req.query.pHYcSW <= 600) {
+        Specializations.remove({ specializationIdent: req.query.specializationIdent }, function (err) {
+            if (err) {
+                let resendObject = {
+                    deleteSpecializationsStatus: false,
+                    deleteSpecializationsMessage: 'Brak istniejących specjalizacji do usunięcia'
+                };
+                res.json(resendObject);
+            } else {
+                let resendObject = {
+                    deleteSpecializationsStatus: true,
+                    deleteSpecializationsMessage: 'Specializacja został usunięty'
+                };
+                rimraf('./gallery/specializationsGallery/' + req.query.specializationIdent, function () { });
+                res.json(resendObject);
+            }
+        });
+    } else
+        res.status(501).send('Error 501');
 });
 
 app.delete('/api/deleteEvent', function(req, res){
@@ -343,6 +410,35 @@ app.put('/api/editNews', function(req, res){
         res.status(501).send('Error 501');
  });
 
+app.put('/api/editSpecialization', function (req, res) {
+    if (req.body.sncKox % 2 == 0 && req.body.sncKox >= 675 && req.body.sncKox <= 987) {
+        Specializations.findOne({ specializationIdent: req.body.data.specializationIdent }, function (err, doc) {
+            if (err) return res.status(500).send(err);
+            if (!doc) {
+                let resendObject = {
+                    editSpecializationsStatus: false,
+                    editSpecializationsMessage: 'Brak istniejących specializacji do edytowania'
+                };
+                res.json(resendObject);
+            } else {
+                for (let id in req.body.data) {
+                    doc[id] = req.body.data[id];
+                }
+                doc.save(function (err) {
+                    if (err) return res.status(500).send(err);
+
+                    let resendObject = {
+                        editSpecializationsStatus: true,
+                        editSpecializationsMessage: 'Specializacja został edytowany'
+                    };
+                    res.json(resendObject);
+                });
+            }
+        });
+    } else
+        res.status(501).send('Error 501');
+});
+
 app.put('/api/editEvent', function(req, res){
     if(req.body.sncKox % 2 == 0 && req.body.sncKox >= 675 && req.body.sncKox <= 987){
         Events.findOne({eventIdent: req.body.data.eventIdent}, function(err, doc){
@@ -392,6 +488,28 @@ app.post('/api/addNews', function(req, res){
         });
     }else
     res.status(501).send('Error 501');
+});
+
+app.post('/api/addSpecialization', function (req, res) {
+    if (req.body.aYtCpO % 2 == 0 && req.body.aYtCpO >= 431 && req.body.aYtCpO <= 500) {
+
+        Specializations.create(req.body.data, function (err) {
+            if (!err) {
+                let resendObject = {
+                    addSpecializationsStatus: true,
+                    addSpecializationsMessage: 'Specjalizacja została dodana'
+                };
+                res.json(resendObject);
+            } else {
+                let resendObject = {
+                    addSpecializationsStatus: false,
+                    addSpecializationsMessage: 'Błąd podczas dodawania specjalizacji'
+                };
+                res.json(resendObject);
+            }
+        });
+    } else
+        res.status(501).send('Error 501');
 });
 
 app.post('/api/addEvent', function(req, res){

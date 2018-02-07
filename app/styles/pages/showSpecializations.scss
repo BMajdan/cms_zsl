@@ -1,0 +1,43 @@
+@import '../_vars';
+.show-specializations {
+    .jumbotron {
+        padding: 20px
+    }
+    .container {
+        padding: 0px;
+        margin: 0px;
+    }
+    .specializations-container {
+        padding: 5px;
+        margin: 0px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .specializations-info {
+        padding: 10px;
+        margin: 0px;
+        padding-top: 10px;
+        .specializations-header {
+            color: black;
+            padding: 0px;
+            margin: 0px;
+            @include breakpoint(mobileonly) {
+                text-align: center;
+            }
+            @include breakpoint(phablet) {
+                text-align: center;
+            }
+        }
+    }
+
+    .buttonsRow {
+        .specializations-buttons {
+            margin-top: 15px;
+            a {
+                width: 100%;
+            }
+        }
+    }
+}

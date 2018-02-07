@@ -21,7 +21,7 @@ function showNews($location, $filter, NewsDatabase) {
 				});
 			}
 
-			scope.editPosts = (postIdent) => {
+			scope.editPost = (postIdent) => {
 				$location.path('/aktualnosci/edytuj-post/' + postIdent);
 				return false;
 			};

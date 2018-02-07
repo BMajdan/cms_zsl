@@ -1,0 +1,27 @@
+<search-bar from="specializationsData" value="specializationName" placeholder="Wpisz nazwę specjalizacji..."></search-bar>
+
+<div class="show-specializations">
+  <div class="jumbotron" ng-repeat="specialization in specializationsData" ng-if="specialization.display">
+    <div class="container">
+      <div class="specializations-container col-md-12 col-sm-12 col-xs-12">
+        <div class="row"></div>
+        <div class="specializations-info col-md-6 col-sm-12 col-xs-12 ">
+          <h2 class="specializations-header">{{specialization.specializationName}}</h2>
+          <p>{{specialization.specializationSchool}}</p>
+        </div>
+        <div class="col-md-6 buttonsRow">
+          <div class="specializations-buttons">
+            <div class="col-md-6 col-sm-6 col-xs-6">
+              <a ng-click="removeSpecialization(specialization.specializationIdent)" class="pull-right btn btn-danger btn-outline btn-rounded">
+                <i class="fa fa-trash"></i> Usuń specjalizację</a>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+              <a ng-click="editSpecialization(specialization.specializationIdent)" class="pull-right btn btn-warning btn-outline btn-rounded">
+                <i class="fa fa-edit"></i> Edytuj specjalizację</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

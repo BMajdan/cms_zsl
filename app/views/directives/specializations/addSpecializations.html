@@ -1,0 +1,52 @@
+<div class="add-specializations">
+  <div class="jumbotron">
+    <div class="container">
+      <div class="specializations-container col-md-12 col-sm-12 col-xs-12">
+        <form class="addSpecializationsForm" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-md-3 labelBox">
+              <label class="formLabel">Nazwa specializacji:
+                <br>
+                <span class="charCounter">({{addSpecializationName.length}} / 80)</span>
+              </label>
+            </div>
+            <div class="col-md-9 inputBox">
+              <div class="editor" ui-tinymce="oneLineEditorOptions" ng-model="addSpecializationName"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3 labelBox">
+              <label class="formLabel">Szkoła:
+                <br>
+                <span class="charCounter">({{addSpecializationSchool.length}} / 300)</span>
+              </label>
+            </div>
+            <div class="col-md-9 inputBox">
+              <div class="editor" ui-tinymce="oneLineEditorOptions" ng-model="addSpecializationSchool"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 inputBox">
+              <div ui-tinymce="addTextEditorOptions" ng-model="addSpecializationText" class="bigEditor"></div>
+            </div>
+          </div>
+
+        </form>
+
+        <div class="row">
+          <div class="col-md-12 plusButton">
+            <i class="fa fa-plus plusButtonClick" aria-hidden="true" ng-click="openWidgetMenu()"></i>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <a class="standardButton btn btn-primary btn-outline" ng-click="addSpecialization()">Dodaj specjializację</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

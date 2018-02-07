@@ -1,49 +1,22 @@
 <div class="dashboard-page">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="sidebar-icon">
-        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-      </div>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="sidebar-icon">
+				<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+			</div>
 
-      <dashboard-menu></dashboard-menu>
-      
-      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-      	<div class="specializations-page">
-			<h2>Zarządzanie specjalizacjami</h2>
-			<span class="glyphicon glyphicon-dashboard bg-fade"></span>
-			<div class="jumbotron">
-				<div class="container">
-					<div class="btn-group">
-					  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					    Action
-					  </button>
-					  <div class="dropdown-menu">
-					    <a class="dropdown-item" href="#">Action</a>
-					    <a class="dropdown-item" href="#">Another action</a>
-					    <a class="dropdown-item" href="#">Something else here</a>
-					    <div class="dropdown-divider"></div>
-					    <a class="dropdown-item" href="#">Separated link</a>
-					  </div>
-					</div>
+			<dashboard-menu></dashboard-menu>
+
+			<div class="col-xs-12 col-sm-9 col-md-10 col-sm-offset-3 col-md-offset-2 main">
+				<div class="specializations-page">
+					<a href="/specjalizacje/dodaj-nowa-specjalizacje" id="addNewSpecializationButton" class="pull-right btn btn-success btn-outline btn-rounded newPostButton">
+						<i class="fa fa-plus"></i> Dodaj Specializację</a>
+						<h2>Specjalizacje</h2>
+						<div id="specializations-manage"></div>
 				</div>
 			</div>
 		</div>
-      </div>
-
-    </div>
-  </div>
+	</div>
 </div>
 
-
-
-<!--<div class="dropdown-menu">
-			    <a class="dropdown-item" href="#">Opis</a>
-			    <a class="dropdown-item" href="#">Podstawa programowa</a>
-			    <a class="dropdown-item" href="#">Szkolny plan nauczania</a>
-			    <a class="dropdown-item" href="#">Oferty pracy</a>
-			    <a class="dropdown-item" href="#">Opinie absolwentów</a>
-			    <a class="dropdown-item" href="#">Pracownie i warsztaty</a>
-			    <a class="dropdown-item" href="#">Zajęcia dodatkowe</a>
-			  </div>
-
-			  -->
+<div id="widget-manage"></div>

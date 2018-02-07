@@ -84,6 +84,22 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
       }
     )
     .state(
+      'EditSpecializations', {
+        url: '/specjalizacje/edytuj-specjalizacje/:id',
+        controller: 'DashboardController',
+        templateUrl: 'specializations.html',
+        title: 'Panel konfiguracyjny CMS.'
+      }
+    )
+    .state(
+      'AddSpecializations', {
+        url: '/specjalizacje/dodaj-nowa-specjalizacje',
+        controller: 'DashboardController',
+        templateUrl: 'specializations.html',
+        title: 'Panel konfiguracyjny CMS.'
+      }
+    )
+    .state(
       'Documents', {
         url: '/dokumenty',
         controller: 'DashboardController',
