@@ -1,5 +1,7 @@
+<search-bar from="newsData" value="postTitle" placeholder="Wpisz tytuł posta..."></search-bar>
+
 <div class="show-news">
-	<div class="jumbotron" ng-repeat="news in newsData">
+	<div class="jumbotron" ng-repeat="news in newsData" ng-if="news.display">
 		<div class="container">
 			<div class="news-container col-md-12 col-sm-12 col-xs-12">
 				<div class="row">

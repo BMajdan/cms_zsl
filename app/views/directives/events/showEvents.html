@@ -1,5 +1,7 @@
+<search-bar from="eventsData" value="eventTitle" placeholder="Wpisz nazwę wydarzenia..."></search-bar>
+
 <div class="show-events">
-	<div class="jumbotron" ng-repeat="events in eventsData">
+	<div class="jumbotron" ng-repeat="events in eventsData" ng-if="events.display">
 		<div class="container">
 			<div class="events-container col-md-12 col-sm-12 col-xs-12">
 				<div class="row">

@@ -25,13 +25,11 @@ function UserDatabase($http, $location, AppSettings, $rootScope) {
 				try{
 					sessionStorage.setItem('isLogin', callbackData.loginStatus);
 					sessionStorage.setItem('userName', userName);
-					sessionStorage.setItem('userData', callbackData.userPermission);
 					sessionStorage.setItem('sessionTime', schedule);
 
 					$rootScope.userData = {
 						isLogin: callbackData.loginStatus,
 						userName: userName,
-						userPermission: callbackData.userPermission,
 						sessionTime: schedule
 					};
 
@@ -58,7 +56,12 @@ function UserDatabase($http, $location, AppSettings, $rootScope) {
 	service.logInUser = (userName) => {
 		let url = AppSettings.apiUrl + 'userLogin';
 		let data = JSON.stringify({'userName': userName, CwQssA: generateKey(51, 100)});
-		let succesCallback = () =>{};
+		let succesCallback = () =>{
+			$rootScope.userData = {
+				isLogin: true,
+				userName: userName
+			};
+		};
 		let errorCallback = () => { return false; };
 		$http.put(url, data).then(succesCallback, errorCallback);
 	};
@@ -74,7 +77,7 @@ function UserDatabase($http, $location, AppSettings, $rootScope) {
 			return false;
 		};
 		let errorCallback = () => { return false; };
-		let data = JSON.stringify({'userName': $rootScope.userData.userName, xPosKw: generateKey(321, 400)});
+		let data = JSON.stringify({ 'userName': sessionStorage.getItem('userName'), xPosKw: generateKey(321, 400)});
 		
 		return $http.put(url, data).then(succesCallback, errorCallback);
 	};

@@ -6,9 +6,9 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 	service.checkStorage = () => {
 
 		window.onbeforeunload = () => {
-			UserDatabase.logOutUser();
 			$interval.cancel($rootScope.checkInterval);
 			$rootScope.checkInterval = undefined;
+			UserDatabase.logOutUser();
 			return false;
 		};
 
@@ -28,7 +28,6 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 			$rootScope.userData = {
 				isLogin: sessionStorage.getItem('isLogin'),
 				userName: sessionStorage.getItem('userName'),
-				userPermission: sessionStorage.getItem('userData'),
 				sessionTime: sessionStorage.getItem('sessionTime')
 			};
 			UserDatabase.logInUser($rootScope.userData.userName);
@@ -63,9 +62,9 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 		}
 
 		if(expiresIn < now){
-			UserDatabase.logOutUser(true);
 			$interval.cancel($rootScope.checkInterval);
 			$rootScope.checkInterval = undefined;
+			UserDatabase.logOutUser(true);
 			return false;
 		}else{
 			return true;
