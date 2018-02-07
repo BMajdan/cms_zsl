@@ -28,7 +28,7 @@
 
 						<div class="col-md-9 eventMiniature">
 							<div class="eventImage">
-								<img ng-src="{{galleryUrl}}/eventsGallery/{{editEvent.eventMiniature}}" alt="Event image" class="editEventMiniature img-responsive" ng-click="changeEventMiniature(); $event.stopPropagation();" id="editEventMiniatureImage">
+								<img ng-src="{{miniatureUrl}}" alt="Event image" class="editEventMiniature img-responsive" ng-click="changeEventMiniature(); $event.stopPropagation();" id="editEventMiniatureImage">
 							</div>
 							
 							<input type="file" id="editEventMiniature" file-model="editEventMiniature" class="hiddenInput" accept="image/*">
@@ -59,6 +59,37 @@
 					</div>
 
 					<div class="row">
+						<div class="col-md-3 labelBox">
+							<label class="formLabel">Data rozpoczęcia:</label>
+						</div>
+
+						<div class="col-md-9 inputBox">
+							<div class="col-md-6">
+								<input datetime-picker date-format="dd-MM-yyyy" date-only ng-model="editEvent.eventStartDate" />
+							</div>
+							<div class="col-md-6">
+								<input type="time" ng-model="eventStartTime" />
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-3 labelBox">
+							<label class="formLabel">Data zakończenia:</label>
+						</div>
+					
+						<div class="col-md-9 inputBox">
+							<div class="col-md-6">
+								<input datetime-picker date-format="dd-MM-yyyy" date-only ng-model="editEvent.eventStopDate" />
+							</div>
+							<div class="col-md-6">
+								<input type="time" ng-model="eventStopTime" />
+							</div>
+							
+						</div>
+					</div>
+
+					<div class="row">
 						<div class="col-md-12 inputBox">
 							<div ui-tinymce="addTextEditorOptions" ng-model="editEventText" class="bigEditor"></div>
 						</div>
@@ -73,9 +104,13 @@
 				</div>
 
 				<div class="row">
-					<div class="col-md-12">
-						<a class="standardButton btn btn-primary btn-outline" ng-click="editEvents()" ng-if="editEvent.eventPublished">Edytuj</a>
-						<a class="standardButton btn btn-primary btn-outline" ng-click="editEvents()" ng-if="!editEvent.eventPublished">Publikuj</a>
+					<div class="col-md-6">
+						<a class="standardButton btn btn-primary btn-outline" ng-click="editEvents(true)" ng-if="editEvent.eventPublished">Edytuj</a>
+						<a class="standardButton btn btn-primary btn-outline" ng-click="editEvents(true)" ng-if="!editEvent.eventPublished">Publikuj</a>
+					</div>
+
+					<div class="col-md-6">
+						<a class="standardButton btn btn-warning btn-outline" ng-click="editEvents(false)">Podgląd na stronie</a>
 					</div>
 				</div>
 			</div>

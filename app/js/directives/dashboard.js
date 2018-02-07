@@ -1,4 +1,4 @@
-function dashboardMenu($location, VisualSiteService, DatabaseManageData) {
+function dashboardMenu($location, VisualSiteService, UserDatabase) {
 	'ngInject';
 
 	return {
@@ -7,8 +7,8 @@ function dashboardMenu($location, VisualSiteService, DatabaseManageData) {
 	    link: (scope) => {
 		    
 	    	scope.logOut = function(){
-	    		DatabaseManageData.logOutUser(true);
-	    	}
+	    		UserDatabase.logOutUser(true);
+	    	};
 
 		    if(angular.element(document.querySelector('.sidebar'))[0] != undefined){
 		    	angular.element(window).bind('resize', function(){

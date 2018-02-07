@@ -1,29 +1,29 @@
-function loginForm($location, DatabaseManageData) {
-  'ngInject';
-  
-  return {
-    restrict: 'E',
-    templateUrl: 'directives/login.html',
-    link: (scope) => {
+function loginForm($location, UserDatabase) {
+	'ngInject';
+	
+	return {
+		restrict: 'E',
+		templateUrl: 'directives/login.html',
+		link: (scope) => {
 
-      if(localStorage.getItem('isLogin') == 'true'){
-        $location.path('/')
-        return false;
-      }
+			if(localStorage.getItem('isLogin') == 'true'){
+				$location.path('/');
+				return false;
+			}
 
-      scope.submit = () => {
+			scope.submit = () => {
 
-        if(scope.userName != undefined && scope.userPassword != undefined){
-          DatabaseManageData.getUserToLogin(scope.userName, scope.userPassword)
-        }else{
-          alert('Podaj poprawny login i hasło!')
-        }
-      }
-    }
-  };
+				if(scope.userName != undefined && scope.userPassword != undefined){
+					UserDatabase.getUserToLogin(scope.userName, scope.userPassword);
+				}else{
+					alert('Podaj poprawny login i hasło!');
+				}
+			};
+		}
+	};
 }
 
 export default {
-  name: 'loginForm',
-  fn: loginForm
+	name: 'loginForm',
+	fn: loginForm
 };

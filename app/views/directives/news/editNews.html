@@ -28,7 +28,7 @@
 
 						<div class="col-md-9 postMiniature">
 							<div class="postImage">
-								<img ng-src="{{galleryUrl}}/newsGallery/{{editPost.postMiniature}}" alt="Post image" class="editPostMiniature img-responsive" ng-click="changePostMiniature(); $event.stopPropagation();" id="editPostMiniatureImage">
+								<img ng-src="{{miniatureUrl}}" alt="Post image" class="editPostMiniature img-responsive" ng-click="changePostMiniature(); $event.stopPropagation();" id="editPostMiniatureImage">
 							</div>
 							
 							<input type="file" id="editPostMiniature" file-model="editPostMiniature" class="hiddenInput" accept="image/*">
@@ -73,9 +73,13 @@
 				</div>
 
 				<div class="row">
-					<div class="col-md-12">
-						<a class="standardButton btn btn-primary btn-outline" ng-click="editNews()" ng-if="editPost.postPublished">Edytuj</a>
-						<a class="standardButton btn btn-primary btn-outline" ng-click="editNews()" ng-if="!editPost.postPublished">Publikuj</a>
+					<div class="col-md-6">
+						<a class="standardButton btn btn-primary btn-outline" ng-click="editNews(true)" ng-if="editPost.postPublished">Edytuj</a>
+						<a class="standardButton btn btn-primary btn-outline" ng-click="editNews(true)" ng-if="!editPost.postPublished">Publikuj</a>
+					</div>
+
+					<div class="col-md-6">
+						<a class="standardButton btn btn-warning btn-outline" ng-click="editNews(false)">Podgląd na stronie</a>
 					</div>
 				</div>
 			</div>

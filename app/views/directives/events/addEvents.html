@@ -59,6 +59,37 @@
 					</div>
 
 					<div class="row">
+						<div class="col-md-3 labelBox">
+							<label class="formLabel">Data rozpoczęcia:</label>
+						</div>
+
+						<div class="col-md-9 inputBox">
+							<div class="col-md-6">
+								<input datetime-picker date-format="dd-MM-yyyy" date-only ng-model="newEvent.eventStartDate" />
+							</div>
+							<div class="col-md-6">
+								<input type="time" ng-model="eventStartTime" />
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-3 labelBox">
+							<label class="formLabel">Data zakończenia:</label>
+						</div>
+					
+						<div class="col-md-9 inputBox">
+							<div class="col-md-6">
+								<input datetime-picker date-format="dd-MM-yyyy" date-only ng-model="newEvent.eventStopDate" />
+							</div>
+							<div class="col-md-6">
+								<input type="time" ng-model="eventStopTime" />
+							</div>
+							
+						</div>
+					</div>
+
+					<div class="row">
 						<div class="col-md-12 inputBox">
 							<div ui-tinymce="addTextEditorOptions" ng-model="addEventText" class="bigEditor"></div>
 						</div>

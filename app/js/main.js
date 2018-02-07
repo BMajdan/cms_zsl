@@ -7,10 +7,11 @@ import onRun     from './on_run';
 import 'angular-ui-router';
 import 'angular-touch';
 import 'angular-ui-bootstrap/dist/ui-bootstrap';
-import 'ng-tags-input/build/ng-tags-input.min'
+import 'ng-tags-input/build/ng-tags-input.min';
 import 'angular-animate';
 import 'angular-file-model';
-import './tinymce/tinymce';
+import './additions/tinymce/tinymce';
+import './additions/timepicker/timepicker';
 import './templates';
 import './filters';
 import './controllers';
@@ -23,6 +24,7 @@ const requires = [
   'ngTouch',
   'ngAnimate',
   'templates',
+  'angularjs-datetime-picker',
   'ngTagsInput',
   'file-model',
   'ui.tinymce',

@@ -1,17 +1,15 @@
 /* Import modules */
 const express = require('express');
-const bodyParser = require('body-parser')
-const path = require('path');
+const bodyParser = require('body-parser');
 const app = express();
 const mongoose = require('mongoose');
 const fs = require('fs');
 const fileUpload = require('express-fileupload');
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
-const jimp = require("jimp");
+const jimp = require('jimp');
 
 const crypto = require('crypto');
-const hash = crypto.createHash('sha256');
 
 app.use('/gallery', express.static('public'));
 
@@ -23,7 +21,7 @@ mongoose.connect('mongodb://localhost:27017/zsl_cms_database_mdb');
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-    console.log('Połaczono z baza danych')
+    console.log('Połaczono z baza danych');
     logOutAllUsers();
 });
 
@@ -53,7 +51,7 @@ let teachersSchema = mongoose.Schema({
     surname: String,
     avatar: String,
     description: String
-})
+});
 
 let newsSchema = mongoose.Schema({
     postTitle: String,
@@ -68,12 +66,16 @@ let newsSchema = mongoose.Schema({
     postTeacher: String,
     postPublished: Boolean,
     widgets: Array
-}, { strict: false })
+}, { strict: false });
 
 let eventsSchema = mongoose.Schema({
     eventTitle: String,
     eventIdent: String,
     eventData: String,
+    eventStartDate: String,
+    eventStopDate: String,
+    eventStartTime: String,
+    eventStopTime: String,
     eventShort: String,
     eventMiniature: String,
     eventMiniatureSmall: String,
@@ -83,7 +85,7 @@ let eventsSchema = mongoose.Schema({
     eventTeacher: String,
     eventPublished: Boolean,
     widgets: Array
-}, { strict: false })
+}, { strict: false });
 
 let Users = mongoose.model('Users', usersSchema, 'Users');
 let News = mongoose.model('News', newsSchema, 'News');
@@ -91,9 +93,9 @@ let Events = mongoose.model('Events', eventsSchema, 'Events');
 let Teachers = mongoose.model('Teachers', teachersSchema, 'Teachers');
 
 function logOutAllUsers(){
-    Users.update({}, {isLogin: false}, {multi: true}, function(err){
-         console.log("LogOut All Users!")
-    })
+    Users.update({}, {isLogin: false}, {multi: true}, function(){
+         console.log('LogOut All Users!');
+    });
 }
 app.post('/api/getUserToLogin', function (req, res) {
     if(req.body.PkRTvG % 2 == 0 && req.body.PkRTvG >= 111 && req.body.PkRTvG <= 200){
@@ -103,14 +105,14 @@ app.post('/api/getUserToLogin', function (req, res) {
                 let resendObject = {
                     loginStatus: false,
                     loginMessage: 'Podaj poprawny login lub hasło!'
-                }
+                };
                 res.json(resendObject);
             }else{
                 if(obj.isLogin == true){
                     let resendObject = {
                         loginStatus: false,
                         loginMessage: 'Użytkownik jest już zalogowany!'
-                    }
+                    };
                     res.json(resendObject); 
                 }else{
                     Users.findOneAndUpdate({login: req.body.userName}, {isLogin: true}, function(err){
@@ -119,21 +121,21 @@ app.post('/api/getUserToLogin', function (req, res) {
                                 loginStatus: true,
                                 userPermission: obj.permission,
                                 loginMessage: 'Poprawnie zalogowano!'
-                            }
+                            };
                             res.json(resendObject); 
                         }else{
                             let resendObject = {
                                 loginStatus: false,
                                 loginMessage: 'Błąd bazy danych!'
-                            }
+                            };
                             res.json(resendObject);
                         }
-                    })
+                    });
                 }
             }
         });
     }else
-        res.status(501).send("Error 501")
+        res.status(501).send('Error 501');
 });
 
 app.put('/api/logOut', function(req, res){
@@ -143,18 +145,18 @@ app.put('/api/logOut', function(req, res){
                 let resendObject = {
                     logoutStatus: true,
                     logoutMessage: 'Poprawnie wylogowano użytkownika!'
-                }
+                };
                 res.json(resendObject);
             }else{
                 let resendObject = {
                     logoutStatus: false,
                     logoutMessage: 'Błąd bazy danych!'
-                }
+                };
                 res.json(resendObject);
             }
-        })
+        });
     }else
-        res.status(501).send("Error 501")
+        res.status(501).send('Error 501');
 });
 
 app.put('/api/userLogin', function(req, res){
@@ -164,18 +166,18 @@ app.put('/api/userLogin', function(req, res){
                 let resendObject = {
                     logoutStatus: true,
                     logoutMessage: 'Poprawnie zalogowano użytkownika!'
-                }
+                };
                 res.json(resendObject);
             }else{
                 let resendObject = {
                     logoutStatus: false,
                     logoutMessage: 'Błąd bazy danych!'
-                }
+                };
                 res.json(resendObject);
             }
-        })
+        });
      }else
-        res.status(501).send("Error 501")
+        res.status(501).send('Error 501');
  });
 
 app.get('/api/loadAllNews', function(req, res){
@@ -184,17 +186,17 @@ app.get('/api/loadAllNews', function(req, res){
             let resendObject = {
                 loadNewsStatus: false,
                 loadNewsMessage: 'Brak istniejących postów'
-            }
-            res.json(resendObject)
+            };
+            res.json(resendObject);
         }else{
             let resendObject = {
                 loadNewsStatus: true,
                 loadNewsData: obj
-            }
-            res.json(resendObject)
+            };
+            res.json(resendObject);
         }
-    })
-})
+    });
+});
 
 app.get('/api/loadAllEvents', function(req, res){
     Events.find({}, null, {sort: {eventData: -1}}, function(err, obj){
@@ -202,17 +204,17 @@ app.get('/api/loadAllEvents', function(req, res){
             let resendObject = {
                 loadEventsStatus: false,
                 loadEventsMessage: 'Brak istniejących wydarzeń'
-            }
-            res.json(resendObject)
+            };
+            res.json(resendObject);
         }else{
             let resendObject = {
                 loadEventsStatus: true,
                 loadEventsData: obj
-            }
-            res.json(resendObject)
+            };
+            res.json(resendObject);
         }
-    })
-})
+    });
+});
 
 app.get('/api/loadAllTeachers', function(req, res){
     Teachers.find({}, function(err, obj){
@@ -220,17 +222,17 @@ app.get('/api/loadAllTeachers', function(req, res){
             let resendObject = {
                 loadTeachersStatus: false,
                 loadTeachersMessage: 'Brak istniejących nauczycieli'
-            }
-            res.json(resendObject)
+            };
+            res.json(resendObject);
         }else{
             let resendObject = {
                 loadTeachersStatus: true,
                 loadTeachersData: obj
-            }
-            res.json(resendObject)
+            };
+            res.json(resendObject);
         }
-    })
-})
+    });
+});
 
 app.get('/api/loadOneNews', function(req, res){
     News.find({postIdent: req.query.postIdent}, function(err, obj){
@@ -238,17 +240,17 @@ app.get('/api/loadOneNews', function(req, res){
             let resendObject = {
                 loadNewsStatus: false,
                 loadNewsMessage: 'Brak istniejących postów'
-            }
-            res.json(resendObject)
+            };
+            res.json(resendObject);
         }else{
             let resendObject = {
                 loadNewsStatus: true,
                 loadNewsData: obj
-            }
-            res.json(resendObject)
+            };
+            res.json(resendObject);
         }
-    })
-})
+    });
+});
 
 app.get('/api/loadOneEvent', function(req, res){
     Events.find({eventIdent: req.query.eventIdent}, function(err, obj){
@@ -256,17 +258,17 @@ app.get('/api/loadOneEvent', function(req, res){
             let resendObject = {
                 loadEventsStatus: false,
                 loadEventsMessage: 'Brak istniejących wydarzeń'
-            }
-            res.json(resendObject)
+            };
+            res.json(resendObject);
         }else{
             let resendObject = {
                 loadEventsStatus: true,
                 loadEventsData: obj
-            }
-            res.json(resendObject)
+            };
+            res.json(resendObject);
         }
-    })
-})
+    });
+});
 
 app.delete('/api/deleteNews', function(req, res){
     if(req.query.pHYcSW % 2 == 0 && req.query.pHYcSW >= 541 && req.query.pHYcSW <= 600){
@@ -275,99 +277,99 @@ app.delete('/api/deleteNews', function(req, res){
                 let resendObject = {
                     deleteNewsStatus: false,
                     deleteNewsMessage: 'Brak istniejących postów do usunięcia'
-                }
-                res.json(resendObject)
+                };
+                res.json(resendObject);
             }else{
                 let resendObject = {
                     deleteNewsStatus: true,
                     deleteNewsMessage: 'Post został usunięty'
-                }
+                };
                 rimraf('./gallery/newsGallery/' + req.query.postIdent, function () { });
-                res.json(resendObject)
+                res.json(resendObject);
             }
-        })
+        });
     }else
-    res.status(501).send("Error 501")
-})
+    res.status(501).send('Error 501');
+});
 
 app.delete('/api/deleteEvent', function(req, res){
     if(req.query.pHYcSW % 2 == 0 && req.query.pHYcSW >= 541 && req.query.pHYcSW <= 600){
         Events.remove({eventIdent: req.query.eventIdent}, function(err){
             if(err){
                 let resendObject = {
-                    deleteEventsStatus: false,
-                    deleteEventsMessage: 'Brak istniejących wydarzeń do usunięcia'
-                }
-                res.json(resendObject)
+                    deleteEventStatus: false,
+                    deleteEventMessage: 'Brak istniejących wydarzeń do usunięcia'
+                };
+                res.json(resendObject);
             }else{
                 let resendObject = {
-                    deleteEventsStatus: true,
-                    deleteEventsMessage: 'Wydarzenie zostało usunięte'
-                }
+                    deleteEventStatus: true,
+                    deleteEventMessage: 'Wydarzenie zostało usunięte'
+                };
                 rimraf('./gallery/eventsGallery/' + req.query.eventIdent, function () { });
-                res.json(resendObject)
+                res.json(resendObject);
             }
-        })
+        });
     }else
-    res.status(501).send("Error 501")
-})
+    res.status(501).send('Error 501');
+});
 
 app.put('/api/editNews', function(req, res){
     if(req.body.sncKox % 2 == 0 && req.body.sncKox >= 675 && req.body.sncKox <= 987){
         News.findOne({postIdent: req.body.data.postIdent}, function(err, doc){
-            if(err) return res.status(500).send(err)
+            if(err) return res.status(500).send(err);
             if(!doc){
                 let resendObject = {
                     editNewsStatus: false,
                     editNewsMessage: 'Brak istniejących postów do edytowania'
-                }
-                res.json(resendObject)
+                };
+                res.json(resendObject);
             }else{
                 for (let id in req.body.data ){
                     doc[id]= req.body.data[id];
                 }
                 doc.save( function(err){
-                    if(err) return res.status(500).send(err)
+                    if(err) return res.status(500).send(err);
 
                     let resendObject = {
                         editNewsStatus: true,
                         editNewsMessage: 'Post został edytowany'
-                    }
-                    res.json(resendObject)
-                })
+                    };
+                    res.json(resendObject);
+                });
             }
-        })
+        });
      }else
-        res.status(501).send("Error 501")
+        res.status(501).send('Error 501');
  });
 
 app.put('/api/editEvent', function(req, res){
     if(req.body.sncKox % 2 == 0 && req.body.sncKox >= 675 && req.body.sncKox <= 987){
         Events.findOne({eventIdent: req.body.data.eventIdent}, function(err, doc){
-            if(err) return res.status(500).send(err)
+            if(err) return res.status(500).send(err);
             if(!doc){
                 let resendObject = {
                     editEventsStatus: false,
                     editEventsMessage: 'Brak istniejących wydarzeń do edytowania'
-                }
-                res.json(resendObject)
+                };
+                res.json(resendObject);
             }else{
                 for (let id in req.body.data ){
                     doc[id]= req.body.data[id];
                 }
                 doc.save( function(err){
-                    if(err) return res.status(500).send(err)
+                    if(err) return res.status(500).send(err);
 
                     let resendObject = {
                         editEventsStatus: true,
                         editEventsMessage: 'Wydarzenie zostało edytowane'
-                    }
-                    res.json(resendObject)
-                })
+                    };
+                    res.json(resendObject);
+                });
             }
-        })
+        });
      }else
-        res.status(501).send("Error 501")
+        res.status(501).send('Error 501');
  });
 
 app.post('/api/addNews', function(req, res){
@@ -378,19 +380,19 @@ app.post('/api/addNews', function(req, res){
                 let resendObject = {
                     addNewsStatus: true,
                     addNewsMessage: 'Post został dodany'
-                }
-                res.json(resendObject)
+                };
+                res.json(resendObject);
             }else{
                 let resendObject = {
                     addNewsStatus: false,
                     addNewsMessage: 'Błąd podczas dodawania posta'
-                }
-                res.json(resendObject)
+                };
+                res.json(resendObject);
             }
-        })
+        });
     }else
-    res.status(501).send("Error 501")
-})
+    res.status(501).send('Error 501');
+});
 
 app.post('/api/addEvent', function(req, res){
     if(req.body.aYtCpO % 2 == 0 && req.body.aYtCpO >= 431 && req.body.aYtCpO <= 500){
@@ -400,29 +402,29 @@ app.post('/api/addEvent', function(req, res){
                 let resendObject = {
                     addEventsStatus: true,
                     addEventsMessage: 'Wydarzenie zostało dodane'
-                }
-                res.json(resendObject)
+                };
+                res.json(resendObject);
             }else{
                 let resendObject = {
                     addEventsStatus: false,
                     addEventsMessage: 'Błąd podczas dodawania wydarzenia'
-                }
-                res.json(resendObject)
+                };
+                res.json(resendObject);
             }
-        })
+        });
     }else
-    res.status(501).send("Error 501")
-})
+    res.status(501).send('Error 501');
+});
 
 app.get('/gallery/:imageType/:typeTitle/:name', function(req, res){
-    let img = fs.readFileSync('./gallery/' + req.params.imageType + '/' + req.params.typeTitle + '/' + req.params.name)
+    let img = fs.readFileSync('./gallery/' + req.params.imageType + '/' + req.params.typeTitle + '/' + req.params.name);
     res.end(img, 'binary');
-})
+});
 
 app.get('/gallery/:imageType/:typeTitle/:folder/:name', function(req, res){
-    let img = fs.readFileSync('./gallery/' + req.params.imageType + '/' + req.params.typeTitle + '/' + req.params.folder + '/' + req.params.name)
+    let img = fs.readFileSync('./gallery/' + req.params.imageType + '/' + req.params.typeTitle + '/' + req.params.folder + '/' + req.params.name);
     res.end(img, 'binary');
-})
+});
 
  
 app.post('/api/uploadImage', function(req, res) {
@@ -430,7 +432,7 @@ app.post('/api/uploadImage', function(req, res) {
      
         let file = req.files.file;
      
-        mkdirp(req.body.path, function(err) { 
+        mkdirp(req.body.path, function() { 
             file.mv(req.body.path + '/' + req.files.file.name, function(err) {
                 if (err)
                     return res.status(500).send(err);
@@ -440,12 +442,12 @@ app.post('/api/uploadImage', function(req, res) {
                         if (err){
                             console.log(err);
                         } else{
-                            image.resize(200, jimp.AUTO).quality(60).write(req.body.path + '/min_' + req.files.file.name)
+                            image.resize(200, jimp.AUTO).quality(60).write(req.body.path + '/min_' + req.files.file.name);
                             let resendObject = {
                                 addImagesStatus: true,
                                 addImagesMessage: 'Zdjęcia zostały dodane'
-                            }
-                            res.json(resendObject)
+                            };
+                            res.json(resendObject);
                         }
                     });
                 }else if(req.body.type == 'fullImage'){
@@ -454,12 +456,12 @@ app.post('/api/uploadImage', function(req, res) {
                             console.log(err);
                         } else{
                             rimraf(req.body.path + '/' + req.files.file.name, function () { 
-                                image.quality(60).write(req.body.path + '/' + req.files.file.name)
+                                image.quality(60).write(req.body.path + '/' + req.files.file.name);
                                 let resendObject = {
                                     addImagesStatus: true,
                                     addImagesMessage: 'Zdjęcia zostały dodane'
-                                }
-                                res.json(resendObject)
+                                };
+                                res.json(resendObject);
                             });
                         }
                     });
@@ -469,4 +471,4 @@ app.post('/api/uploadImage', function(req, res) {
     }
 });
 
-app.listen(4000, () => console.log('Example app listening on port 4000!'))
+app.listen(4000, () => console.log('Example app listening on port 4000!'));

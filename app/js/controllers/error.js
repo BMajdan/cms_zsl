@@ -1,13 +1,13 @@
 function ErrorController($timeout, $location) {
 	'ngInject';
 
-  	$timeout(function(){
-  		$location.path('/');
-  	}, 500)
+  $timeout(function(){
+  	$location.path('/');
+  }, 1000);
 
 }
 
 export default {
 	name: 'ErrorController',
-  	fn: ErrorController
+  fn: ErrorController
 };
