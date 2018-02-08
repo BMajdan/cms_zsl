@@ -5,30 +5,34 @@ function VisualSiteService($location) {
 
 	service.responsiveMenu = () => {
 
-		let openMenuStatus = false;
-		if(window.innerWidth <= 767 && angular.element(document.querySelector('.sidebar'))[0] != undefined){
-				angular.element(document.querySelector('.sidebar'))[0].style.left = '-200px';
-				angular.element(document.querySelector('.sidebar-icon'))[0].style.display = 'block';
+		let sidebar = angular.element(document.querySelector('.sidebar'))[0];
+		let sidebarIcon = angular.element(document.querySelector('.sidebar-icon'))[0];
+		let rightIcon = angular.element(document.querySelector('.fa-angle-double-right'))[0];
 
-				angular.element(document.querySelector('.sidebar-icon'))[0].onclick = function(){
+		let openMenuStatus = false;
+		if(window.innerWidth <= 767 && sidebar != undefined){
+				sidebar.style.left = '-200px';
+				sidebarIcon.style.display = 'block';
+
+				sidebarIcon.onclick = function(){
 					if(openMenuStatus == false){
-						angular.element(document.querySelector('.sidebar'))[0].style.left = '0px';
-						angular.element(document.querySelector('.sidebar-icon'))[0].style.left = '210px';
-						angular.element(document.querySelector('.fa-angle-double-right'))[0].style.transform = 'rotate(180deg)';
+						sidebar.style.left = '0px';
+						sidebarIcon.style.left = '210px';
+						rightIcon.style.transform = 'rotate(180deg)';
 						openMenuStatus = true;
 					}else{
-						angular.element(document.querySelector('.sidebar'))[0].style.left = '-200px';
-						angular.element(document.querySelector('.sidebar-icon'))[0].style.left = '10px';
-						angular.element(document.querySelector('.fa-angle-double-right'))[0].style.transform = 'rotate(360deg)';
+						sidebar.style.left = '-200px';
+						sidebarIcon.style.left = '10px';
+						rightIcon.style.transform = 'rotate(360deg)';
 						openMenuStatus = false;
 					}
 				};
 			}else{
-				if(angular.element(document.querySelector('.sidebar'))[0] != undefined){
-					angular.element(document.querySelector('.sidebar'))[0].style.left = '0px';
-					angular.element(document.querySelector('.sidebar-icon'))[0].style.display = 'none';
-					angular.element(document.querySelector('.fa-angle-double-right'))[0].style.transform = 'rotate(360deg)';
-					angular.element(document.querySelector('.sidebar-icon'))[0].style.left = '10px';
+				if(sidebar != undefined){
+					sidebar.style.left = '0px';
+					sidebarIcon.style.display = 'none';
+					rightIcon.style.transform = 'rotate(360deg)';
+					sidebarIcon.style.left = '10px';
 					openMenuStatus = false;
 				}
 			}

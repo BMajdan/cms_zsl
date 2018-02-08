@@ -7,7 +7,44 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 		controller: 'EditNewsController',
 		link: (scope) => {
 			if(($location.path().split('/')[2]) == 'edytuj-post'){
+
+				/* Open, Close, Edit elements etc. */
+
 				document.querySelector('#addNewPostButton').style.display = 'none';
+
+				scope.removeWidget = (type, ident) => {
+					let arrayIndex = WidgetsService.removeWidget(type, ident, scope.editPost.widgets);
+					scope.editPost.widgets.splice(arrayIndex, 1);
+				};
+
+				scope.addImageToPost = (element) => {
+					WidgetsService.addImageToPost(element);
+				};
+
+				scope.changePostMiniature = () => {
+					document.querySelector('#editPostMiniature').click();
+				};
+
+				document.querySelector('#editPostMiniature').onchange = function () {
+					let vals = this.value,
+						val = vals.length ? vals.split('\\').pop() : '';
+					document.querySelector('#editPostMiniatureImage').value = val;
+					let reader = new FileReader();
+					reader.onload = function () {
+						let dataURL = reader.result;
+						let output = document.querySelector('#editPostMiniatureImage');
+						output.src = dataURL;
+					};
+					reader.readAsDataURL(document.querySelector('#editPostMiniature').files[0]);
+				};
+
+				scope.openWidgetMenu = () => {
+					angular.element(document.querySelector('#widget-manage')).append($compile('<post-widgets class="newWidget" object="editPost" addform=".editNewsForm"></post-widgets>')(scope));
+				};
+
+				/* ********************************************************* */
+
+				/*Load news, define variable */
 
 				NewsDatabase.loadOneNews($location.path().split('/')[3]).then(function(data){
 					if(data.loadNewsStatus && data.loadNewsData.length > 0){
@@ -34,14 +71,14 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 
 						scope.miniatureUrl = scope.galleryUrl + '/newsGallery/' + scope.editPost.postMiniature;
 
-						for(let i = 0; i < scope.editPost.widgets.length; i++){
-							if(scope.editPost.widgets[i].type == 'image'){
-								scope.addNewImage = scope.editPost.widgets[i].id.split('_')[1];
-								WidgetsService.insertImageBlock(scope, '.editNewsForm', 'newsGallery', scope.editPost.widgets[i].image);
+						for(let value of scope.editPost.widgets){
+							if(value.type == 'image'){
+								scope.addNewImage = value.id.split('_')[1];
+								WidgetsService.insertImageBlock(scope, '.editNewsForm', 'newsGallery', value.image);
 								scope.addNewImage++;
-							}else if(scope.editPost.widgets[i].type == 'text'){
-								scope.addNewText = scope.editPost.widgets[i].id.split('_')[1];
-								scope.addTextColumn[scope.addNewText] = scope.editPost.widgets[i].text;
+							}else if(value.type == 'text'){
+								scope.addNewText = value.id.split('_')[1];
+								scope.addTextColumn[scope.addNewText] = value.text;
 								WidgetsService.insertInputBlock(scope, '.editNewsForm');
 								scope.addNewText++;
 							}
@@ -53,44 +90,9 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 					}
 				});
 
-				scope.checkTeacher = (teacher) => {
-						for(let i = 0; i < scope.teachers.length; i++){
-							if((scope.teachers[i].name + ' ' + scope.teachers[i].surname) == teacher){
-								return true;
-							}
-						}
-					return false;
-				};
+				/* ********************************************************* */
 
-				scope.removeWidget = (type, ident) => {
-					let arrayIndex = WidgetsService.removeWidget(type, ident, scope.editPost.widgets);
-					scope.editPost.widgets.splice(arrayIndex, 1);
-				};
-
-				scope.addImageToPost = (element) => {
-					WidgetsService.addImageToPost(element);
-				};
-
-				scope.changePostMiniature = () => {
-					document.querySelector('#editPostMiniature').click();
-				};
-
-				document.querySelector('#editPostMiniature').onchange = function(){
-					let vals = this.value,
-					val = vals.length ? vals.split('\\').pop() : '';
-					document.querySelector('#editPostMiniatureImage').value = val;
-					let reader = new FileReader();
-					reader.onload = function(){
-						let dataURL = reader.result;
-						let output = document.querySelector('#editPostMiniatureImage');
-						output.src = dataURL;
-					};
-					reader.readAsDataURL(document.querySelector('#editPostMiniature').files[0]);
-				};
-
-				scope.openWidgetMenu = () =>{
-					angular.element(document.querySelector('#widget-manage')).append($compile('<post-widgets class="newWidget" object="editPost" addform=".editNewsForm"></post-widgets>')(scope));
-				};
+				/* Manage Teachers */
 
 				TeachersDatabase.loadAllTeachers().then(function(data){
 					if(data.loadTeachersStatus){
@@ -98,7 +100,17 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 					}
 				});
 
+				scope.checkTeacher = (teacher) => {
+					for (let value of scope.teachers) {
+						if ((value.name + ' ' + value.surname) == teacher) {
+							return true;
+						}
+					}
+					return false;
+				};
+
 				scope.editNews = (published) => {
+						let editPost = scope.editPost;
 
 						let d = new Date();
 						let day = ((d.getDate() < 10) ? '0' + d.getDate() : d.getDate());
@@ -108,41 +120,40 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 						let sec = ((d.getSeconds() < 10) ? '0' + d.getSeconds() : d.getSeconds());
 
 						let postD = day + '/' + month + '/' + d.getFullYear() + ' ' + hr + ':' + min + ':' + sec;
-						scope.editPost.postData = postD;
+						editPost.postData = postD;
 
 						if(document.querySelector('#editPostMiniature').files[0] != undefined){
-							scope.editPost.postMiniature = scope.editPost.postIdent + '/' + document.querySelector('#editPostMiniature').files[0].name;
-							scope.editPost.postMiniatureSmall = scope.editPost.postIdent + '/min_' + document.querySelector('#editPostMiniature').files[0].name;
+							editPost.postMiniature = editPost.postIdent + '/' + document.querySelector('#editPostMiniature').files[0].name;
+							editPost.postMiniatureSmall = editPost.postIdent + '/min_' + document.querySelector('#editPostMiniature').files[0].name;
 						}
 
-						if(scope.editPost.postTitle.length >= 1 && scope.editPost.postTitle.length <= 80 && 
-							scope.editPost.postShort.length >= 1 && scope.editPost.postShort.length <= 300 &&
-							scope.editPost.postText.length > 5 && scope.editPost.postMiniature != undefined &&
-							scope.editPost.postTags.length >= 1 && scope.checkTeacher(scope.editPost.postTeacher)){
+						if(editPost.postTitle.length >= 1 && editPost.postTitle.length <= 80 && 
+							editPost.postShort.length >= 1 && editPost.postShort.length <= 300 &&
+							editPost.postText.length > 5 && editPost.postMiniature != undefined &&
+							editPost.postTags.length >= 1 && scope.checkTeacher(editPost.postTeacher)){
 
-							scope.editPost.postPublished = published;
-							for(let i = 0; i < scope.editPost.widgets.length; i++){
-								let data = scope.editPost.widgets[i];
-								switch(scope.editPost.widgets[i].type){
+							editPost.postPublished = published;
+							for(let value of editPost.widgets){
+								switch(value.type){
 									case 'text':
-										scope.editPost.widgets[i].text = scope.addTextColumn[data.id.split('_')[1]];
+										value.text = scope.addTextColumn[value.id.split('_')[1]];
 										break;
 									case 'image':
-										if(document.querySelector('#addImageInput_' + data.id.split('_')[1]).files[0] != undefined){
-											scope.editPost.widgets[i].image = scope.editPost.postIdent + '/widgets/' + document.querySelector('#addImageInput_' + data.id.split('_')[1]).files[0].name;
-											let imageFolder = './gallery/newsGallery/' + scope.editPost.postIdent + '/widgets';
+										if(document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0] != undefined){
+											value.image = editPost.postIdent + '/widgets/' + document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0].name;
+											let imageFolder = './gallery/newsGallery/' + editPost.postIdent + '/widgets';
 											let type = 'fullImage';
-											UploadFiles.uploadImage(document.querySelector('#addImageInput_' + data.id.split('_')[1]).files[0], imageFolder, type).then(function(){});
+											UploadFiles.uploadImage(document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0], imageFolder, type).then(function(){});
 										}
 										break;
 								}
 							}
 
 							if(document.querySelector('#editPostMiniature').files[0] != undefined){
-								let imageFolder = './gallery/newsGallery/' + scope.editPost.postIdent;
+								let imageFolder = './gallery/newsGallery/' + editPost.postIdent;
 								let type = 'miniature';
 								UploadFiles.uploadImage(scope.editPostMiniature, imageFolder, type).then(function(){
-									NewsDatabase.editNews(scope.editPost).then(function(newsData){
+									NewsDatabase.editNews(editPost).then(function(newsData){
 										if(newsData.editNewsStatus){
 											if (published){
 												alert('Post został poprawnie edytowany');
@@ -154,7 +165,7 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 									});
 								});
 							}else{
-								NewsDatabase.editNews(scope.editPost).then(function(newsData){
+								NewsDatabase.editNews(editPost).then(function(newsData){
 									if(newsData.editNewsStatus){
 										if (published) {
 											alert('Post został poprawnie edytowany');

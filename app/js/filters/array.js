@@ -1,26 +1,29 @@
 function ArrayFilter() {
 
+	function searchBar(collection, propertyName, propertyValue){
+		let keys = [];
+		let i = 0;
+		for(let value of collection){
+			if (value[propertyName].replace(/\s+/g, '').toLowerCase().search(propertyValue.replace(/\s+/g, '').toLowerCase()) != -1) {
+				keys.push(i);
+			}
+			i++;
+		}
+		return keys;
+	}
+
+	function searchIndex(collection, propertyName, propertyValue) {
+			return collection.map((e) => {
+			  return e[propertyName];
+			}).indexOf(propertyValue);
+	}
+
 	return function(propertyName, propertyValue, collection, searchbar) {
-		let indexes = [];
-		let i=0, len=collection.length;
-		for (; i<len; i++) {
-				if(searchbar){
-					if (collection[i][propertyName].replace(/\s+/g, '').toLowerCase().search(propertyValue.replace(/\s+/g, '').toLowerCase()) != -1){
-						indexes.push(i);
-					}
-				}else{
-					if (collection[i][propertyName] == propertyValue) {
-						indexes.push(i);
-					}
-				}
+		if(searchbar){
+			return searchBar(collection, propertyName, propertyValue);
+		}else{
+			return searchIndex(collection, propertyName, propertyValue);
 		}
-
-		if(indexes.length == 1){
-			return indexes[0];
-		} else if (indexes.length > 1){
-			return indexes;
-		}
-
 		return null;
 	};
 

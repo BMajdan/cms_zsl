@@ -12,8 +12,8 @@ function showEvents($location, $filter, EventsDatabase) {
     		EventsDatabase.loadAllEvents().then(function(data){
 	    		if(data.loadEventsStatus){
 						scope.eventsData = data.loadEventsData;
-						for (let i = 0; i < scope.eventsData.length; i++) {
-							scope.eventsData[i].display = true;
+						for (let value of scope.eventsData) {
+							value.display = true;
 						}
 	    		}else{
 	    			scope.eventsData = [];

@@ -7,7 +7,18 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
     controller: 'EditSpecializationsController',
     link: (scope) => {
       if (($location.path().split('/')[2]) == 'edytuj-specjalizacje') {
+
+        /* Open, Close, Edit elements etc. */
+
         document.querySelector('#addNewSpecializationButton').style.display = 'none';
+
+        scope.openWidgetMenu = () => {
+          angular.element(document.querySelector('#widget-manage')).append($compile('<post-widgets class="newWidget" object="editSpecialization" addform=".editSpecializationsForm"></post-widgets>')(scope));
+        };
+
+        /* ********************************************************* */
+
+        /*Load specializations, define variable */
 
         SpecializationsDatabase.loadOneSpecialization($location.path().split('/')[3]).then(function (data) {
           if (data.loadSpecializationsStatus && data.loadSpecializationsData.length > 0) {
@@ -24,14 +35,14 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
               widgets: scope.specializations.widgets
             };
 
-            for (let i = 0; i < scope.editSpecialization.widgets.length; i++) {
-              if (scope.editSpecialization.widgets[i].type == 'image') {
-                scope.addNewImage = scope.editSpecialization.widgets[i].id.split('_')[1];
-                WidgetsService.insertImageBlock(scope, '.editSpecializationsForm', 'specializationsGallery', scope.editSpecialization.widgets[i].image);
+            for (let value of scope.editSpecialization.widgets) {
+              if (value.type == 'image') {
+                scope.addNewImage = value.id.split('_')[1];
+                WidgetsService.insertImageBlock(scope, '.editSpecializationsForm', 'specializationsGallery', value.image);
                 scope.addNewImage++;
-              } else if (scope.editSpecialization.widgets[i].type == 'text') {
-                scope.addNewText = scope.editSpecialization.widgets[i].id.split('_')[1];
-                scope.addTextColumn[scope.addNewText] = scope.editSpecialization.widgets[i].text;
+              } else if (value.type == 'text') {
+                scope.addNewText = value.id.split('_')[1];
+                scope.addTextColumn[scope.addNewText] = value.text;
                 WidgetsService.insertInputBlock(scope, '.editSpecializationsForm');
                 scope.addNewText++;
               }
@@ -43,39 +54,32 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
           }
         });
 
-        scope.openWidgetMenu = () => {
-          angular.element(document.querySelector('#widget-manage')).append($compile('<post-widgets class="newWidget" object="editSpecialization" addform=".editSpecializationsForm"></post-widgets>')(scope));
-        };
-
-        scope.removeWidget = (type, ident) => {
-          let arrayIndex = WidgetsService.removeWidget(type, ident, scope.editSpecialization.widgets);
-          scope.editSpecialization.widgets.splice(arrayIndex, 1);
-        };
+        /* ********************************************************* */
 
         scope.editSpecializations = () => {
+          let editSpec = scope.editSpecialization;
 
-          if (scope.editSpecialization.specializationName.length >= 1 && scope.editSpecialization.specializationName.length <= 80 &&
-            scope.editSpecialization.specializationSchool.length >= 1 && scope.editSpecialization.specializationSchool.length <= 300 &&
-            scope.editSpecialization.specializationText.length > 5) {
+          if (editSpec.specializationName.length >= 1 && editSpec.specializationName.length <= 80 &&
+            editSpec.specializationSchool.length >= 1 && editSpec.specializationSchool.length <= 300 &&
+            editSpec.specializationText.length > 5) {
 
-              for (let i = 0; i < scope.editSpecialization.widgets.length; i++) {
-                let data = scope.editSpecialization.widgets[i];
-                switch (scope.editSpecialization.widgets[i].type) {
+              for (let value of editSpec.widgets) {
+                switch (value.type) {
                   case 'text':
-                    scope.editSpecialization.widgets[i].text = scope.addTextColumn[data.id.split('_')[1]];
+                    value.text = scope.addTextColumn[value.id.split('_')[1]];
                     break;
                   case 'image':
-                    if (document.querySelector('#addImageInput_' + data.id.split('_')[1]).files[0] != undefined) {
-                      scope.editSpecialization.widgets[i].image = scope.editSpecialization.specializationIdent + '/widgets/' + document.querySelector('#addImageInput_' + data.id.split('_')[1]).files[0].name;
-                      let imageFolder = './gallery/specializationsGallery/' + scope.editSpecialization.specializationIdent + '/widgets';
+                    if (document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0] != undefined) {
+                      value.image = editSpec.specializationIdent + '/widgets/' + document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0].name;
+                      let imageFolder = './gallery/specializationsGallery/' + editSpec.specializationIdent + '/widgets';
                       let type = 'fullImage';
-                      UploadFiles.uploadImage(document.querySelector('#addImageInput_' + data.id.split('_')[1]).files[0], imageFolder, type).then(function () { });
+                      UploadFiles.uploadImage(document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0], imageFolder, type).then(function () { });
                     }
                     break;
                 }
               }
 
-              SpecializationsDatabase.editSpecialization(scope.editSpecialization).then(function (specializationsData) {
+              SpecializationsDatabase.editSpecialization(editSpec).then(function (specializationsData) {
                 if (specializationsData.editSpecializationsStatus) {
                   alert('Specjalizacja została poprawnie edytowana');
                   $window.location.reload();

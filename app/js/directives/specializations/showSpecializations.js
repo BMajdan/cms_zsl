@@ -10,8 +10,8 @@ function showSpecializations($location, $filter, SpecializationsDatabase) {
         SpecializationsDatabase.loadAllSpecializations().then(function (data) {
           if (data.loadSpecializationsStatus == true) {
             scope.specializationsData = data.loadSpecializationsData;
-            for (let i = 0; i < scope.specializationsData.length; i++) {
-              scope.specializationsData[i].display = true;
+            for (let value of scope.specializationsData) {
+              value.display = true;
             }
           } else {
             scope.specializationsData = [];

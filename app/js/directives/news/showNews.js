@@ -12,8 +12,8 @@ function showNews($location, $filter, NewsDatabase) {
 				NewsDatabase.loadAllNews().then(function(data){
 					if(data.loadNewsStatus == true){
 						scope.newsData = data.loadNewsData;
-						for(let i = 0; i < scope.newsData.length; i++){
-							scope.newsData[i].display = true;
+						for(let value of scope.newsData){
+							value.display = true;
 						}
 					}else{
 						scope.newsData = [];

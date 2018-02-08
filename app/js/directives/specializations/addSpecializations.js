@@ -6,42 +6,50 @@ function addSpecializations($location, $compile, SpecializationsDatabase, Upload
     controller: 'AddSpecializationsController',
     link: (scope) => {
       if (($location.path().split('/')[2]) == 'dodaj-nowa-specjalizacje') {
+        
+        /* Open, Close, Edit elements etc. */
+        
         document.querySelector('#addNewSpecializationButton').style.display = 'none';
 
         scope.openWidgetMenu = () => {
           angular.element(document.querySelector('#widget-manage')).append($compile('<post-widgets class="newWidget" object="newSpecialization" addform=".addSpecializationsForm"></post-widgets>')(scope));
         };
 
+        scope.removeWidget = (type, ident) => {
+          let arrayIndex = WidgetsService.removeWidget(type, ident, scope.newSpecialization.widgets);
+          scope.newSpecialization.widgets.splice(arrayIndex, 1);
+        };
+
+        /* ********************************************************* */
+
         scope.addSpecialization = () => {
-          scope.newSpecialization.specializationIdent = (scope.newSpecialization.specializationName.trim().replace(/ /g, '-')).toLowerCase();
+          let spec = scope.newSpecialization;
+          spec.specializationIdent = (spec.specializationName.trim().replace(/ /g, '-')).toLowerCase();
 
-          if (scope.newSpecialization.specializationName.length >= 1 && scope.newSpecialization.specializationName.length <= 80 &&
-            scope.newSpecialization.specializationSchool.length >= 1 && scope.newSpecialization.specializationSchool.length <= 300 &&
-            scope.newSpecialization.specializationText.length > 5 ) {
+          if (spec.specializationName.length >= 1 && spec.specializationName.length <= 80 &&
+            spec.specializationSchool.length >= 1 && spec.specializationSchool.length <= 300 &&
+            spec.specializationText.length > 5 ) {
 
-              for (let i = 0; i < scope.newSpecialization.widgets.length; i++) {
-                let data = scope.newSpecialization.widgets[i];
-                switch (scope.newSpecialization.widgets[i].type) {
+              for (let value of spec.widgets) {
+                switch (value.type) {
                   case 'text':
-                    scope.newSpecialization.widgets[i].text = scope.addTextColumn[data.id.split('_')[1]];
+                    value.text = scope.addTextColumn[value.id.split('_')[1]];
                     break;
                   case 'image':
-                    if (document.querySelector('#addImageInput_' + data.id.split('_')[1]).files[0] != undefined) {
-                      scope.newSpecialization.widgets[i].image = scope.newSpecialization.specializationIdent + '/widgets/' + document.querySelector('#addImageInput_' + data.id.split('_')[1]).files[0].name;
-                      let imageFolder = './gallery/specializationsGallery/' + scope.newSpecialization.specializationIdent + '/widgets';
+                    if (document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0] != undefined) {
+                      value.image = spec.specializationIdent + '/widgets/' + document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0].name;
+                      let imageFolder = './gallery/specializationsGallery/' + spec.specializationIdent + '/widgets';
                       let type = 'fullImage';
-                      UploadFiles.uploadImage(document.querySelector('#addImageInput_' + data.id.split('_')[1]).files[0], imageFolder, type).then(function () { });
+                      UploadFiles.uploadImage(document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0], imageFolder, type).then(function () { });
                     }
                     break;
                 }
               }
 
-              SpecializationsDatabase.addSpecialization(scope.newSpecialization).then(function (specializationsData) {
+              SpecializationsDatabase.addSpecialization(spec).then(function (specializationsData) {
                 if (specializationsData.addSpecializationsStatus) {
                   alert('Specjalizacja została poprawnie dodana');
-                  let local = scope.newSpecialization.specializationIdent;
-                  scope.newSpecialization = undefined;
-                  $location.path('/specjalizacje/edytuj-specjalizacje/' + local);
+                  $location.path('/specjalizacje/edytuj-specjalizacje/' + spec.specializationIdent);
                 }
               });
           } else {
