@@ -1,5 +1,5 @@
 function AddEventsController($scope, $rootScope, AppSettings) {
-	'ngInject';
+  'ngInject';
 
   $scope.addEventTitle = 'Tytuł nowego wydarzenia';
   $scope.addEventShortText = 'Krótki opis wydarzenia';
@@ -11,48 +11,48 @@ function AddEventsController($scope, $rootScope, AppSettings) {
   $scope.addImageInput = [];
 
   $scope.addNewText = 0;
-	$scope.addNewImage = 0;
-	
-	$scope.oneLineEditorOptions = AppSettings.oneLineEditorOptions;
-	$scope.addTextEditorOptions = AppSettings.addTextEditorOptions;
+  $scope.addNewImage = 0;
+
+  $scope.oneLineEditorOptions = AppSettings.oneLineEditorOptions;
+  $scope.addTextEditorOptions = AppSettings.addTextEditorOptions;
 
   $scope.newEvent = {
-		eventTitle: $scope.addEventTitle,
-		eventIdent: undefined,
+    eventTitle: $scope.addEventTitle,
+    eventIdent: undefined,
     eventData: undefined,
     eventStartDate: undefined,
     eventStopDate: undefined,
     eventStartTime: undefined,
     eventStopTime: undefined,
-		eventShort: $scope.addEventShortText,
-		eventMiniature: $scope.addEventMiniature,
-		eventMiniatureSmall: undefined,
-		eventTags: $scope.addEventTags,
-		eventText: $scope.addEventText,
-		eventAuthor: $rootScope.userData.userName,
-		eventTeacher: undefined,
-		eventPublished: false,
-		widgets: []
+    eventShort: $scope.addEventShortText,
+    eventMiniature: $scope.addEventMiniature,
+    eventMiniatureSmall: undefined,
+    eventTags: $scope.addEventTags,
+    eventText: $scope.addEventText,
+    eventAuthor: $rootScope.userData.userName,
+    eventTeacher: undefined,
+    eventPublished: false,
+    widgets: []
   };
 
-  $scope.$watch('addEventTitle', function(newValue) {
+  $scope.$watch('addEventTitle', function (newValue) {
     $scope.newEvent.eventTitle = newValue;
   });
 
-  $scope.$watch('addEventShortText', function(newValue) {
+  $scope.$watch('addEventShortText', function (newValue) {
     $scope.newEvent.eventShort = newValue;
   });
 
-  $scope.$watch('addEventTags', function(newValue) {
+  $scope.$watch('addEventTags', function (newValue) {
     $scope.newEvent.eventTags = newValue;
   });
 
-  $scope.$watch('addEventText', function(newValue) {
+  $scope.$watch('addEventText', function (newValue) {
     $scope.newEvent.eventText = newValue;
   });
 }
 
 export default {
-	name: 'AddEventsController',
+  name: 'AddEventsController',
   fn: AddEventsController
 };

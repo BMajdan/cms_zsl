@@ -1,5 +1,5 @@
 function AddNewsController($scope, $rootScope, AppSettings) {
-	'ngInject';
+  'ngInject';
 
   $scope.addArticleTitle = 'Tytuł nowego posta';
   $scope.addArticleShortText = 'Krótki opis posta';
@@ -11,10 +11,10 @@ function AddNewsController($scope, $rootScope, AppSettings) {
   $scope.addImageInput = [];
 
   $scope.addNewText = 0;
-	$scope.addNewImage = 0;
-	
-	$scope.oneLineEditorOptions = AppSettings.oneLineEditorOptions;
-	$scope.addTextEditorOptions = AppSettings.addTextEditorOptions;
+  $scope.addNewImage = 0;
+
+  $scope.oneLineEditorOptions = AppSettings.oneLineEditorOptions;
+  $scope.addTextEditorOptions = AppSettings.addTextEditorOptions;
 
   $scope.newPost = {
     postTitle: $scope.addArticleTitle,
@@ -31,24 +31,24 @@ function AddNewsController($scope, $rootScope, AppSettings) {
     widgets: []
   };
 
-  $scope.$watch('addArticleTitle', function(newValue) {
+  $scope.$watch('addArticleTitle', function (newValue) {
     $scope.newPost.postTitle = newValue;
   });
 
-  $scope.$watch('addArticleShortText', function(newValue) {
+  $scope.$watch('addArticleShortText', function (newValue) {
     $scope.newPost.postShort = newValue;
   });
 
-  $scope.$watch('addArticleTags', function(newValue) {
+  $scope.$watch('addArticleTags', function (newValue) {
     $scope.newPost.postTags = newValue;
   });
 
-  $scope.$watch('addArticlePostText', function(newValue) {
+  $scope.$watch('addArticlePostText', function (newValue) {
     $scope.newPost.postText = newValue;
   });
 }
 
 export default {
-	name: 'AddNewsController',
+  name: 'AddNewsController',
   fn: AddNewsController
 };

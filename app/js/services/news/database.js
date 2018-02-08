@@ -11,7 +11,7 @@ function NewsDatabase($http, $location, AppSettings) {
 
   service.loadAllNews = () => {
 
-    let url = AppSettings.apiUrl + 'loadAllNews';
+    let url = `${AppSettings.apiUrl}loadAllNews`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     return $http.get(url).then(succesCallback, errorCallback);
@@ -19,7 +19,7 @@ function NewsDatabase($http, $location, AppSettings) {
 
   service.loadOneNews = (postIdent) => {
 
-    let url = AppSettings.apiUrl + 'loadOneNews';
+    let url = `${AppSettings.apiUrl}loadOneNews`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     let params = {
@@ -29,7 +29,7 @@ function NewsDatabase($http, $location, AppSettings) {
   };
 
   service.deleteNews = (postIdent) => {
-    let url = AppSettings.apiUrl + 'deleteNews';
+    let url = `${AppSettings.apiUrl}deleteNews`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     let params = {
@@ -40,7 +40,7 @@ function NewsDatabase($http, $location, AppSettings) {
   };
 
   service.addNews = (postData) => {
-    let url = AppSettings.apiUrl + 'addNews';
+    let url = `${AppSettings.apiUrl}addNews`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     let data = JSON.stringify({ data: postData, aYtCpO: generateKey(431, 500) });
@@ -48,7 +48,7 @@ function NewsDatabase($http, $location, AppSettings) {
   };
 
   service.editNews = (postData) => {
-    let url = AppSettings.apiUrl + 'editNews';
+    let url = `${AppSettings.apiUrl}editNews`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     let data = JSON.stringify({ data: postData, sncKox: generateKey(675, 987) });

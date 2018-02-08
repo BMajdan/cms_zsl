@@ -20,7 +20,7 @@ function showSpecializations($location, $filter, SpecializationsDatabase) {
       }
 
       scope.editSpecialization = (specializationIdent) => {
-        $location.path('/specjalizacje/edytuj-specjalizacje/' + specializationIdent);
+        $location.path(`/specjalizacje/edytuj-specjalizacje/${specializationIdent}`);
         return false;
       };
 

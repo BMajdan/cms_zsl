@@ -11,7 +11,7 @@ function EventsDatabase($http, $location, AppSettings) {
 
   service.loadAllEvents = () => {
 
-    let url = AppSettings.apiUrl + 'loadAllEvents';
+    let url = `${AppSettings.apiUrl}loadAllEvents`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     return $http.get(url).then(succesCallback, errorCallback);
@@ -19,7 +19,7 @@ function EventsDatabase($http, $location, AppSettings) {
 
   service.loadOneEvent = (eventIdent) => {
 
-    let url = AppSettings.apiUrl + 'loadOneEvent';
+    let url = `${AppSettings.apiUrl}loadOneEvent`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     let params = {
@@ -29,7 +29,7 @@ function EventsDatabase($http, $location, AppSettings) {
   };
 
   service.deleteEvent = (eventIdent) => {
-    let url = AppSettings.apiUrl + 'deleteEvent';
+    let url = `${AppSettings.apiUrl}deleteEvent`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     let params = {
@@ -40,7 +40,7 @@ function EventsDatabase($http, $location, AppSettings) {
   };
 
   service.addEvent = (eventData) => {
-    let url = AppSettings.apiUrl + 'addEvent';
+    let url = `${AppSettings.apiUrl}addEvent`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     let data = JSON.stringify({ data: eventData, aYtCpO: generateKey(431, 500) });
@@ -48,7 +48,7 @@ function EventsDatabase($http, $location, AppSettings) {
   };
 
   service.editEvent = (eventData) => {
-    let url = AppSettings.apiUrl + 'editEvent';
+    let url = `${AppSettings.apiUrl}editEvent`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     let data = JSON.stringify({ data: eventData, sncKox: generateKey(675, 987) });

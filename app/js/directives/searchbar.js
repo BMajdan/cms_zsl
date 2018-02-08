@@ -18,8 +18,8 @@ function searchBar($filter) {
             }
 
             let found = $filter('ArrayFilter')(attrs.value, newValue, scope[attrs.from], true);
-            if(found){
-              for(let value of found){
+            if (found) {
+              for (let value of found) {
                 scope[attrs.from][value].display = true;
               }
             }

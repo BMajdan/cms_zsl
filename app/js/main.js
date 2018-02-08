@@ -2,8 +2,8 @@ import angular from 'angular';
 
 // angular modules
 import constants from './constants';
-import onConfig  from './on_config';
-import onRun     from './on_run';
+import onConfig from './on_config';
+import onRun from './on_run';
 import 'angular-ui-router';
 import 'angular-touch';
 import 'angular-ui-bootstrap/dist/ui-bootstrap';

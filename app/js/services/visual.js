@@ -10,36 +10,36 @@ function VisualSiteService($location) {
 		let rightIcon = angular.element(document.querySelector('.fa-angle-double-right'))[0];
 
 		let openMenuStatus = false;
-		if(window.innerWidth <= 767 && sidebar != undefined){
-				sidebar.style.left = '-200px';
-				sidebarIcon.style.display = 'block';
+		if (window.innerWidth <= 767 && sidebar != undefined) {
+			sidebar.style.left = '-200px';
+			sidebarIcon.style.display = 'block';
 
-				sidebarIcon.onclick = function(){
-					if(openMenuStatus == false){
-						sidebar.style.left = '0px';
-						sidebarIcon.style.left = '210px';
-						rightIcon.style.transform = 'rotate(180deg)';
-						openMenuStatus = true;
-					}else{
-						sidebar.style.left = '-200px';
-						sidebarIcon.style.left = '10px';
-						rightIcon.style.transform = 'rotate(360deg)';
-						openMenuStatus = false;
-					}
-				};
-			}else{
-				if(sidebar != undefined){
+			sidebarIcon.onclick = function () {
+				if (openMenuStatus == false) {
 					sidebar.style.left = '0px';
-					sidebarIcon.style.display = 'none';
-					rightIcon.style.transform = 'rotate(360deg)';
+					sidebarIcon.style.left = '210px';
+					rightIcon.style.transform = 'rotate(180deg)';
+					openMenuStatus = true;
+				} else {
+					sidebar.style.left = '-200px';
 					sidebarIcon.style.left = '10px';
+					rightIcon.style.transform = 'rotate(360deg)';
 					openMenuStatus = false;
 				}
+			};
+		} else {
+			if (sidebar != undefined) {
+				sidebar.style.left = '0px';
+				sidebarIcon.style.display = 'none';
+				rightIcon.style.transform = 'rotate(360deg)';
+				sidebarIcon.style.left = '10px';
+				openMenuStatus = false;
 			}
+		}
 	};
 
-	service.activeMenu = () =>{
-		switch($location.path().split('/')[1]){
+	service.activeMenu = () => {
+		switch ($location.path().split('/')[1]) {
 			case '':
 				document.querySelector('.przeglad').className += ' active';
 				break;

@@ -10,7 +10,7 @@ function UploadFiles($http, $location, AppSettings) {
   }
 
   service.uploadImage = (file, path, type) => {
-    let url = AppSettings.apiUrl + 'uploadImage';
+    let url = `${AppSettings.apiUrl}uploadImage`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
 

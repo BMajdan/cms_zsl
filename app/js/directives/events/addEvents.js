@@ -1,16 +1,16 @@
 function addEvents($location, $compile, EventsDatabase, TeachersDatabase, UploadFiles) {
-	'ngInject';	
+	'ngInject';
 	return {
 		restrict: 'E',
 		templateUrl: 'directives/events/addEvents.html',
 		controller: 'AddEventsController',
 		link: (scope) => {
-			if(($location.path().split('/')[2]) == 'dodaj-nowe-wydarzenie'){
-				
-				/* Open, Close, Edit elements etc. */ 
+			if (($location.path().split('/')[2]) == 'dodaj-nowe-wydarzenie') {
+
+				/* Open, Close, Edit elements etc. */
 
 				document.querySelector('#addNewEventButton').style.display = 'none';
-				
+
 				scope.openWidgetMenu = () => {
 					angular.element(document.querySelector('#widget-manage')).append($compile('<post-widgets class="newWidget" object="newEvent" addform=".addEventsForm"></post-widgets>')(scope));
 				};
@@ -36,15 +36,15 @@ function addEvents($location, $compile, EventsDatabase, TeachersDatabase, Upload
 
 				/* Manage Teachers */
 
-				TeachersDatabase.loadAllTeachers().then(function(data){
-					if(data.loadTeachersStatus){
+				TeachersDatabase.loadAllTeachers().then(function (data) {
+					if (data.loadTeachersStatus) {
 						scope.teachers = data.loadTeachersData;
 					}
 				});
 
 				scope.checkTeacher = (teacher) => {
 					for (let value of scope.teachers) {
-						if ((value.name + ' ' + value.surname) == teacher) {
+						if ((`${value.name} ${value.surname}`) == teacher) {
 							return true;
 						}
 					}
@@ -54,74 +54,70 @@ function addEvents($location, $compile, EventsDatabase, TeachersDatabase, Upload
 				/* ********************************************************* */
 
 				scope.addEvent = (published) => {
-					let newEvent = newEvent;
+					let newEvent = scope.newEvent;
 
 					let d = new Date();
-					let day = ((d.getDate() < 10) ? '0' + d.getDate() : d.getDate());
-					let month = ((d.getMonth() + 1 < 10) ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1));
-					let hr = ((d.getHours() < 10) ? '0' + d.getHours() : d.getHours());
-					let min = ((d.getMinutes() < 10) ? '0' + d.getMinutes() : d.getMinutes());
-					let sec = ((d.getSeconds() < 10) ? '0' + d.getSeconds() : d.getSeconds());
+					let day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate());
+					let month = ((d.getMonth() + 1 < 10) ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1));
+					let hr = ((d.getHours() < 10) ? `0${d.getHours()}` : d.getHours());
+					let min = ((d.getMinutes() < 10) ? `0${d.getMinutes()}` : d.getMinutes());
+					let sec = ((d.getSeconds() < 10) ? `0${d.getSeconds()}` : d.getSeconds());
 
-					let eventD = day + '/' + month + '/' + d.getFullYear() + ' ' + hr + ':' + min + ':' + sec;
+					let eventD = `${day}/${month}/${d.getFullYear()} ${hr}:${min}:${sec}`;
 					newEvent.eventData = eventD;
-					newEvent.eventIdent = (newEvent.eventTitle.trim().replace(/ /g, '-') + '-' + eventD.replace(/\//g, '-').replace(/ /g, '-').replace(/:/g, '-')).toLowerCase();
-					if(document.querySelector('#addEventMiniature').files[0] != undefined){
-						newEvent.eventMiniature = newEvent.eventIdent + '/' + document.querySelector('#addEventMiniature').files[0].name;
-						newEvent.eventMiniatureSmall = newEvent.eventIdent + '/min_' + document.querySelector('#addEventMiniature').files[0].name;
+					newEvent.eventIdent = (`${newEvent.eventTitle.trim().replace(/ /g, '-')}-${eventD.replace(/\//g, '-').replace(/ /g, '-').replace(/:/g, '-')}`).toLowerCase();
+					if (document.querySelector('#addEventMiniature').files[0] != undefined) {
+						newEvent.eventMiniature = `${newEvent.eventIdent}/${document.querySelector('#addEventMiniature').files[0].name}`;
+						newEvent.eventMiniatureSmall = `${newEvent.eventIdent}/min_${document.querySelector('#addEventMiniature').files[0].name}`;
 					}
 
-					if(newEvent.eventTitle.length >= 1 && newEvent.eventTitle.length <= 80 && 
+					if (newEvent.eventTitle.length >= 1 && newEvent.eventTitle.length <= 80 &&
 						newEvent.eventShort.length >= 1 && newEvent.eventShort.length <= 300 &&
 						newEvent.eventText.length > 5 && newEvent.eventMiniature != undefined &&
 						newEvent.eventStartDate != undefined && newEvent.eventStopDate != undefined &&
 						scope.eventStartTime != undefined && scope.eventStopTime != undefined &&
-						newEvent.eventTags.length >= 1 && scope.checkTeacher(newEvent.eventTeacher)){
-							
-							let startTime = new Date(scope.eventStartTime);
-							newEvent.eventStartTime = startTime.getHours() + ':' + startTime.getMinutes();
-							let stopTime = new Date(scope.eventStopTime);
-							newEvent.eventStopTime = stopTime.getHours() + ':' + stopTime.getMinutes();
+						newEvent.eventTags.length >= 1 && scope.checkTeacher(newEvent.eventTeacher)) {
 
-							let a = newEvent.eventStartDate.split('-');
-							let startDate = new Date(a[2], parseInt(a[1]) - 1, a[0], startTime.getHours(), startTime.getMinutes(), 0, 0);
-							let b = newEvent.eventStopDate.split('-');
-							let stopDate = new Date(b[2], parseInt(a[1]) - 1, b[0], stopTime.getHours(), stopTime.getMinutes(), 0, 0);
+						let startTime = new Date(scope.eventStartTime);
+						newEvent.eventStartTime = `${startTime.getHours()}:${startTime.getMinutes()}`;
+						let stopTime = new Date(scope.eventStopTime);
+						newEvent.eventStopTime = `${stopTime.getHours()}:${stopTime.getMinutes()}`;
 
-							if(stopDate >= startDate){
-								for (let value of newEvent.widgets) {
-									switch (value.type) {
-										case 'text':
-											value.text = scope.addTextColumn[value.id.split('_')[1]];
-											break;
-										case 'image':
-											if (document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0] != undefined) {
-												value.image = newEvent.eventIdent + '/widgets/' + document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0].name;
-												let imageFolder = './gallery/eventsGallery/' + newEvent.eventIdent + '/widgets',
-													type = 'fullImage';
-												UploadFiles.uploadImage(document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0], imageFolder, type).then(function(){});
-											}
-											break;
-									}
-								}
+						let a = newEvent.eventStartDate.split('-');
+						let startDate = new Date(a[2], parseInt(a[1]) - 1, a[0], startTime.getHours(), startTime.getMinutes(), 0, 0);
+						let b = newEvent.eventStopDate.split('-');
+						let stopDate = new Date(b[2], parseInt(a[1]) - 1, b[0], stopTime.getHours(), stopTime.getMinutes(), 0, 0);
 
-								let imageFolder = './gallery/eventsGallery/' + newEvent.eventIdent;
-								let type = 'miniature';
-								UploadFiles.uploadImage(scope.addEventMiniature, imageFolder, type).then(function () {
-									newEvent.eventPublished = published;
-									EventsDatabase.addEvent(newEvent).then(function (eventsData) {
-										if (eventsData.addEventsStatus) {
-											alert('Wydarzenie zostało poprawnie dodane');
-											$location.path('/wydarzenia/edytuj-wydarzenie/' + newEvent.eventIdent);
+						if (stopDate >= startDate) {
+							for (let value of newEvent.widgets) {
+								switch (value.type) {
+									case 'text':
+										value.text = scope.addTextColumn[value.id.split('_')[1]];
+										break;
+									case 'image':
+										if (document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0] != undefined) {
+											value.image = `${newEvent.eventIdent}/widgets/${document.querySelector(`#addImageInput_"${value.id.split('_')[1]}`).files[0].name}`;
+											let imageFolder = `./gallery/eventsGallery/${newEvent.eventIdent}/widgets`,
+												type = 'fullImage';
+											UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
 										}
-									});
-								});
-							}else{
-								alert('Podaj poprawną datę!');
+										break;
+								}
 							}
-					}else{
-						alert('Uzupełnij puste pola!');
-					}
+
+							let imageFolder = `./gallery/eventsGallery/${newEvent.eventIdent}`;
+							let type = 'miniature';
+							UploadFiles.uploadImage(scope.addEventMiniature, imageFolder, type).then(function () {
+								newEvent.eventPublished = published;
+								EventsDatabase.addEvent(newEvent).then(function (eventsData) {
+									if (eventsData.addEventsStatus) {
+										alert('Wydarzenie zostało poprawnie dodane');
+										$location.path(`/wydarzenia/edytuj-wydarzenie/${newEvent.eventIdent}`);
+									}
+								});
+							});
+						} else { alert('Podaj poprawną datę!'); }
+					} else { alert('Uzupełnij puste pola!'); }
 				};
 			}
 		}

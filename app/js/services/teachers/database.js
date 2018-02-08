@@ -10,7 +10,7 @@ function TeachersDatabase($http, $location, AppSettings) {
   }*/
 
   service.loadAllTeachers = () => {
-    let url = AppSettings.apiUrl + 'loadAllTeachers';
+    let url = `${AppSettings.apiUrl}loadAllTeachers`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     return $http.get(url).then(succesCallback, errorCallback);

@@ -1,6 +1,6 @@
-function LoginController() {}
+function LoginController() { }
 
 export default {
-	name: 'LoginController',
+  name: 'LoginController',
   fn: LoginController
 };

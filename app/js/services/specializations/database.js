@@ -10,16 +10,14 @@ function SpecializationsDatabase($http, $location, AppSettings) {
   }
 
   service.loadAllSpecializations = () => {
-
-    let url = AppSettings.apiUrl + 'loadAllSpecializations';
+    let url = `${AppSettings.apiUrl}loadAllSpecializations`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     return $http.get(url).then(succesCallback, errorCallback);
   };
 
   service.loadOneSpecialization = (specializationIdent) => {
-
-    let url = AppSettings.apiUrl + 'loadOneSpecialization';
+    let url = `${AppSettings.apiUrl}loadOneSpecializations`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     let params = {
@@ -29,7 +27,7 @@ function SpecializationsDatabase($http, $location, AppSettings) {
   };
 
   service.deleteSpecialization = (specializationIdent) => {
-    let url = AppSettings.apiUrl + 'deleteSpecialization';
+    let url = `${AppSettings.apiUrl}deleteSpecialization`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     let params = {
@@ -40,7 +38,7 @@ function SpecializationsDatabase($http, $location, AppSettings) {
   };
 
   service.addSpecialization = (specializationData) => {
-    let url = AppSettings.apiUrl + 'addSpecialization';
+    let url = `${AppSettings.apiUrl}addSpecialization`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     let data = JSON.stringify({ data: specializationData, aYtCpO: generateKey(431, 500) });
@@ -48,7 +46,7 @@ function SpecializationsDatabase($http, $location, AppSettings) {
   };
 
   service.editSpecialization = (specializationData) => {
-    let url = AppSettings.apiUrl + 'editSpecialization';
+    let url = `${AppSettings.apiUrl}editSpecialization`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     let data = JSON.stringify({ data: specializationData, sncKox: generateKey(675, 987) });

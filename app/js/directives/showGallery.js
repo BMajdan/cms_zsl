@@ -1,6 +1,6 @@
 function showGallery() {
 	'ngInject';
-	
+
 	return {
 		restrict: 'E',
 		templateUrl: 'directives/showGallery.html',

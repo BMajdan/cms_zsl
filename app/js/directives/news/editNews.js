@@ -1,12 +1,12 @@
 function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, UploadFiles, WidgetsService) {
 	'ngInject';
-	
+
 	return {
 		restrict: 'E',
 		templateUrl: 'directives/news/editNews.html',
 		controller: 'EditNewsController',
 		link: (scope) => {
-			if(($location.path().split('/')[2]) == 'edytuj-post'){
+			if (($location.path().split('/')[2]) == 'edytuj-post') {
 
 				/* Open, Close, Edit elements etc. */
 
@@ -46,8 +46,8 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 
 				/*Load news, define variable */
 
-				NewsDatabase.loadOneNews($location.path().split('/')[3]).then(function(data){
-					if(data.loadNewsStatus && data.loadNewsData.length > 0){
+				NewsDatabase.loadOneNews($location.path().split('/')[3]).then(function (data) {
+					if (data.loadNewsStatus && data.loadNewsData.length > 0) {
 						scope.news = data.loadNewsData[0];
 						scope.editArticleTitle = scope.news.postTitle;
 						scope.editArticleShortText = scope.news.postShort;
@@ -69,21 +69,21 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 							widgets: scope.news.widgets
 						};
 
-						scope.miniatureUrl = scope.galleryUrl + '/newsGallery/' + scope.editPost.postMiniature;
+						scope.miniatureUrl = `${scope.galleryUrl}/newsGallery/${scope.editPost.postMiniature}`;
 
-						for(let value of scope.editPost.widgets){
-							if(value.type == 'image'){
+						for (let value of scope.editPost.widgets) {
+							if (value.type == 'image') {
 								scope.addNewImage = value.id.split('_')[1];
 								WidgetsService.insertImageBlock(scope, '.editNewsForm', 'newsGallery', value.image);
 								scope.addNewImage++;
-							}else if(value.type == 'text'){
+							} else if (value.type == 'text') {
 								scope.addNewText = value.id.split('_')[1];
 								scope.addTextColumn[scope.addNewText] = value.text;
 								WidgetsService.insertInputBlock(scope, '.editNewsForm');
 								scope.addNewText++;
 							}
 						}
-					}else{
+					} else {
 						scope.news = [];
 						$location.path('/aktualnosci');
 						return false;
@@ -94,15 +94,15 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 
 				/* Manage Teachers */
 
-				TeachersDatabase.loadAllTeachers().then(function(data){
-					if(data.loadTeachersStatus){
+				TeachersDatabase.loadAllTeachers().then(function (data) {
+					if (data.loadTeachersStatus) {
 						scope.teachers = data.loadTeachersData;
 					}
 				});
 
 				scope.checkTeacher = (teacher) => {
 					for (let value of scope.teachers) {
-						if ((value.name + ' ' + value.surname) == teacher) {
+						if ((`${value.name} ${value.surname}`) == teacher) {
 							return true;
 						}
 					}
@@ -110,63 +110,51 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 				};
 
 				scope.editNews = (published) => {
-						let editPost = scope.editPost;
+					let editPost = scope.editPost;
 
-						let d = new Date();
-						let day = ((d.getDate() < 10) ? '0' + d.getDate() : d.getDate());
-						let month = ((d.getMonth() + 1 < 10) ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1));
-						let hr = ((d.getHours() < 10) ? '0' + d.getHours() : d.getHours());
-						let min = ((d.getMinutes() < 10) ? '0' + d.getMinutes() : d.getMinutes());
-						let sec = ((d.getSeconds() < 10) ? '0' + d.getSeconds() : d.getSeconds());
+					let d = new Date();
+					let day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate());
+					let month = ((d.getMonth() + 1 < 10) ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1));
+					let hr = ((d.getHours() < 10) ? `0${d.getHours()}` : d.getHours());
+					let min = ((d.getMinutes() < 10) ? `0${d.getMinutes()}` : d.getMinutes());
+					let sec = ((d.getSeconds() < 10) ? `0${d.getSeconds()}` : d.getSeconds());
 
-						let postD = day + '/' + month + '/' + d.getFullYear() + ' ' + hr + ':' + min + ':' + sec;
-						editPost.postData = postD;
+					let postD = `${day}/${month}/${d.getFullYear()} ${hr}:${min}:${sec}`;
+					editPost.postData = postD;
 
-						if(document.querySelector('#editPostMiniature').files[0] != undefined){
-							editPost.postMiniature = editPost.postIdent + '/' + document.querySelector('#editPostMiniature').files[0].name;
-							editPost.postMiniatureSmall = editPost.postIdent + '/min_' + document.querySelector('#editPostMiniature').files[0].name;
+					if (document.querySelector('#editPostMiniature').files[0] != undefined) {
+						editPost.postMiniature = `${editPost.postIdent}/${document.querySelector('#editPostMiniature').files[0].name}`;
+						editPost.postMiniatureSmall = `${editPost.postIdent}/min_${document.querySelector('#editPostMiniature').files[0].name}`;
+					}
+
+					if (editPost.postTitle.length >= 1 && editPost.postTitle.length <= 80 &&
+						editPost.postShort.length >= 1 && editPost.postShort.length <= 300 &&
+						editPost.postText.length > 5 && editPost.postMiniature != undefined &&
+						editPost.postTags.length >= 1 && scope.checkTeacher(editPost.postTeacher)) {
+
+						editPost.postPublished = published;
+						for (let value of editPost.widgets) {
+							switch (value.type) {
+								case 'text':
+									value.text = scope.addTextColumn[value.id.split('_')[1]];
+									break;
+								case 'image':
+									if (document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0] != undefined) {
+										value.image = `${editPost.postIdent}/widgets/${document.querySelector(`#addImageInput_"${value.id.split('_')[1]}`).files[0].name}`;
+										let imageFolder = `./gallery/newsGallery/${editPost.postIdent}/widgets`,
+											type = 'fullImage';
+										UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
+									}
+									break;
+							}
 						}
 
-						if(editPost.postTitle.length >= 1 && editPost.postTitle.length <= 80 && 
-							editPost.postShort.length >= 1 && editPost.postShort.length <= 300 &&
-							editPost.postText.length > 5 && editPost.postMiniature != undefined &&
-							editPost.postTags.length >= 1 && scope.checkTeacher(editPost.postTeacher)){
-
-							editPost.postPublished = published;
-							for(let value of editPost.widgets){
-								switch(value.type){
-									case 'text':
-										value.text = scope.addTextColumn[value.id.split('_')[1]];
-										break;
-									case 'image':
-										if(document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0] != undefined){
-											value.image = editPost.postIdent + '/widgets/' + document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0].name;
-											let imageFolder = './gallery/newsGallery/' + editPost.postIdent + '/widgets';
-											let type = 'fullImage';
-											UploadFiles.uploadImage(document.querySelector('#addImageInput_' + value.id.split('_')[1]).files[0], imageFolder, type).then(function(){});
-										}
-										break;
-								}
-							}
-
-							if(document.querySelector('#editPostMiniature').files[0] != undefined){
-								let imageFolder = './gallery/newsGallery/' + editPost.postIdent;
-								let type = 'miniature';
-								UploadFiles.uploadImage(scope.editPostMiniature, imageFolder, type).then(function(){
-									NewsDatabase.editNews(editPost).then(function(newsData){
-										if(newsData.editNewsStatus){
-											if (published){
-												alert('Post został poprawnie edytowany');
-												$window.location.reload();
-											}else{
-												alert('Przenoszę na stronę główną!');
-											}
-										}
-									});
-								});
-							}else{
-								NewsDatabase.editNews(editPost).then(function(newsData){
-									if(newsData.editNewsStatus){
+						if (document.querySelector('#editPostMiniature').files[0] != undefined) {
+							let imageFolder = `./gallery/newsGallery/${editNews.postIdent}`;
+							let type = 'miniature';
+							UploadFiles.uploadImage(scope.editPostMiniature, imageFolder, type).then(function () {
+								NewsDatabase.editNews(editPost).then(function (newsData) {
+									if (newsData.editNewsStatus) {
 										if (published) {
 											alert('Post został poprawnie edytowany');
 											$window.location.reload();
@@ -175,8 +163,20 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 										}
 									}
 								});
-							}
-						}else{
+							});
+						} else {
+							NewsDatabase.editNews(editPost).then(function (newsData) {
+								if (newsData.editNewsStatus) {
+									if (published) {
+										alert('Post został poprawnie edytowany');
+										$window.location.reload();
+									} else {
+										alert('Przenoszę na stronę główną!');
+									}
+								}
+							});
+						}
+					} else {
 						alert('Uzupełnij puste pola!');
 					}
 				};
