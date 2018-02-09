@@ -1,4 +1,4 @@
-function UserDatabase($http, $location, AppSettings, $rootScope) {
+function UserDatabase($http, $location, $interval, AppSettings, $rootScope) {
 	'ngInject';
 
 	const service = {};
@@ -38,7 +38,6 @@ function UserDatabase($http, $location, AppSettings, $rootScope) {
 		let url = `${AppSettings.apiUrl}short-login`;
 		let data = JSON.stringify({ 'login': login });
 		let succesCallback = ({data}) => {
-			console.log(data);
 			if(data.success){
 				let expires = AppSettings.userExpireTime;
 				let now = Date.now();
@@ -58,10 +57,13 @@ function UserDatabase($http, $location, AppSettings, $rootScope) {
 	};
 
 	service.logout = (removeSession) => {
+		$interval.cancel($rootScope.checkInterval);
 		let url = `${AppSettings.apiUrl}logout`;
 		let succesCallback = ({data}) => {
 			if(data.success){
+				$interval.cancel($rootScope.checkInterval);
 				if (removeSession) {
+					$interval.cancel($rootScope.checkInterval);
 					$rootScope.userData = undefined;
 					sessionStorage.clear();
 					$location.path('/login');
@@ -70,7 +72,7 @@ function UserDatabase($http, $location, AppSettings, $rootScope) {
 			}
 		};
 		let errorCallback = (err) => { throw err; };
-		let data = JSON.stringify({ 'userName': $rootScope.userName, 'token': $rootScope.token });
+		let data = JSON.stringify({ 'userName': $rootScope.userData.userName, 'token': $rootScope.userData.token });
 		return $http.put(url, data).then(succesCallback, errorCallback);
 	};
 

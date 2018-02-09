@@ -22,7 +22,7 @@ function SpecializationsDatabase($http, $location, AppSettings, $rootScope) {
     let url = `${AppSettings.apiUrl}delete-specialization`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
-    let params = { specializationIdent: specializationIdent, 'token': $rootScope.token };
+    let params = { specializationIdent: specializationIdent, 'token': $rootScope.userData.token };
     return $http.delete(url, { params: params }).then(succesCallback, errorCallback);
   };
 
@@ -30,7 +30,7 @@ function SpecializationsDatabase($http, $location, AppSettings, $rootScope) {
     let url = `${AppSettings.apiUrl}add-specialization`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
-    let data = JSON.stringify({ data: specializationData, 'token': $rootScope.token });
+    let data = JSON.stringify({ data: specializationData, 'token': $rootScope.userData.token });
     return $http.post(url, data).then(succesCallback, errorCallback);
   };
 
@@ -38,12 +38,10 @@ function SpecializationsDatabase($http, $location, AppSettings, $rootScope) {
     let url = `${AppSettings.apiUrl}edit-specialization`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
-    let data = JSON.stringify({ data: specializationData, 'token': $rootScope.token });
+    let data = JSON.stringify({ data: specializationData, 'token': $rootScope.userData.token });
     return $http.put(url, data).then(succesCallback, errorCallback);
   };
-
   return service;
-
 }
 
 export default {

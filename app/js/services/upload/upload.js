@@ -12,7 +12,7 @@ function UploadFiles($http, $location, AppSettings, $rootScope) {
     fd.append('file', file);
     fd.append('path', path);
     fd.append('type', type);
-    fd.append('token', $rootScope.token);
+    fd.append('token', $rootScope.userData.token);
 
     return $http({
       url: url,
