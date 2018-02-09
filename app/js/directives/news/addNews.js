@@ -1,4 +1,4 @@
-function addNews($location, $compile, NewsDatabase, TeachersDatabase, UploadFiles) {
+function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase, UploadFiles) {
 	'ngInject';
 
 	return {
@@ -39,8 +39,8 @@ function addNews($location, $compile, NewsDatabase, TeachersDatabase, UploadFile
 				/* Manage Teachers */
 
 				TeachersDatabase.loadAllTeachers().then(function (data) {
-					if (data.loadTeachersStatus) {
-						scope.teachers = data.loadTeachersData;
+					if (data.success) {
+						scope.teachers = data.object;
 					}
 				});
 
@@ -79,6 +79,8 @@ function addNews($location, $compile, NewsDatabase, TeachersDatabase, UploadFile
 						newPost.postText.length > 5 && newPost.postMiniature != undefined &&
 						newPost.postTags.length >= 1 && scope.checkTeacher(newPost.postTeacher)) {
 
+						newPost.postAuthor = $rootScope.userData.userName;
+
 						for (let value of newPost.widgets) {
 							switch (value.type) {
 								case 'text':
@@ -86,7 +88,7 @@ function addNews($location, $compile, NewsDatabase, TeachersDatabase, UploadFile
 									break;
 								case 'image':
 									if (document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0] != undefined) {
-										value.image = `${newPost.postIdent}/widgets/${document.querySelector(`#addImageInput_"${value.id.split('_')[1]}`).files[0].name}`;
+										value.image = `${newPost.postIdent}/widgets/${document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0].name}`;
 										let imageFolder = `./gallery/newsGallery/${newPost.postIdent}/widgets`,
 											type = 'fullImage';
 										UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
@@ -99,9 +101,9 @@ function addNews($location, $compile, NewsDatabase, TeachersDatabase, UploadFile
 						let type = 'miniature';
 						UploadFiles.uploadImage(scope.addPostMiniature, imageFolder, type).then(function () {
 							newPost.postPublished = published;
-							NewsDatabase.addNews(newPost).then(function (newsData) {
-								if (newsData.addNewsStatus) {
-									alert('Post został poprawnie dodany');
+							NewsDatabase.addPost(newPost).then(function (newsData) {
+								if (newsData.success) {
+									alert(newsData.message);
 									$location.path(`/aktualnosci/edytuj-post/${newPost.postIdent}`);
 								}
 							});

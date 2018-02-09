@@ -5,7 +5,7 @@ function WidgetsService($compile, $filter) {
 
 	service.insertImageBlock = (scope, form, gallery, image) => {
 		scope.form = angular.element(document.querySelector(form));
-		let src = `scope.galleryUrl}/${gallery}/${image}`;
+		let src = `${scope.galleryUrl}/${gallery}/${image}`;
 		scope.form.append($compile(`
 			<div id="columnImage_${scope.addNewImage}">
 				<h3 class="widgetIndent">Widget: Kolumna ze zdjęciem <span class="removeWidget" ng-click="removeWidget(2, ${scope.addNewImage})">[Usuń widget]</span></h3>
@@ -50,7 +50,6 @@ function WidgetsService($compile, $filter) {
 	};
 
 	service.removeWidget = (type, ident, object) => {
-		console.log(type, ident, object);
 		switch (type) {
 			case 1:
 				angular.element(document.getElementById(`columnText_${ident}`))[0].remove();

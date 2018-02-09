@@ -29,7 +29,7 @@ function AddEventsController($scope, $rootScope, AppSettings) {
     eventMiniatureSmall: undefined,
     eventTags: $scope.addEventTags,
     eventText: $scope.addEventText,
-    eventAuthor: $rootScope.userData.userName,
+    eventAuthor: undefined,
     eventTeacher: undefined,
     eventPublished: false,
     widgets: []

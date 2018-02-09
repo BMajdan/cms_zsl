@@ -30,7 +30,6 @@ function postWidgets($compile, $filter) {
 			};
 
 			scope.removeWidget = (type, ident) => {
-				console.log(type, ident);
 				switch(type){
 					case 1:
 						angular.element(document.getElementById(`columnText_${ident}`))[0].remove();
@@ -85,7 +84,7 @@ function postWidgets($compile, $filter) {
 
 				if(editWidget){
 					scope.addNewImage = id;
-					src = `${scope.galleryUrl}'/newsGallery/${image}`;
+					src = `${scope.galleryUrl}/newsGallery/${image}`;
 				}
 
 				angular.element(document.querySelector(attrs.addform)).append($compile(`

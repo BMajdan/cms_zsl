@@ -16,13 +16,18 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
           angular.element(document.querySelector('#widget-manage')).append($compile('<post-widgets class="newWidget" object="editSpecialization" addform=".editSpecializationsForm"></post-widgets>')(scope));
         };
 
+        scope.removeWidget = (type, ident) => {
+          let arrayIndex = WidgetsService.removeWidget(type, ident, scope.editSpecialization.widgets);
+          scope.editSpecialization.widgets.splice(arrayIndex, 1);
+        };
+
         /* ********************************************************* */
 
         /*Load specializations, define variable */
 
         SpecializationsDatabase.loadOneSpecialization($location.path().split('/')[3]).then(function (data) {
-          if (data.loadSpecializationsStatus && data.loadSpecializationsData.length > 0) {
-            scope.specializations = data.loadSpecializationsData[0];
+          if (data.success && data.object.length > 0) {
+            scope.specializations = data.object[0];
             scope.editSpecializationName = scope.specializations.specializationName;
             scope.editSpecializationSchool = scope.specializations.specializationSchool;
             scope.editSpecializationText = scope.specializations.specializationText;
@@ -70,8 +75,8 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
                   break;
                 case 'image':
                   if (document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0] != undefined) {
-                    value.image = `${editSpecialization.specializationIdent}/widgets/${document.querySelector(`#addImageInput_"${value.id.split('_')[1]}`).files[0].name}`;
-                    let imageFolder = `./gallery/specializationsGallery/${editSpecialization.specializationIdent}/widgets`,
+                    value.image = `${editSpec.specializationIdent}/widgets/${document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0].name}`;
+                    let imageFolder = `./gallery/specializationsGallery/${editSpec.specializationIdent}/widgets`,
                       type = 'fullImage';
                     UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
                   }
@@ -79,9 +84,9 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
               }
             }
 
-            SpecializationsDatabase.editSpecialization(editSpec).then(function (specializationsData) {
-              if (specializationsData.editSpecializationsStatus) {
-                alert('Specjalizacja została poprawnie edytowana');
+            SpecializationsDatabase.editSpecialization(editSpec).then(function (specializationData) {
+              if (specializationData.success) {
+                alert(specializationData.message);
                 $window.location.reload();
               }
             });

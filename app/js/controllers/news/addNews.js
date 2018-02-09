@@ -25,7 +25,7 @@ function AddNewsController($scope, $rootScope, AppSettings) {
     postMiniatureSmall: undefined,
     postTags: $scope.addArticleTags,
     postText: $scope.addArticlePostText,
-    postAuthor: $rootScope.userData.userName,
+    postAuthor: undefined,
     postTeacher: undefined,
     postPublished: false,
     widgets: []

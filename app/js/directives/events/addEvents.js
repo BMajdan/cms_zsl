@@ -1,4 +1,4 @@
-function addEvents($location, $compile, EventsDatabase, TeachersDatabase, UploadFiles) {
+function addEvents($location, $compile, $rootScope, EventsDatabase, TeachersDatabase, UploadFiles) {
 	'ngInject';
 	return {
 		restrict: 'E',
@@ -37,8 +37,8 @@ function addEvents($location, $compile, EventsDatabase, TeachersDatabase, Upload
 				/* Manage Teachers */
 
 				TeachersDatabase.loadAllTeachers().then(function (data) {
-					if (data.loadTeachersStatus) {
-						scope.teachers = data.loadTeachersData;
+					if (data.success) {
+						scope.teachers = data.object;
 					}
 				});
 
@@ -78,6 +78,7 @@ function addEvents($location, $compile, EventsDatabase, TeachersDatabase, Upload
 						scope.eventStartTime != undefined && scope.eventStopTime != undefined &&
 						newEvent.eventTags.length >= 1 && scope.checkTeacher(newEvent.eventTeacher)) {
 
+						newEvent.eventAuthor = $rootScope.userData.userName;
 						let startTime = new Date(scope.eventStartTime);
 						newEvent.eventStartTime = `${startTime.getHours()}:${startTime.getMinutes()}`;
 						let stopTime = new Date(scope.eventStopTime);
@@ -96,7 +97,7 @@ function addEvents($location, $compile, EventsDatabase, TeachersDatabase, Upload
 										break;
 									case 'image':
 										if (document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0] != undefined) {
-											value.image = `${newEvent.eventIdent}/widgets/${document.querySelector(`#addImageInput_"${value.id.split('_')[1]}`).files[0].name}`;
+											value.image = `${newEvent.eventIdent}/widgets/${document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0].name}`;
 											let imageFolder = `./gallery/eventsGallery/${newEvent.eventIdent}/widgets`,
 												type = 'fullImage';
 											UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
@@ -109,9 +110,9 @@ function addEvents($location, $compile, EventsDatabase, TeachersDatabase, Upload
 							let type = 'miniature';
 							UploadFiles.uploadImage(scope.addEventMiniature, imageFolder, type).then(function () {
 								newEvent.eventPublished = published;
-								EventsDatabase.addEvent(newEvent).then(function (eventsData) {
-									if (eventsData.addEventsStatus) {
-										alert('Wydarzenie zostało poprawnie dodane');
+								EventsDatabase.addEvent(newEvent).then(function (eventData) {
+									if (eventData.success) {
+										alert(eventData.message);
 										$location.path(`/wydarzenia/edytuj-wydarzenie/${newEvent.eventIdent}`);
 									}
 								});

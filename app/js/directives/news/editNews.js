@@ -1,4 +1,4 @@
-function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, UploadFiles, WidgetsService) {
+function editNews($location, $compile, $window, $rootScope, NewsDatabase, TeachersDatabase, UploadFiles, WidgetsService) {
 	'ngInject';
 
 	return {
@@ -46,9 +46,9 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 
 				/*Load news, define variable */
 
-				NewsDatabase.loadOneNews($location.path().split('/')[3]).then(function (data) {
-					if (data.loadNewsStatus && data.loadNewsData.length > 0) {
-						scope.news = data.loadNewsData[0];
+				NewsDatabase.loadOnePost($location.path().split('/')[3]).then(function (data) {
+					if (data.success && data.object.length > 0) {
+						scope.news = data.object[0];
 						scope.editArticleTitle = scope.news.postTitle;
 						scope.editArticleShortText = scope.news.postShort;
 						scope.editArticlePostText = scope.news.postText;
@@ -95,8 +95,8 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 				/* Manage Teachers */
 
 				TeachersDatabase.loadAllTeachers().then(function (data) {
-					if (data.loadTeachersStatus) {
-						scope.teachers = data.loadTeachersData;
+					if (data.success) {
+						scope.teachers = data.object;
 					}
 				});
 
@@ -132,6 +132,7 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 						editPost.postText.length > 5 && editPost.postMiniature != undefined &&
 						editPost.postTags.length >= 1 && scope.checkTeacher(editPost.postTeacher)) {
 
+						editPost.postAuthor = $rootScope.userData.userName;
 						editPost.postPublished = published;
 						for (let value of editPost.widgets) {
 							switch (value.type) {
@@ -140,7 +141,7 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 									break;
 								case 'image':
 									if (document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0] != undefined) {
-										value.image = `${editPost.postIdent}/widgets/${document.querySelector(`#addImageInput_"${value.id.split('_')[1]}`).files[0].name}`;
+										value.image = `${editPost.postIdent}/widgets/${document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0].name}`;
 										let imageFolder = `./gallery/newsGallery/${editPost.postIdent}/widgets`,
 											type = 'fullImage';
 										UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
@@ -153,10 +154,10 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 							let imageFolder = `./gallery/newsGallery/${editNews.postIdent}`;
 							let type = 'miniature';
 							UploadFiles.uploadImage(scope.editPostMiniature, imageFolder, type).then(function () {
-								NewsDatabase.editNews(editPost).then(function (newsData) {
-									if (newsData.editNewsStatus) {
+								NewsDatabase.editPost(editPost).then(function (newsData) {
+									if (newsData.success) {
 										if (published) {
-											alert('Post został poprawnie edytowany');
+											alert(newsData.message);
 											$window.location.reload();
 										} else {
 											alert('Przenoszę na stronę główną!');
@@ -165,10 +166,10 @@ function editNews($location, $compile, $window, NewsDatabase, TeachersDatabase, 
 								});
 							});
 						} else {
-							NewsDatabase.editNews(editPost).then(function (newsData) {
-								if (newsData.editNewsStatus) {
+							NewsDatabase.editPost(editPost).then(function (newsData) {
+								if (newsData.success) {
 									if (published) {
-										alert('Post został poprawnie edytowany');
+										alert(newsData.message);
 										$window.location.reload();
 									} else {
 										alert('Przenoszę na stronę główną!');

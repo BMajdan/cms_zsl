@@ -10,8 +10,8 @@ function showNews($location, $filter, NewsDatabase) {
 
 			if (($location.path().split('/')[2]) === undefined) {
 				NewsDatabase.loadAllNews().then(function (data) {
-					if (data.loadNewsStatus == true) {
-						scope.newsData = data.loadNewsData;
+					if (data.success) {
+						scope.newsData = data.object;
 						for (let value of scope.newsData) {
 							value.display = true;
 						}
@@ -27,9 +27,9 @@ function showNews($location, $filter, NewsDatabase) {
 			};
 
 			scope.removePost = (postIdent) => {
-				NewsDatabase.deleteNews(postIdent).then(function (data) {
-					if (data.deleteNewsStatus) {
-						alert(data.deleteNewsMessage);
+				NewsDatabase.deletePost(postIdent).then(function (data) {
+					if (data.success) {
+						alert(data.message);
 						let found = $filter('ArrayFilter')('postIdent', postIdent, scope.newsData);
 						scope.newsData.splice(found, 1);
 					}

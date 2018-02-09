@@ -8,8 +8,8 @@ function showSpecializations($location, $filter, SpecializationsDatabase) {
 
       if (($location.path().split('/')[2]) === undefined) {
         SpecializationsDatabase.loadAllSpecializations().then(function (data) {
-          if (data.loadSpecializationsStatus == true) {
-            scope.specializationsData = data.loadSpecializationsData;
+          if (data.success == true) {
+            scope.specializationsData = data.object;
             for (let value of scope.specializationsData) {
               value.display = true;
             }
@@ -26,8 +26,8 @@ function showSpecializations($location, $filter, SpecializationsDatabase) {
 
       scope.removeSpecialization = (specializationIdent) => {
         SpecializationsDatabase.deleteSpecialization(specializationIdent).then(function (data) {
-          if (data.deleteSpecializationsStatus) {
-            alert(data.deleteSpecializationsMessage);
+          if (data.success) {
+            alert(data.message);
             let found = $filter('ArrayFilter')('specializationIdent', specializationIdent, scope.specializationsData);
             scope.specializationsData.splice(found, 1);
           }

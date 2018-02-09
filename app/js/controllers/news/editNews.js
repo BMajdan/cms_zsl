@@ -25,7 +25,7 @@ function EditNewsController($scope, $rootScope, AppSettings) {
     postMiniatureSmall: undefined,
     postTags: $scope.editArticleTags,
     postText: $scope.editArticlePostText,
-    postAuthor: $rootScope.userData.userName,
+    postAuthor: undefined,
     postTeacher: undefined,
     postPublished: false,
     widgets: []

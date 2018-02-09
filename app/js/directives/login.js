@@ -14,7 +14,7 @@ function loginForm($location, UserDatabase) {
 			scope.submit = () => {
 
 				if (scope.userName != undefined && scope.userPassword != undefined) {
-					UserDatabase.getUserToLogin(scope.userName, scope.userPassword);
+					UserDatabase.authorize(scope.userName, scope.userPassword);
 				} else {
 					alert('Podaj poprawny login i hasło!');
 				}

@@ -3,82 +3,73 @@ function UserDatabase($http, $location, AppSettings, $rootScope) {
 
 	const service = {};
 
-	function generateKey(first, second) {
-		let number;
-		do { number = Math.floor(Math.random() * (second - first) + first); } while (number % 2 == 1);
-		return number;
-	}
+	/* Manage login user */
 
-	/* GET USER TO LOGIN */
+	service.authorize = (login, password) => {
+		let url = `${AppSettings.apiUrl}authorize`;
+		let data = JSON.stringify({ 'login': login, 'password': password });
 
-	service.getUserToLogin = (userName, userPassword) => {
-
-		let url = `${AppSettings.apiUrl}getUserToLogin`;
-		let data = JSON.stringify({ 'userName': userName, 'userPassword': userPassword, PkRTvG: generateKey(111, 200) });
-
-		let succesCallback = (data) => {
-			let callbackData = data.data;
-			if (callbackData.loginStatus == true) {
+		let succesCallback = ({data}) => {
+			if (data.success) {
 				let expires = AppSettings.userExpireTime;
 				let now = Date.now();
 				let schedule = now + expires * 1000;
-				try {
-					sessionStorage.setItem('isLogin', callbackData.loginStatus);
-					sessionStorage.setItem('userName', userName);
-					sessionStorage.setItem('sessionTime', schedule);
-
-					$rootScope.userData = {
-						isLogin: callbackData.loginStatus,
-						userName: userName,
-						sessionTime: schedule
-					};
-
-					$location.path('/');
-					return false;
-				} catch (e) {
-					console.log('setSotrage: Error seting key');
-					return false;
-				}
+				sessionStorage.setItem('sessionTime', schedule);
+				sessionStorage.setItem('isLogin', true);
+				sessionStorage.setItem('userName', login);
+				$rootScope.userData = {
+					userName: login,
+					admin: undefined,
+					token: data.token
+				};
+				$location.path('/');
 			} else {
-				alert(callbackData.loginMessage);
+				alert(data.message);
 			}
 		};
 
-		let errorCallback = () => {
-			return false;
-		};
-
+		let errorCallback = (err) => { throw err; };
 		$http.post(url, data).then(succesCallback, errorCallback);
 	};
 
 	/* LOGIN USER */
 
-	service.logInUser = (userName) => {
-		let url = `${AppSettings.apiUrl}userLogin`;
-		let data = JSON.stringify({ 'userName': userName, CwQssA: generateKey(51, 100) });
-		let succesCallback = () => {
-			$rootScope.userData = {
-				isLogin: true,
-				userName: userName
-			};
+	service.shortLogin = (login) => {
+		let url = `${AppSettings.apiUrl}short-login`;
+		let data = JSON.stringify({ 'login': login });
+		let succesCallback = ({data}) => {
+			if(data.success){
+				let expires = AppSettings.userExpireTime;
+				let now = Date.now();
+				let schedule = now + expires * 1000;
+				sessionStorage.setItem('sessionTime', schedule);
+				sessionStorage.setItem('isLogin', true);
+				sessionStorage.setItem('userName', login);
+				$rootScope.userData = {
+					userName: login,
+					admin: undefined,
+					token: data.token
+				};
+			}
 		};
-		let errorCallback = () => { return false; };
-		$http.put(url, data).then(succesCallback, errorCallback);
+		let errorCallback = (err) => { throw err; };
+		$http.post(url, data).then(succesCallback, errorCallback);
 	};
 
-	service.logOutUser = (removeSession) => {
-		let url = `${AppSettings.apiUrl}logOut`;
-		let succesCallback = () => {
-			if (removeSession) {
-				$rootScope.userData = undefined;
-				sessionStorage.clear();
-				$location.path('/login');
+	service.logout = (removeSession) => {
+		let url = `${AppSettings.apiUrl}logout`;
+		let succesCallback = ({data}) => {
+			if(data.success){
+				if (removeSession) {
+					$rootScope.userData = undefined;
+					sessionStorage.clear();
+					$location.path('/login');
+				}
+				return false;
 			}
-			return false;
 		};
-		let errorCallback = () => { return false; };
-		let data = JSON.stringify({ 'userName': sessionStorage.getItem('userName'), xPosKw: generateKey(321, 400) });
-
+		let errorCallback = (err) => { throw err; };
+		let data = JSON.stringify({ 'userName': $rootScope.userName, 'token': $rootScope.token });
 		return $http.put(url, data).then(succesCallback, errorCallback);
 	};
 

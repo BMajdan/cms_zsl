@@ -1,55 +1,44 @@
-function SpecializationsDatabase($http, $location, AppSettings) {
+function SpecializationsDatabase($http, $location, AppSettings, $rootScope) {
   'ngInject';
 
   const service = {};
 
-  function generateKey(first, second) {
-    let number;
-    do { number = Math.floor(Math.random() * (second - first) + first); } while (number % 2 == 1);
-    return number;
-  }
-
   service.loadAllSpecializations = () => {
-    let url = `${AppSettings.apiUrl}loadAllSpecializations`;
+    let url = `${AppSettings.apiUrl}load-all-specializations`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
     return $http.get(url).then(succesCallback, errorCallback);
   };
 
   service.loadOneSpecialization = (specializationIdent) => {
-    let url = `${AppSettings.apiUrl}loadOneSpecializations`;
+    let url = `${AppSettings.apiUrl}load-one-specialization`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
-    let params = {
-      specializationIdent: specializationIdent
-    };
+    let params = { specializationIdent: specializationIdent };
     return $http.get(url, { params: params }).then(succesCallback, errorCallback);
   };
 
   service.deleteSpecialization = (specializationIdent) => {
-    let url = `${AppSettings.apiUrl}deleteSpecialization`;
+    let url = `${AppSettings.apiUrl}delete-specialization`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
-    let params = {
-      specializationIdent: specializationIdent,
-      pHYcSW: generateKey(541, 600)
-    };
+    let params = { specializationIdent: specializationIdent, 'token': $rootScope.token };
     return $http.delete(url, { params: params }).then(succesCallback, errorCallback);
   };
 
   service.addSpecialization = (specializationData) => {
-    let url = `${AppSettings.apiUrl}addSpecialization`;
+    let url = `${AppSettings.apiUrl}add-specialization`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
-    let data = JSON.stringify({ data: specializationData, aYtCpO: generateKey(431, 500) });
+    let data = JSON.stringify({ data: specializationData, 'token': $rootScope.token });
     return $http.post(url, data).then(succesCallback, errorCallback);
   };
 
   service.editSpecialization = (specializationData) => {
-    let url = `${AppSettings.apiUrl}editSpecialization`;
+    let url = `${AppSettings.apiUrl}edit-specialization`;
     let succesCallback = (data) => { return data.data; };
     let errorCallback = () => { return false; };
-    let data = JSON.stringify({ data: specializationData, sncKox: generateKey(675, 987) });
+    let data = JSON.stringify({ data: specializationData, 'token': $rootScope.token });
     return $http.put(url, data).then(succesCallback, errorCallback);
   };
 

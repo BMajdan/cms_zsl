@@ -10,8 +10,8 @@ function showEvents($location, $filter, EventsDatabase) {
 
 			if (($location.path().split('/')[2]) === undefined) {
 				EventsDatabase.loadAllEvents().then(function (data) {
-					if (data.loadEventsStatus) {
-						scope.eventsData = data.loadEventsData;
+					if (data.success) {
+						scope.eventsData = data.object;
 						for (let value of scope.eventsData) {
 							value.display = true;
 						}
@@ -28,8 +28,8 @@ function showEvents($location, $filter, EventsDatabase) {
 
 			scope.removeEvent = (eventIdent) => {
 				EventsDatabase.deleteEvent(eventIdent).then(function (data) {
-					if (data.deleteEventStatus) {
-						alert(data.deleteEventMessage);
+					if (data.success) {
+						alert(data.message);
 						let found = $filter('ArrayFilter')('eventIdent', eventIdent, scope.eventsData);
 						scope.eventsData.splice(found, 1);
 					}

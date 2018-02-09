@@ -1,4 +1,4 @@
-function editEvents($location, $window, $compile, EventsDatabase, TeachersDatabase, UploadFiles, WidgetsService) {
+function editEvents($location, $window, $compile, $rootScope, EventsDatabase, TeachersDatabase, UploadFiles, WidgetsService) {
 	'ngInject';
 
 	return {
@@ -47,8 +47,8 @@ function editEvents($location, $window, $compile, EventsDatabase, TeachersDataba
 				/*Load events, define variable */
 
 				EventsDatabase.loadOneEvent($location.path().split('/')[3]).then(function (data) {
-					if (data.loadEventsStatus && data.loadEventsData.length > 0) {
-						scope.events = data.loadEventsData[0];
+					if (data.success && data.object.length > 0) {
+						scope.events = data.object[0];
 						scope.editEventTitle = scope.events.eventTitle;
 						scope.editEventShortText = scope.events.eventShort;
 						scope.editEventText = scope.events.eventText;
@@ -108,8 +108,8 @@ function editEvents($location, $window, $compile, EventsDatabase, TeachersDataba
 				/* Manage Teachers */
 
 				TeachersDatabase.loadAllTeachers().then(function (data) {
-					if (data.loadTeachersStatus) {
-						scope.teachers = data.loadTeachersData;
+					if (data.success) {
+						scope.teachers = data.object;
 					}
 				});
 
@@ -149,6 +149,7 @@ function editEvents($location, $window, $compile, EventsDatabase, TeachersDataba
 						scope.eventStartTime != undefined && scope.eventStopTime != undefined &&
 						editEvent.eventTags.length >= 1 && scope.checkTeacher(editEvent.eventTeacher)) {
 
+						editEvent.eventAuthor = $rootScope.userData.userName;
 						let startTime = new Date(scope.eventStartTime);
 						editEvent.eventStartTime = `${startTime.getHours()}:${startTime.getMinutes()}`;
 						let stopTime = new Date(scope.eventStopTime);
@@ -168,7 +169,7 @@ function editEvents($location, $window, $compile, EventsDatabase, TeachersDataba
 										break;
 									case 'image':
 										if (document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0] != undefined) {
-											value.image = `${editEvent.eventIdent}/widgets/${document.querySelector(`#addImageInput_"${value.id.split('_')[1]}`).files[0].name}`;
+											value.image = `${editEvent.eventIdent}/widgets/${document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0].name}`;
 											let imageFolder = `./gallery/eventsGallery/${editEvent.eventIdent}/widgets`,
 												type = 'fullImage';
 											UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
@@ -181,10 +182,10 @@ function editEvents($location, $window, $compile, EventsDatabase, TeachersDataba
 								let imageFolder = `./gallery/eventsGallery/${editEvent.eventIdent}`;
 								let type = 'miniature';
 								UploadFiles.uploadImage(scope.editEventMiniature, imageFolder, type).then(function () {
-									EventsDatabase.editEvent(editEvent).then(function (eventsData) {
-										if (eventsData.editEventsStatus) {
+									EventsDatabase.editEvent(editEvent).then(function (eventData) {
+										if (eventData.success) {
 											if (published) {
-												alert('Wydarzenie zostało poprawnie edytowane');
+												alert(eventData.message);
 												$window.location.reload();
 											} else {
 												alert('Przenoszę na stronę główną!');
@@ -193,10 +194,10 @@ function editEvents($location, $window, $compile, EventsDatabase, TeachersDataba
 									});
 								});
 							} else {
-								EventsDatabase.editEvent(editEvent).then(function (eventsData) {
-									if (eventsData.editEventsStatus) {
+								EventsDatabase.editEvent(editEvent).then(function (eventData) {
+									if (eventData.success) {
 										if (published) {
-											alert('Wydarzenie zostało poprawnie edytowane');
+											alert(eventData.message);
 											$window.location.reload();
 										} else {
 											alert('Przenoszę na stronę główną!');

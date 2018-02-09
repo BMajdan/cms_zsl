@@ -29,7 +29,7 @@ function EditEventsController($scope, $rootScope, AppSettings) {
 		eventMiniatureSmall: undefined,
 		eventTags: $scope.editEventTags,
 		eventText: $scope.editEventText,
-		eventAuthor: $rootScope.userData.userName,
+		eventAuthor: undefined,
 		eventTeacher: undefined,
 		eventPublished: false,
 		widgets: []

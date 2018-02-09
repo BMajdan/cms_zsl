@@ -37,8 +37,8 @@ function addSpecializations($location, $compile, SpecializationsDatabase, Upload
                   break;
                 case 'image':
                   if (document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0] != undefined) {
-                    value.image = `${newSpecialization.specializationIdent}/widgets/${document.querySelector(`#addImageInput_"${value.id.split('_')[1]}`).files[0].name}`;
-                    let imageFolder = `./gallery/specializationsGallery/${newSpecialization.specializationIdent}/widgets`,
+                    value.image = `${spec.specializationIdent}/widgets/${document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0].name}`;
+                    let imageFolder = `./gallery/specializationsGallery/${spec.specializationIdent}/widgets`,
                       type = 'fullImage';
                     UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
                   }
@@ -46,9 +46,9 @@ function addSpecializations($location, $compile, SpecializationsDatabase, Upload
               }
             }
 
-            SpecializationsDatabase.addSpecialization(spec).then(function (specializationsData) {
-              if (specializationsData.addSpecializationsStatus) {
-                alert('Specjalizacja została poprawnie dodana');
+            SpecializationsDatabase.addSpecialization(spec).then(function (specializationsata) {
+              if (specializationsata.success) {
+                alert(specializationsata.message);
                 $location.path(`/specjalizacje/edytuj-specjalizacje/${spec.specializationIdent}`);
               }
             });

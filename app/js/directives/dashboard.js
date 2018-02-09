@@ -6,8 +6,9 @@ function dashboardMenu($location, VisualSiteService, UserDatabase) {
 		templateUrl: 'directives/dashboard.html',
 		link: (scope) => {
 
-			scope.logOut = function () {
-				UserDatabase.logOutUser(true);
+			scope.logout = function () {
+				console.log('AA')
+				UserDatabase.logout(true);
 			};
 
 			if (angular.element(document.querySelector('.sidebar'))[0] != undefined) {

@@ -8,7 +8,7 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 		window.onbeforeunload = () => {
 			$interval.cancel($rootScope.checkInterval);
 			$rootScope.checkInterval = undefined;
-			UserDatabase.logOutUser();
+			UserDatabase.logout();
 			return false;
 		};
 
@@ -21,16 +21,12 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 		};
 
 		if (sessionStorage.getItem('userName') == undefined) {
-			sessionStorage.clear();
-			$rootScope.userData = undefined;
-			$location.path('/login');
+			//$interval.cancel($rootScope.checkInterval);
+			//sessionStorage.clear();
+			//$rootScope.userData = undefined;
+			//$location.path('/login');
 		} else {
-			$rootScope.userData = {
-				isLogin: sessionStorage.getItem('isLogin'),
-				userName: sessionStorage.getItem('userName'),
-				sessionTime: sessionStorage.getItem('sessionTime')
-			};
-			UserDatabase.logInUser($rootScope.userData.userName);
+			UserDatabase.shortLogin(sessionStorage.getItem('userName'));
 		}
 	};
 
@@ -40,7 +36,7 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 			if (!service.chechUserExpire()) {
 				$interval.cancel($rootScope.checkInterval);
 				$rootScope.checkInterval = undefined;
-				UserDatabase.logOutUser(true);
+				UserDatabase.logout(true);
 			}
 		}, 1000);
 	};
@@ -64,7 +60,7 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 		if (expiresIn < now) {
 			$interval.cancel($rootScope.checkInterval);
 			$rootScope.checkInterval = undefined;
-			UserDatabase.logOutUser(true);
+			UserDatabase.logout(true);
 			return false;
 		} else {
 			return true;
