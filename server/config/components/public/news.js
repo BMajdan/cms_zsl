@@ -1,4 +1,4 @@
-const apiRoutes = require('../../routes');
+const {apiRoutes} = require('../../routes');
 const { News } = require('../../schemas');
 
 apiRoutes.get('/load-all-news', function (req, res) {

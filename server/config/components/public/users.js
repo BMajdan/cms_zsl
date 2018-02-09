@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const settings = require('../../settings');
-const apiRoutes = require('../../routes');
+const {apiRoutes} = require('../../routes');
 const {Users} = require('../../schemas');
 
 apiRoutes.post('/authorize', function (req, res) {

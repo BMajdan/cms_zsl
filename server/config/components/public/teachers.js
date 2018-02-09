@@ -1,4 +1,4 @@
-const apiRoutes = require('../../routes');
+const {apiRoutes} = require('../../routes');
 const { Teachers } = require('../../schemas');
 
 apiRoutes.get('/load-all-teachers', function (req, res) {

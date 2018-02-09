@@ -1,9 +1,9 @@
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 const jimp = require('jimp');
-const apiRoutes = require('../routes');
+const { apiRoutes, ensureAuthorized} = require('../routes');
 
-apiRoutes.post('/upload-image', function (req, res) {
+apiRoutes.post('/upload-image', ensureAuthorized, function (req, res) {
   let file = req.files.file;
   mkdirp(req.body.path, function () {
     file.mv(req.body.path + '/' + req.files.file.name, function (err) {

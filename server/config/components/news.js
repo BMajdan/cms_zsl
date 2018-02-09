@@ -1,7 +1,7 @@
-const apiRoutes = require('../routes');
+const { apiRoutes, ensureAuthorized} = require('../routes');
 const { News } = require('../schemas');
 
-apiRoutes.post('/add-post', function (req, res) {
+apiRoutes.post('/add-post', ensureAuthorized, function (req, res) {
   News.create(req.body.data, function (err) {
     if (err) throw err;
 
@@ -12,7 +12,7 @@ apiRoutes.post('/add-post', function (req, res) {
   });
 });
 
-apiRoutes.put('/edit-post', function (req, res) {
+apiRoutes.put('/edit-post', ensureAuthorized, function (req, res) {
   News.findOne({ postIdent: req.body.data.postIdent }, function (err, doc) {
     if (err) throw err;
     
@@ -38,7 +38,7 @@ apiRoutes.put('/edit-post', function (req, res) {
   });
 });
 
-apiRoutes.delete('/delete-post', function (req, res) {
+apiRoutes.delete('/delete-post', ensureAuthorized, function (req, res) {
   News.remove({ postIdent: req.query.postIdent }, function (err) {
     if (err) throw err;
 

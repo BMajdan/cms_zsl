@@ -38,6 +38,7 @@ function UserDatabase($http, $location, AppSettings, $rootScope) {
 		let url = `${AppSettings.apiUrl}short-login`;
 		let data = JSON.stringify({ 'login': login });
 		let succesCallback = ({data}) => {
+			console.log(data);
 			if(data.success){
 				let expires = AppSettings.userExpireTime;
 				let now = Date.now();

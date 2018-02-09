@@ -1,4 +1,4 @@
-const apiRoutes = require('../../routes');
+const {apiRoutes} = require('../../routes');
 const { Events } = require('../../schemas');
 
 apiRoutes.get('/load-all-events', function (req, res) {

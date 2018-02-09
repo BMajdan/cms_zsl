@@ -1,5 +1,5 @@
 const fs = require('fs');
-const apiRoutes = require('../../routes');
+const {apiRoutes} = require('../../routes');
 
 apiRoutes.get('/gallery/:imageType/:typeTitle/:name', function (req, res) {
   let img = fs.readFileSync('./gallery/' + req.params.imageType + '/' + req.params.typeTitle + '/' + req.params.name);

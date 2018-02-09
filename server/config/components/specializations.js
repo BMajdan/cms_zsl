@@ -1,7 +1,7 @@
-const apiRoutes = require('../routes');
+const { apiRoutes, ensureAuthorized} = require('../routes');
 const { Specializations } = require('../schemas');
 
-apiRoutes.post('/add-specialization', function (req, res) {
+apiRoutes.post('/add-specialization', ensureAuthorized, function (req, res) {
   Specializations.create(req.body.data, function (err) {
     if (err) throw err;
 
@@ -12,7 +12,7 @@ apiRoutes.post('/add-specialization', function (req, res) {
   });
 });
 
-apiRoutes.put('/edit-specialization', function (req, res) {
+apiRoutes.put('/edit-specialization', ensureAuthorized, function (req, res) {
   Specializations.findOne({ specializationIdent: req.body.data.specializationIdent }, function (err, doc) {
     if (err) throw err;
 
@@ -38,7 +38,7 @@ apiRoutes.put('/edit-specialization', function (req, res) {
   });
 });
 
-apiRoutes.delete('/delete-specialization', function (req, res) {
+apiRoutes.delete('/delete-specialization', ensureAuthorized, function (req, res) {
   Specializations.remove({ specializationIdent: req.query.specializationIdent }, function (err) {
     if (err) throw err;
 

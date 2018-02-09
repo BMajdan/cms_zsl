@@ -21,10 +21,10 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 		};
 
 		if (sessionStorage.getItem('userName') == undefined) {
-			//$interval.cancel($rootScope.checkInterval);
-			//sessionStorage.clear();
-			//$rootScope.userData = undefined;
-			//$location.path('/login');
+			$interval.cancel($rootScope.checkInterval);
+			sessionStorage.clear();
+			$rootScope.userData = undefined;
+			$location.path('/login');
 		} else {
 			UserDatabase.shortLogin(sessionStorage.getItem('userName'));
 		}

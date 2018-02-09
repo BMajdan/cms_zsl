@@ -1,7 +1,7 @@
-const apiRoutes = require('../routes');
+const { apiRoutes, ensureAuthorized } = require('../routes');
 const { Events } = require('../schemas');
 
-apiRoutes.post('/add-event', function (req, res) {
+apiRoutes.post('/add-event', ensureAuthorized, function (req, res) {
   Events.create(req.body.data, function (err) {
     if (err) throw err;
 
@@ -12,7 +12,7 @@ apiRoutes.post('/add-event', function (req, res) {
   });
 });
 
-apiRoutes.put('/edit-event', function (req, res) {
+apiRoutes.put('/edit-event', ensureAuthorized, function (req, res) {
   Events.findOne({ eventIdent: req.body.data.eventIdent }, function (err, doc) {
     if (err) throw err;
 
@@ -38,7 +38,7 @@ apiRoutes.put('/edit-event', function (req, res) {
   });
 });
 
-apiRoutes.delete('/delete-event', function (req, res) {
+apiRoutes.delete('/delete-event', ensureAuthorized, function (req, res) {
   Events.remove({ eventIdent: req.query.eventIdent }, function (err) {
     if (err) throw err;
 

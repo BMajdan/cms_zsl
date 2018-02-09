@@ -1,7 +1,7 @@
-const apiRoutes = require('../routes');
+const { apiRoutes, ensureAuthorized} = require('../routes');
 const { Teachers } = require('../schemas');
 
-apiRoutes.post('/add-teacher', function (req, res) {
+apiRoutes.post('/add-teacher', ensureAuthorized, function (req, res) {
   Teachers.create(req.body.data, function (err) {
     if (err) throw err;
 
@@ -12,7 +12,7 @@ apiRoutes.post('/add-teacher', function (req, res) {
   });
 });
 
-apiRoutes.put('/edit-teacher', function (req, res) {
+apiRoutes.put('/edit-teacher', ensureAuthorized, function (req, res) {
   Teachers.findOne({ teacherIdent: req.body.data.teacherIdent }, function (err, doc) {
     if (err) throw err;
 
@@ -38,7 +38,7 @@ apiRoutes.put('/edit-teacher', function (req, res) {
   });
 });
 
-apiRoutes.delete('/delete-teacher', function (req, res) {
+apiRoutes.delete('/delete-teacher', ensureAuthorized, function (req, res) {
   Teachers.remove({ teacherIdent: req.query.teacherIdent }, function (err) {
     if (err) throw err;
 
