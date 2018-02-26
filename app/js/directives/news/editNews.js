@@ -1,4 +1,4 @@
-function editNews($location, $compile, $window, $rootScope, NewsDatabase, TeachersDatabase, UploadFiles, WidgetsService) {
+function editNews($location, $compile, $window, $rootScope, NewsDatabase, TeachersDatabase, UploadFiles, WidgetsService, VisualSiteService) {
 	'ngInject';
 
 	return {
@@ -9,6 +9,31 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 			if (($location.path().split('/')[2]) == 'edytuj-post') {
 
 				/* Open, Close, Edit elements etc. */
+
+				let sendEditPost = (edit, published) => {
+					console.log(edit);
+					NewsDatabase.editPost(edit).then(newsData => {
+						if (newsData.success) {
+							if (published) {
+								VisualSiteService.loadingScreen.stop();
+								swal('Dobra robota!', newsData.message, 'success').then(() => {
+									$window.location.reload();
+								});
+							} else {
+								VisualSiteService.loadingScreen.stop();
+								swal('Uwaga!', 'Trwa przenoszenie na stronę szkoły', 'warning').then(() => {
+									$window.location.reload();
+								});
+							}
+						} else {
+							VisualSiteService.loadingScreen.stop();
+							swal('Upss!', 'Coś poszło nie tak', 'error');
+						}
+					}, err => {
+						VisualSiteService.loadingScreen.stop();
+						swal('Upss!', err, 'error');
+					});
+				};
 
 				document.querySelector('#addNewPostButton').style.display = 'none';
 
@@ -45,8 +70,8 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 				/* ********************************************************* */
 
 				/*Load news, define variable */
-
-				NewsDatabase.loadOnePost($location.path().split('/')[3]).then(function (data) {
+				VisualSiteService.loadingScreen.start();
+				NewsDatabase.loadOnePost($location.path().split('/')[3]).then(data => {
 					if (data.success && data.object.length > 0) {
 						scope.news = data.object[0];
 						scope.editArticleTitle = scope.news.postTitle;
@@ -83,18 +108,26 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 								scope.addNewText++;
 							}
 						}
+						VisualSiteService.loadingScreen.stop();
 					} else {
+						VisualSiteService.loadingScreen.stop();
 						scope.news = [];
 						$location.path('/aktualnosci');
 						return false;
 					}
+				}, err => {
+					console.log(err);
+					VisualSiteService.loadingScreen.stop();
+					scope.news = [];
+					$location.path('/aktualnosci');
+					return false;
 				});
 
 				/* ********************************************************* */
 
 				/* Manage Teachers */
 
-				TeachersDatabase.loadAllTeachers().then(function (data) {
+				TeachersDatabase.loadAllTeachers().then(data => {
 					if (data.success) {
 						scope.teachers = data.object;
 					}
@@ -109,9 +142,9 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 					return false;
 				};
 
-				scope.editNews = (published) => {
+				scope.editNews = published => {
+					VisualSiteService.loadingScreen.start();
 					let editPost = scope.editPost;
-
 					let d = new Date();
 					let day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate());
 					let month = ((d.getMonth() + 1 < 10) ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1));
@@ -151,34 +184,20 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 						}
 
 						if (document.querySelector('#editPostMiniature').files[0] != undefined) {
-							let imageFolder = `./gallery/newsGallery/${editNews.postIdent}`;
+							let imageFolder = `./gallery/newsGallery/${editPost.postIdent}`;
 							let type = 'miniature';
-							UploadFiles.uploadImage(scope.editPostMiniature, imageFolder, type).then(function () {
-								NewsDatabase.editPost(editPost).then(function (newsData) {
-									if (newsData.success) {
-										if (published) {
-											alert(newsData.message);
-											$window.location.reload();
-										} else {
-											alert('Przenoszę na stronę główną!');
-										}
-									}
-								});
+							UploadFiles.uploadImage(scope.editPostMiniature, imageFolder, type).then(() => {
+								sendEditPost(editPost, published);
+							}, err => {
+								VisualSiteService.loadingScreen.stop();
+								swal('Upss!', err, 'error');
 							});
 						} else {
-							NewsDatabase.editPost(editPost).then(function (newsData) {
-								if (newsData.success) {
-									if (published) {
-										alert(newsData.message);
-										$window.location.reload();
-									} else {
-										alert('Przenoszę na stronę główną!');
-									}
-								}
-							});
+							sendEditPost(editPost, published);
 						}
 					} else {
-						alert('Uzupełnij puste pola!');
+						VisualSiteService.loadingScreen.stop();
+						swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning');
 					}
 				};
 			}

@@ -1,30 +1,27 @@
 @import 'base';
-
-@import 'font-awesome/font-awesome';
+@import './icons';
 @import 'bootstrap/_bootstrap.scss';
 @import 'vars';
-
 @import 'pages/error';
 @import 'pages/login';
-
 @import 'pages/showEvents';
 @import 'pages/showGallery';
 @import 'pages/showNews';
 @import 'pages/showSpecializations';
-
+@import 'pages/showDocuments';
 @import 'pages/editNews';
 @import 'pages/editEvents';
 @import 'pages/editSpecialization';
-
 @import 'pages/addNews';
 @import 'pages/addEvents';
 @import 'pages/addSpecialization';
-
 @import 'pages/dashboard';
 @import 'pages/overview';
 @import 'pages/news';
+@import 'pages/events';
+@import 'pages/specializations';
+@import 'pages/documents';
 @import 'pages/userProfile';
-
 @import 'widgets/input-underline';
 @import 'widgets/bootstrap-btn-outline-rounded';
 @import 'widgets/colorpicker';
@@ -33,27 +30,92 @@
 @import 'widgets/post-widegets';
 @import 'widgets/searchbar';
 @import 'widgets/timepicker';
-
 @import 'transitions/all';
-
 @import 'forms/form-basic';
-
-
-::-webkit-scrollbar-track
-{
-	box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	background-color: #F5F5F5;
+body,
+html {
+    width: 100%;
+    height: 100%;
 }
 
-::-webkit-scrollbar
-{
-	width: 6px;
-	background-color: #F5F5F5;
+body {
+    width: 100%;
+    height: 100%;
 }
 
-::-webkit-scrollbar-thumb
-{
-	box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: #555;
+
+/* Safari */
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
 }
 
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loadingOverlay {
+	display: none;
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    z-index: 998;
+    background: rgba(0, 0, 0, .6);
+    .loaderInformation{
+				position: absolute;
+				width: 100%;
+				color: black;
+				z-index: 999;
+				top: 30%;
+				bottom: 70%;
+				text-align: center;
+				font-size: 50px;
+				color: white;
+		} 
+		
+		.loader {
+			position: absolute;
+			top: 40%;
+			bottom: 60%;
+			left: 45%;
+			right: 55%;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 120px;
+        height: 120px;
+        -webkit-animation: spin 2s linear infinite;
+        /* Safari */
+        animation: spin 2s linear infinite;
+    }
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: #555;
+}

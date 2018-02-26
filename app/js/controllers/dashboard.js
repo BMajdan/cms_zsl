@@ -33,8 +33,7 @@ function DashboardController($scope, $compile, $rootScope, $location, UserExpire
 		$scope.specializationsManage.append($compile('<show-specializations></show-specializations>')($scope));
 	}
 
-	UserExpireTime.checkStorage();
-	UserExpireTime.userExpire();
+	UserExpireTime.websiteFunctions();
 }
 
 export default {

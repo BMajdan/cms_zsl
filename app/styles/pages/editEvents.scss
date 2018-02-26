@@ -1,145 +1,118 @@
 @import '../_vars';
-
-.edit-events{
-	.jumbotron{
-		padding: 10px;
-
-		.editEventsForm{
-			width: 100%;
-			margin: 0px;
-			padding: 0px;
-
-			.row{
-				margin-bottom: 20px;
-			}
-
-			.hiddenInput{
-				display: none;
-			}
-
-			.labelBox{
-				text-align: left;
-				padding: 10px;
-			}
-
-			.formLabel{
-				vertical-align: middle;
-				font-size: 20px;
-				color: black;
-				width: 100%;
-
-				.charCounter{
-					font-size: 13px;
-					text-align: right;
-					color: grey;
-				}
-			}
-
-			.postMiniature{
-				vertical-align: middle;
-				
-				.postImage{
-					width: 550px;
-					height: 309.5px;
-
-					img{
-						width: 100%;
-						height: 100%;
-					}
-
-					@include breakpoint(mobileonly){
-						width: 100%;
-						height: auto;
-					}
-
-					@include breakpoint(phablet){
-						width: 100%;
-						height: auto;
-					}
-
-					@include breakpoint(tablet){
-						width: 100%;
-						height: auto;
-					}
-				}
-			}
-
-			.newPostImage{
-				vertical-align: middle;
-				margin-bottom: 30px;
-				
-				.postImage{
-					background: grey;
-
-					img{
-						width: 100%;
-						height: 100%;
-						text-align: center;
-						margin: 0 auto;
-					}
-
-					@include breakpoint(mobileonly){
-						width: 100%;
-						height: auto;
-					}
-
-					@include breakpoint(phablet){
-						width: 100%;
-						height: auto;
-					}
-
-					@include breakpoint(tablet){
-						width: 100%;
-						height: auto;
-					}
-				}
-			}
-
-			.inputBox{
-				line-height: 50px;
-				vertical-align: middle;
-				padding: 0px;
-				margin: 0px;
-
-				div.editor{
-					border: 1px solid grey;
-					padding-left: 10px;
-				}
-
-				input{
-					width: 100%;
-					padding: 0px;
-					padding-left: 10px;
-				}
-				
-			}
-
-			.formInput{
-				width: 100%;
-				padding: 10px;
-				margin: 0px;
-				height: 30px;
-			}
-		}
-
-		.standardButton{
-			width: 100%;
-			padding: 15px;
-			font-weight: bold;
-			margin-top: 40px;
-		} 
-
-		.plusButton{
-			text-align: center;
-			color: grey;
-			
-			.plusButtonClick{
-				font-size: 40px;
-				cursor: pointer;
-				width: 200px;
-				padding: 15px;
-				border-radius: 5px;
-			}
-		}
-	}
+.edit-events {
+    .jumbotron {
+        padding: 10px;
+        .editEventsForm {
+            width: 100%;
+            margin: 0px;
+            padding: 0px;
+            .row {
+                margin-bottom: 20px;
+            }
+            .hiddenInput {
+                display: none;
+            }
+            .labelBox {
+                text-align: left;
+                padding: 10px;
+            }
+            .formLabel {
+                vertical-align: middle;
+                font-size: 20px;
+                color: black;
+                width: 100%;
+                .charCounter {
+                    font-size: 13px;
+                    text-align: right;
+                    color: grey;
+                }
+            }
+            .postMiniature {
+                vertical-align: middle;
+                .postImage {
+                    width: 550px;
+                    height: 309.5px;
+                    img {
+                        width: 100%;
+                        height: 100%;
+                    }
+                    @include breakpoint(mobileonly) {
+                        width: 100%;
+                        height: auto;
+                    }
+                    @include breakpoint(phablet) {
+                        width: 100%;
+                        height: auto;
+                    }
+                    @include breakpoint(tablet) {
+                        width: 100%;
+                        height: auto;
+                    }
+                }
+            }
+            .newPostImage {
+                vertical-align: middle;
+                margin-bottom: 30px;
+                .postImage {
+                    background: grey;
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        text-align: center;
+                        margin: 0 auto;
+                    }
+                    @include breakpoint(mobileonly) {
+                        width: 100%;
+                        height: auto;
+                    }
+                    @include breakpoint(phablet) {
+                        width: 100%;
+                        height: auto;
+                    }
+                    @include breakpoint(tablet) {
+                        width: 100%;
+                        height: auto;
+                    }
+                }
+            }
+            .inputBox {
+                line-height: 50px;
+                vertical-align: middle;
+                padding: 0px;
+                margin: 0px;
+                div.editor {
+                    border: 1px solid grey;
+                    padding-left: 10px;
+                }
+                input {
+                    width: 100%;
+                    padding: 0px;
+                    padding-left: 10px;
+                }
+            }
+            .formInput {
+                width: 100%;
+                padding: 10px;
+                margin: 0px;
+                height: 30px;
+            }
+        }
+        .standardButton {
+            width: 100%;
+            padding: 15px;
+            font-weight: bold;
+            margin-top: 40px;
+        }
+        .plusButton {
+            text-align: center;
+            color: grey;
+            .plusButtonClick {
+                font-size: 70px;
+                cursor: pointer;
+                width: 200px;
+                padding: 15px;
+                border-radius: 5px;
+            }
+        }
+    }
 }

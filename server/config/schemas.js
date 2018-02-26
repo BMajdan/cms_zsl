@@ -59,10 +59,17 @@ let eventsSchema = mongoose.Schema({
   widgets: Array
 });
 
+let documentsSchema = mongoose.Schema({
+  name: String,
+  description: String,
+  class: String
+});
+
 let Events = mongoose.model('Events', eventsSchema, 'Events');
 let Teachers = mongoose.model('Teachers', teachersSchema, 'Teachers');
 let Specializations = mongoose.model('Specializations', specializationsSchema, 'Specializations');
 let News = mongoose.model('News', newsSchema, 'News');
 let Users = mongoose.model('Users', usersSchema, 'Users');
+let Documents = mongoose.model('Documents', documentsSchema, 'Documents');
 
-module.exports = { Users, News, Specializations, Teachers, Events}
+module.exports = { Users, News, Specializations, Teachers, Events, Documents};

@@ -1,4 +1,4 @@
-function addSpecializations($location, $compile, SpecializationsDatabase, UploadFiles) {
+function addSpecializations($location, $compile, SpecializationsDatabase, UploadFiles, VisualSiteService) {
   'ngInject';
   return {
     restrict: 'E',
@@ -23,6 +23,7 @@ function addSpecializations($location, $compile, SpecializationsDatabase, Upload
         /* ********************************************************* */
 
         scope.addSpecialization = () => {
+          VisualSiteService.loadingScreen.start();
           let spec = scope.newSpecialization;
           spec.specializationIdent = (spec.specializationName.trim().replace(/ /g, '-')).toLowerCase();
 
@@ -46,14 +47,23 @@ function addSpecializations($location, $compile, SpecializationsDatabase, Upload
               }
             }
 
-            SpecializationsDatabase.addSpecialization(spec).then(function (specializationsata) {
+            SpecializationsDatabase.addSpecialization(spec).then(specializationsata => {
               if (specializationsata.success) {
-                alert(specializationsata.message);
-                $location.path(`/specjalizacje/edytuj-specjalizacje/${spec.specializationIdent}`);
+                VisualSiteService.loadingScreen.stop();
+                swal('Dobra robota!', specializationsata.message, 'success').then(() => {
+                  $location.path(`/specjalizacje/edytuj-specjalizacje/${spec.specializationIdent}`);
+                });
+              }else{
+                VisualSiteService.loadingScreen.stop();
+                swal('Upss!', 'Coś poszło nie tak', 'error');
               }
+            }, err => {
+              VisualSiteService.loadingScreen.stop();
+              swal('Upss!', err, 'error');
             });
           } else {
-            alert('Uzupełnij puste pola!');
+            VisualSiteService.loadingScreen.stop();
+            swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning'); 
           }
         };
       }

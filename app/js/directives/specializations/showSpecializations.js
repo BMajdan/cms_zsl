@@ -1,4 +1,4 @@
-function showSpecializations($location, $filter, SpecializationsDatabase) {
+function showSpecializations($location, $filter, SpecializationsDatabase, VisualSiteService) {
   'ngInject';
 
   return {
@@ -7,15 +7,22 @@ function showSpecializations($location, $filter, SpecializationsDatabase) {
     link: (scope) => {
 
       if (($location.path().split('/')[2]) === undefined) {
-        SpecializationsDatabase.loadAllSpecializations().then(function (data) {
+        VisualSiteService.loadingScreen.start();
+        SpecializationsDatabase.loadAllSpecializations().then(data => {
           if (data.success == true) {
             scope.specializationsData = data.object;
             for (let value of scope.specializationsData) {
               value.display = true;
             }
+            VisualSiteService.loadingScreen.stop();
           } else {
             scope.specializationsData = [];
+            VisualSiteService.loadingScreen.stop();
           }
+        }, err => {
+          swal('Upss!', err, 'error');
+          scope.newsData = [];
+          VisualSiteService.loadingScreen.stop();
         });
       }
 
@@ -25,12 +32,21 @@ function showSpecializations($location, $filter, SpecializationsDatabase) {
       };
 
       scope.removeSpecialization = (specializationIdent) => {
-        SpecializationsDatabase.deleteSpecialization(specializationIdent).then(function (data) {
+        VisualSiteService.loadingScreen.start();
+        SpecializationsDatabase.deleteSpecialization(specializationIdent).then(data => {
           if (data.success) {
-            alert(data.message);
             let found = $filter('ArrayFilter')('specializationIdent', specializationIdent, scope.specializationsData);
             scope.specializationsData.splice(found, 1);
+            VisualSiteService.loadingScreen.stop();
+            swal('Dobra robota!', data.message, 'success');
+            VisualSiteService.loadingScreen.stop();
+          }else{
+            VisualSiteService.loadingScreen.stop();
+            swal('Upss!', 'Coś poszło nie tak', 'error');
           }
+        }, err => {
+          VisualSiteService.loadingScreen.stop();
+          swal('Upss!', err, 'error');
         });
       };
     }

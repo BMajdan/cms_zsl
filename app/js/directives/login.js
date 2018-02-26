@@ -6,7 +6,7 @@ function loginForm($location, UserDatabase) {
 		templateUrl: 'directives/login.html',
 		link: (scope) => {
 
-			if (localStorage.getItem('isLogin') == 'true') {
+			if (sessionStorage.getItem('session') == 'true') {
 				$location.path('/');
 				return false;
 			}

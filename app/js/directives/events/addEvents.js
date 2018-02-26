@@ -1,4 +1,4 @@
-function addEvents($location, $compile, $rootScope, EventsDatabase, TeachersDatabase, UploadFiles) {
+function addEvents($location, $compile, $rootScope, EventsDatabase, TeachersDatabase, UploadFiles, VisualSiteService) {
 	'ngInject';
 	return {
 		restrict: 'E',
@@ -36,7 +36,7 @@ function addEvents($location, $compile, $rootScope, EventsDatabase, TeachersData
 
 				/* Manage Teachers */
 
-				TeachersDatabase.loadAllTeachers().then(function (data) {
+				TeachersDatabase.loadAllTeachers().then(data => {
 					if (data.success) {
 						scope.teachers = data.object;
 					}
@@ -54,8 +54,8 @@ function addEvents($location, $compile, $rootScope, EventsDatabase, TeachersData
 				/* ********************************************************* */
 
 				scope.addEvent = (published) => {
+					VisualSiteService.loadingScreen.start();
 					let newEvent = scope.newEvent;
-
 					let d = new Date();
 					let day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate());
 					let month = ((d.getMonth() + 1 < 10) ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1));
@@ -110,15 +110,32 @@ function addEvents($location, $compile, $rootScope, EventsDatabase, TeachersData
 							let type = 'miniature';
 							UploadFiles.uploadImage(scope.addEventMiniature, imageFolder, type).then(function () {
 								newEvent.eventPublished = published;
-								EventsDatabase.addEvent(newEvent).then(function (eventData) {
+								EventsDatabase.addEvent(newEvent).then(eventData => {
 									if (eventData.success) {
-										alert(eventData.message);
-										$location.path(`/wydarzenia/edytuj-wydarzenie/${newEvent.eventIdent}`);
+										VisualSiteService.loadingScreen.stop();
+										swal('Dobra robota!', eventData.message, 'success').then( () => {
+											$location.path(`/wydarzenia/edytuj-wydarzenie/${newEvent.eventIdent}`);
+										});
+									}else{
+										VisualSiteService.loadingScreen.stop();
+										swal('Upss!', 'Coś poszło nie tak', 'error');
 									}
+								}, err => {
+									VisualSiteService.loadingScreen.stop();
+									swal('Upss!', err, 'error');
 								});
+							}, err => {
+								VisualSiteService.loadingScreen.stop();
+								swal('Upss!', err, 'error');
 							});
-						} else { alert('Podaj poprawną datę!'); }
-					} else { alert('Uzupełnij puste pola!'); }
+						} else {
+							VisualSiteService.loadingScreen.stop(); 
+							swal('Uwaga!', 'Podaj poprawną datę!', 'warning'); 
+						}
+					} else { 
+						VisualSiteService.loadingScreen.stop();
+						swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning'); 
+					}
 				};
 			}
 		}

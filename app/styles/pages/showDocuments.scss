@@ -1,0 +1,56 @@
+@import '../_vars';
+.show-documents {
+    .jumbotron {
+        padding: 20px
+    }
+    .container {
+        padding: 0px;
+        margin: 0px;
+    }
+    .documents-container {
+        padding: 5px;
+        margin: 0px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        color: black;
+        .hiddenInput {
+            display: none;
+        }
+        .table {
+            th, td{
+                padding: 10px;
+            }
+            .thead-inverse {
+                background: black;
+                color: white;
+            }
+            .fileExtension {
+                text-align: center;
+            }
+            .fileOptions {
+                color: black;
+            }
+            .editor{
+                min-width: 200px;
+                border: 1px solid black;
+                padding-left: 10px;
+            } 
+            .edit {
+                cursor: pointer;
+            }
+            .remove {
+                cursor: pointer;
+            }
+            .tFooter {
+                text-align: center;
+                padding: 10px;
+                color: black;
+                font-size: 30px;
+                text-align: center;
+                .addButton {
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}

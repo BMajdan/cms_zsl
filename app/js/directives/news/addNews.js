@@ -1,4 +1,4 @@
-function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase, UploadFiles) {
+function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase, UploadFiles, VisualSiteService) {
 	'ngInject';
 
 	return {
@@ -38,7 +38,7 @@ function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase
 
 				/* Manage Teachers */
 
-				TeachersDatabase.loadAllTeachers().then(function (data) {
+				TeachersDatabase.loadAllTeachers().then(data => {
 					if (data.success) {
 						scope.teachers = data.object;
 					}
@@ -56,8 +56,8 @@ function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase
 				/* ********************************************************* */
 
 				scope.addNews = (published) => {
+					VisualSiteService.loadingScreen.start();
 					let newPost = scope.newPost;
-
 					let d = new Date();
 					let day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate());
 					let month = ((d.getMonth() + 1 < 10) ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1));
@@ -101,16 +101,28 @@ function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase
 						let type = 'miniature';
 						UploadFiles.uploadImage(scope.addPostMiniature, imageFolder, type).then(function () {
 							newPost.postPublished = published;
-							NewsDatabase.addPost(newPost).then(function (newsData) {
+							NewsDatabase.addPost(newPost).then(newsData => {
 								if (newsData.success) {
-									alert(newsData.message);
-									$location.path(`/aktualnosci/edytuj-post/${newPost.postIdent}`);
+									VisualSiteService.loadingScreen.stop();
+									swal('Dobra robota!', newsData.message, 'success').then(() => {
+										$location.path(`/aktualnosci/edytuj-post/${newPost.postIdent}`);
+									});
+								}else{
+									VisualSiteService.loadingScreen.stop();
+									swal('Upss!', 'Coś poszło nie tak', 'error');
 								}
+							}, err => {
+								VisualSiteService.loadingScreen.stop();
+								swal('Upss!', err, 'error');
 							});
+						}, err => {
+							VisualSiteService.loadingScreen.stop();
+							swal('Upss!', err, 'error');
 						});
 
 					} else {
-						alert('Uzupełnij puste pola!');
+						VisualSiteService.loadingScreen.stop();
+						swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning'); 
 					}
 				};
 			}

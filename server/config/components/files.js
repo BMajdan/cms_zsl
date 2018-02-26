@@ -2,6 +2,7 @@ const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 const jimp = require('jimp');
 const { apiRoutes, ensureAuthorized} = require('../routes');
+const { Documents } = require('../schemas');
 
 apiRoutes.post('/upload-image', ensureAuthorized, function (req, res) {
   let file = req.files.file;
@@ -32,6 +33,32 @@ apiRoutes.post('/upload-image', ensureAuthorized, function (req, res) {
           });
         });
       }
+    });
+  });
+});
+
+apiRoutes.post('/add-file-info', ensureAuthorized, function (req, res) {
+  Documents.create(req.body.data, function (err) {
+    if (err) throw err;
+
+    res.json({
+      success: true,
+      message: 'Poprawnie wysłano plik na serwer!'
+    });
+  });
+});
+
+
+apiRoutes.post('/upload-file', ensureAuthorized, function (req, res) {
+  let file = req.files.file;
+  mkdirp(req.body.path, function () {
+    file.mv(req.body.path + '/' + req.files.file.name, function (err) {
+      if (err) throw err;
+
+      res.json({
+        success: true,
+        message: 'Poprawnie wrzucono plik na serwer.'
+      });
     });
   });
 });

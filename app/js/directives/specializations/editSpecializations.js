@@ -1,4 +1,4 @@
-function editSpecializations($location, $window, $compile, SpecializationsDatabase, UploadFiles, WidgetsService) {
+function editSpecializations($location, $window, $compile, SpecializationsDatabase, UploadFiles, WidgetsService, VisualSiteService) {
   'ngInject';
 
   return {
@@ -24,8 +24,8 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
         /* ********************************************************* */
 
         /*Load specializations, define variable */
-
-        SpecializationsDatabase.loadOneSpecialization($location.path().split('/')[3]).then(function (data) {
+        VisualSiteService.loadingScreen.start();
+        SpecializationsDatabase.loadOneSpecialization($location.path().split('/')[3]).then(data => {
           if (data.success && data.object.length > 0) {
             scope.specializations = data.object[0];
             scope.editSpecializationName = scope.specializations.specializationName;
@@ -52,18 +52,26 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
                 scope.addNewText++;
               }
             }
+            VisualSiteService.loadingScreen.stop();
           } else {
+            VisualSiteService.loadingScreen.stop();
             scope.specializations = [];
             $location.path('/specjalizacje');
             return false;
           }
+        }, err => {
+          console.log(err);
+          VisualSiteService.loadingScreen.stop();
+          scope.specializations = [];
+          $location.path('/specjalizacje');
+          return false;
         });
 
         /* ********************************************************* */
 
         scope.editSpecializations = () => {
+          VisualSiteService.loadingScreen.start();
           let editSpec = scope.editSpecialization;
-
           if (editSpec.specializationName.length >= 1 && editSpec.specializationName.length <= 80 &&
             editSpec.specializationSchool.length >= 1 && editSpec.specializationSchool.length <= 300 &&
             editSpec.specializationText.length > 5) {
@@ -86,12 +94,18 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
 
             SpecializationsDatabase.editSpecialization(editSpec).then(function (specializationData) {
               if (specializationData.success) {
-                alert(specializationData.message);
-                $window.location.reload();
+                VisualSiteService.loadingScreen.stop();
+                swal('Dobra robota!', specializationData.message, 'success').then(() => {
+                  $window.location.reload();
+                });
               }
+            }, err => {
+              VisualSiteService.loadingScreen.stop();
+              swal('Upss!', err, 'error');
             });
           } else {
-            alert('Uzupełnij puste pola!');
+            VisualSiteService.loadingScreen.stop();
+            swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning');
           }
         };
       }

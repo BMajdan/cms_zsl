@@ -2,6 +2,7 @@ const AppSettings = {
 	appTitle: 'System zarzadzania trescia',
 	apiUrl: 'http://localhost:300/api/',
 	galleryUrl: 'http://localhost:300/api/gallery',
+	documentsUrl: 'http://localhost:300/api/documents',
 	userExpireTime: 15 * 60, // 60s * 60m * 3h
 	oneLineEditorOptions: {
 		menubar: false,

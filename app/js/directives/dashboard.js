@@ -7,7 +7,6 @@ function dashboardMenu($location, VisualSiteService, UserDatabase) {
 		link: (scope) => {
 
 			scope.logout = function () {
-				console.log('AA')
 				UserDatabase.logout(true);
 			};
 
@@ -17,7 +16,6 @@ function dashboardMenu($location, VisualSiteService, UserDatabase) {
 				});
 				VisualSiteService.responsiveMenu();
 			}
-
 			VisualSiteService.activeMenu();
 		}
 	};

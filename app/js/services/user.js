@@ -11,15 +11,12 @@ function UserDatabase($http, $location, $interval, AppSettings, $rootScope) {
 
 		let succesCallback = ({data}) => {
 			if (data.success) {
-				let expires = AppSettings.userExpireTime;
-				let now = Date.now();
-				let schedule = now + expires * 1000;
-				sessionStorage.setItem('sessionTime', schedule);
-				sessionStorage.setItem('isLogin', true);
-				sessionStorage.setItem('userName', login);
+				sessionStorage.setItem('session', true);
+				sessionStorage.setItem('user', login);
 				$rootScope.userData = {
 					userName: login,
 					admin: undefined,
+					sessionTime: (AppSettings.userExpireTime * 1000) + Date.now() ,
 					token: data.token
 				};
 				$location.path('/');
@@ -37,33 +34,16 @@ function UserDatabase($http, $location, $interval, AppSettings, $rootScope) {
 	service.shortLogin = (login) => {
 		let url = `${AppSettings.apiUrl}short-login`;
 		let data = JSON.stringify({ 'login': login });
-		let succesCallback = ({data}) => {
-			if(data.success){
-				let expires = AppSettings.userExpireTime;
-				let now = Date.now();
-				let schedule = now + expires * 1000;
-				sessionStorage.setItem('sessionTime', schedule);
-				sessionStorage.setItem('isLogin', true);
-				sessionStorage.setItem('userName', login);
-				$rootScope.userData = {
-					userName: login,
-					admin: undefined,
-					token: data.token
-				};
-			}
-		};
+		let succesCallback = ({data}) => { return data; };
 		let errorCallback = (err) => { throw err; };
-		$http.post(url, data).then(succesCallback, errorCallback);
+		return $http.post(url, data).then(succesCallback, errorCallback);
 	};
 
-	service.logout = (removeSession) => {
-		$interval.cancel($rootScope.checkInterval);
+	service.logout = (logoutType) => {
 		let url = `${AppSettings.apiUrl}logout`;
 		let succesCallback = ({data}) => {
 			if(data.success){
-				$interval.cancel($rootScope.checkInterval);
-				if (removeSession) {
-					$interval.cancel($rootScope.checkInterval);
+				if(logoutType){
 					$rootScope.userData = undefined;
 					sessionStorage.clear();
 					$location.path('/login');
@@ -72,7 +52,7 @@ function UserDatabase($http, $location, $interval, AppSettings, $rootScope) {
 			}
 		};
 		let errorCallback = (err) => { throw err; };
-		let data = JSON.stringify({ 'userName': $rootScope.userData.userName, 'token': $rootScope.userData.token });
+		let data = JSON.stringify({ 'login': $rootScope.userData.userName, 'token': $rootScope.userData.token });
 		return $http.put(url, data).then(succesCallback, errorCallback);
 	};
 

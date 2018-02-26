@@ -36,7 +36,7 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
     }
     )
     .state(
-    'AddNews', {
+    'AddNew', {
       url: '/aktualnosci/dodaj-nowy-post',
       controller: 'DashboardController',
       templateUrl: 'news.html',
@@ -44,7 +44,7 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
     }
     )
     .state(
-    'EditNews', {
+    'EditNew', {
       url: '/aktualnosci/edytuj-post/:id',
       controller: 'DashboardController',
       templateUrl: 'news.html',
@@ -60,7 +60,7 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
     }
     )
     .state(
-    'AddEvents', {
+    'AddEvent', {
       url: '/wydarzenia/dodaj-nowe-wydarzenie',
       controller: 'DashboardController',
       templateUrl: 'events.html',
@@ -68,7 +68,7 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
     }
     )
     .state(
-    'EditEvents', {
+    'EditEvent', {
       url: '/wydarzenia/edytuj-wydarzenie/:id',
       controller: 'DashboardController',
       templateUrl: 'events.html',
@@ -84,7 +84,7 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
     }
     )
     .state(
-    'EditSpecializations', {
+    'EditSpecialization', {
       url: '/specjalizacje/edytuj-specjalizacje/:id',
       controller: 'DashboardController',
       templateUrl: 'specializations.html',
@@ -92,7 +92,7 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
     }
     )
     .state(
-    'AddSpecializations', {
+    'AddSpecialization', {
       url: '/specjalizacje/dodaj-nowa-specjalizacje',
       controller: 'DashboardController',
       templateUrl: 'specializations.html',
@@ -102,6 +102,22 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
     .state(
     'Documents', {
       url: '/dokumenty',
+      controller: 'DashboardController',
+      templateUrl: 'documents.html',
+      title: 'Panel konfiguracyjny CMS.'
+    }
+    )
+    .state(
+    'AddDocument', {
+      url: '/dokumenty/dodaj-nowy-dokument',
+      controller: 'DashboardController',
+      templateUrl: 'documents.html',
+      title: 'Panel konfiguracyjny CMS.'
+    }
+    )
+    .state(
+    'EditDocument', {
+      url: '/dokumenty/edytuj-dokument/:id',
       controller: 'DashboardController',
       templateUrl: 'documents.html',
       title: 'Panel konfiguracyjny CMS.'

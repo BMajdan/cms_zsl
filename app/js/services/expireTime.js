@@ -3,13 +3,33 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 
 	const service = {};
 
-	service.checkStorage = () => {
+	service.websiteFunctions = () => {
+		if(sessionStorage.getItem('session') == 'true'){
+			if (sessionStorage.getItem('user') != undefined){
+				UserDatabase.shortLogin(sessionStorage.getItem('user')).then(function(data) {
+					if (data.success) {
+						$rootScope.userData = {
+							userName: sessionStorage.getItem('user'),
+							admin: undefined,
+							sessionTime: (AppSettings.userExpireTime * 1000) + Date.now(),
+							token: data.token
+						};
+						$rootScope.checkSessionExpire = $interval(service.checkUserExpire, 1000);
+					}
+				});
+			}else{
+				$rootScope.userData = undefined;
+				sessionStorage.clear();
+				$location.path('/login');
+			}
+		}else{
+			$rootScope.userData = undefined;
+			sessionStorage.clear();
+			$location.path('/login');
+		}
 
 		window.onbeforeunload = () => {
-			$interval.cancel($rootScope.checkInterval);
-			$rootScope.checkInterval = undefined;
-			UserDatabase.logout();
-			return false;
+			UserDatabase.logout(false);
 		};
 
 		window.onclick = () => {
@@ -19,56 +39,31 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 		window.onkeypress = () => {
 			service.extendUserExpire();
 		};
-
-		if (sessionStorage.getItem('userName') == undefined) {
-			$interval.cancel($rootScope.checkInterval);
-			sessionStorage.clear();
-			$rootScope.userData = undefined;
-			$location.path('/login');
-		} else {
-			UserDatabase.shortLogin(sessionStorage.getItem('userName'));
-		}
-	};
-
-	service.userExpire = () => {
-		service.extendUserExpire();
-		$rootScope.checkInterval = $interval(function () {
-			if (!service.chechUserExpire()) {
-				$interval.cancel($rootScope.checkInterval);
-				$rootScope.checkInterval = undefined;
-				UserDatabase.logout(true);
-			}
-		}, 1000);
 	};
 
 	service.extendUserExpire = () => {
-		let expires = AppSettings.userExpireTime;
-		let now = Date.now();
-		let schedule = now + expires * 1000;
-		sessionStorage.setItem('sessionTime', schedule);
-	};
-
-	service.chechUserExpire = () => {
-		let now = Date.now();
-		let expiresIn = sessionStorage.getItem('sessionTime');
-		if (expiresIn === undefined || expiresIn === null) {
-			$interval.cancel($rootScope.checkInterval);
-			$rootScope.checkInterval = undefined;
-			return false;
-		}
-
-		if (expiresIn < now) {
-			$interval.cancel($rootScope.checkInterval);
-			$rootScope.checkInterval = undefined;
-			UserDatabase.logout(true);
-			return false;
-		} else {
-			return true;
+		if (sessionStorage.getItem('session') == 'true' && $rootScope.userData.sessionTime != undefined) {
+			$rootScope.userData.sessionTime = (AppSettings.userExpireTime * 1000) + Date.now();
+		}else{
+			$rootScope.userData = undefined;
+			sessionStorage.clear();
+			$location.path('/login');
 		}
 	};
 
+	service.checkUserExpire = () => {
+		if (sessionStorage.getItem('session') == 'true' && $rootScope.userData.sessionTime != undefined){
+			let date = new Date();
+			if(date >= $rootScope.userData.sessionTime){
+				UserDatabase.logout(true);
+			}
+		}else{
+			$rootScope.userData = undefined;
+			sessionStorage.clear();
+			$location.path('/login');
+		}
+	};
 	return service;
-
 }
 
 export default {

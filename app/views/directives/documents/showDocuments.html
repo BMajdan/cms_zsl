@@ -1,0 +1,46 @@
+<div class="show-documents">
+  <div class="jumbotron">
+    <div class="container">
+      <div class="documents-container col-md-12 col-sm-12 col-xs-12">
+        <table id='fileTable' class="table">
+          <thead class="thead-inverse">
+            <tr>
+              <th>Rozszerzenie</th>
+              <th>Nazwa pliku</th>
+              <th>Opis pliku</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="fileTableBody">
+            <tr ng-repeat="(key, document) in documents">
+              <th scope="row" class="fileExtension">
+                <i class="{{document.class}}"></i>
+              </th>
+              <td class="fileName"><a href="{{documentsUrl + '/' + document.name}}" target='_blank'>{{document.name}}</a></td><!--ui-tinymce="oneLineEditorOptions"-->
+              <td class="fileDescription"><div ng-model="document.description">{{document.description}}</div></td>
+              <td class="fileOptions">
+                <div class="col-md-6 remove" ng-click="removeFile(key)">
+                  <i class="fas fa-trash"></i>
+                </div>
+
+                <div class="col-md-6 edit" ng-click="editFile(key)">
+                  <i class="fas fa-edit"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="4" class="tFooter">
+                <div class="col-md-offset-5 col-md-1 addButton" ng-click="addFile()">
+                  <i class="fas fa-plus"></i>
+                </div>
+              </th>
+            </tr>
+            <input type="file" id="addNewFile" file-model="addNewFile" class="hiddenInput" accept=".zip,.rar,xml,.xlsx,.xls,.doc,.docx,.ppt,.pptx,.txt,.pdf">
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

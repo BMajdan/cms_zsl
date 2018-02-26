@@ -67,6 +67,15 @@ function VisualSiteService($location) {
 		}
 	};
 
+	service.loadingScreen = {
+		start: () => {
+			angular.element(document.querySelector('.loadingOverlay'))[0].style.display = 'block';
+		},
+		stop: () =>{
+			angular.element(document.querySelector('.loadingOverlay'))[0].style.display = 'none';
+		}
+	}
+
 	return service;
 
 }

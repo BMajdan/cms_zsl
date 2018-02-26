@@ -1,4 +1,4 @@
-function editEvents($location, $window, $compile, $rootScope, EventsDatabase, TeachersDatabase, UploadFiles, WidgetsService) {
+function editEvents($location, $window, $compile, $rootScope, EventsDatabase, TeachersDatabase, UploadFiles, WidgetsService, VisualSiteService) {
 	'ngInject';
 
 	return {
@@ -9,6 +9,27 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 			if (($location.path().split('/')[2]) == 'edytuj-wydarzenie') {
 
 				/* Open, Close, Edit elements etc. */
+
+				let sendEditEvent = (editEvent, published) => {
+					EventsDatabase.editEvent(editEvent).then(eventData => {
+						if (eventData.success) {
+							if (published) {
+								VisualSiteService.loadingScreen.stop();
+								swal('Dobra robota!', eventData.message, 'success').then(() => {
+									$window.location.reload();
+								});
+							} else {
+								VisualSiteService.loadingScreen.stop();
+								swal('Uwaga!', 'Trwa przenoszenie na stronę szkoły', 'warning').then(() => {
+									$window.location.reload();
+								});
+							}
+						}
+					}, function (err) {
+						VisualSiteService.loadingScreen.stop();
+						swal('Upss!', err, 'error');
+					});
+				}
 
 				document.querySelector('#addNewEventButton').style.display = 'none';
 
@@ -45,8 +66,8 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 				/* ********************************************************* */
 
 				/*Load events, define variable */
-
-				EventsDatabase.loadOneEvent($location.path().split('/')[3]).then(function (data) {
+				VisualSiteService.loadingScreen.start();
+				EventsDatabase.loadOneEvent($location.path().split('/')[3]).then(data => {
 					if (data.success && data.object.length > 0) {
 						scope.events = data.object[0];
 						scope.editEventTitle = scope.events.eventTitle;
@@ -96,18 +117,26 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 								scope.addNewText++;
 							}
 						}
+						VisualSiteService.loadingScreen.stop();
 					} else {
+						VisualSiteService.loadingScreen.stop();
 						scope.events = [];
 						$location.path('/wydarzenia');
 						return false;
 					}
+				}, err => {
+					console.log(err)
+					VisualSiteService.loadingScreen.stop();
+					scope.events = [];
+					$location.path('/wydarzenia');
+					return false;
 				});
 
 				/* ********************************************************* */
 
 				/* Manage Teachers */
 
-				TeachersDatabase.loadAllTeachers().then(function (data) {
+				TeachersDatabase.loadAllTeachers().then(data => {
 					if (data.success) {
 						scope.teachers = data.object;
 					}
@@ -125,9 +154,8 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 				/* ********************************************************* */
 
 				scope.editEvents = (published) => {
-
+					VisualSiteService.loadingScreen.start();
 					let editEvent = scope.editEvent;
-
 					let d = new Date();
 					let day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate());
 					let month = ((d.getMonth() + 1 < 10) ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1));
@@ -181,35 +209,22 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 							if (document.querySelector('#editEventMiniature').files[0] != undefined) {
 								let imageFolder = `./gallery/eventsGallery/${editEvent.eventIdent}`;
 								let type = 'miniature';
-								UploadFiles.uploadImage(scope.editEventMiniature, imageFolder, type).then(function () {
-									EventsDatabase.editEvent(editEvent).then(function (eventData) {
-										if (eventData.success) {
-											if (published) {
-												alert(eventData.message);
-												$window.location.reload();
-											} else {
-												alert('Przenoszę na stronę główną!');
-											}
-										}
-									});
+								UploadFiles.uploadImage(scope.editEventMiniature, imageFolder, type).then(() => {
+									sendEditEvent(editEvent, published);
+								}, err => {
+									VisualSiteService.loadingScreen.stop();
+									swal('Upss!', err, 'error');
 								});
 							} else {
-								EventsDatabase.editEvent(editEvent).then(function (eventData) {
-									if (eventData.success) {
-										if (published) {
-											alert(eventData.message);
-											$window.location.reload();
-										} else {
-											alert('Przenoszę na stronę główną!');
-										}
-									}
-								});
+								sendEditEvent(editEvent, published);
 							}
 						} else {
-							alert('Podaj poprawną datę!');
+							VisualSiteService.loadingScreen.stop();
+							swal('Uwaga!', 'Podaj poprawną datę!', 'warning');
 						}
 					} else {
-						alert('Uzupełnij puste pola!');
+						VisualSiteService.loadingScreen.stop();
+						swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning');
 					}
 				};
 			}
