@@ -1,4 +1,4 @@
-function addSpecializations($location, $compile, SpecializationsDatabase, UploadFiles, VisualSiteService) {
+function addSpecializations($location, $compile, Specializations, Files, Visual) {
   'ngInject';
   return {
     restrict: 'E',
@@ -18,7 +18,7 @@ function addSpecializations($location, $compile, SpecializationsDatabase, Upload
         /* ********************************************************* */
 
         scope.addSpecialization = () => {
-          VisualSiteService.loadingScreen.start();
+          Visual.loading.start();
           let spec = scope.newSpecialization;
           spec.specializationIdent = (spec.specializationName.trim().replace(/ /g, '-')).toLowerCase();
 
@@ -36,28 +36,28 @@ function addSpecializations($location, $compile, SpecializationsDatabase, Upload
                     value.image = `${spec.specializationIdent}/widgets/${document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0].name}`;
                     let imageFolder = `./gallery/specializationsGallery/${spec.specializationIdent}/widgets`,
                       type = 'fullImage';
-                    UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
+                    Files.upload.image(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
                   }
                   break;
               }
             }
 
-            SpecializationsDatabase.addSpecialization(spec).then(specializationsata => {
-              if (specializationsata.success) {
-                VisualSiteService.loadingScreen.stop();
-                swal('Dobra robota!', specializationsata.message, 'success').then(() => {
+            Specializations.specialization.add(spec).then(data => {
+              if (data.success) {
+                Visual.loading.stop();
+                swal('Dobra robota!', data.message, 'success').then(() => {
                   $location.path(`/specjalizacje/edytuj-specjalizacje/${spec.specializationIdent}`);
                 });
               }else{
-                VisualSiteService.loadingScreen.stop();
+                Visual.loading.stop();
                 swal('Upss!', 'Coś poszło nie tak', 'error');
               }
             }, err => {
-              VisualSiteService.loadingScreen.stop();
+              Visual.loading.stop();
               swal('Upss!', err, 'error');
             });
           } else {
-            VisualSiteService.loadingScreen.stop();
+            Visual.loading.stop();
             swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning'); 
           }
         };

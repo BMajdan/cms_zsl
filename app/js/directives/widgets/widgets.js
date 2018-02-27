@@ -1,4 +1,4 @@
-function postWidgets($compile, $filter, WidgetsService) {
+function postWidgets($compile, $filter, Widgets) {
 	'ngInject';
 	
 	return {
@@ -11,11 +11,11 @@ function postWidgets($compile, $filter, WidgetsService) {
 			};
 
 			scope.addImageToPost = (element) => {
-				WidgetsService.widgets.imageInputChange(`addImageInput_${element}`, `addImage_${element}`);
+				Widgets.manage.input(`addImageInput_${element}`, `addImage_${element}`);
 			};
 
 			scope.removeWidget = (type, ident) => {
-				let arrayIndex = WidgetsService.widgets.remove(type, ident, scope[attrs.object].widgets);
+				let arrayIndex = Widgets.manage.remove(type, ident, scope[attrs.object].widgets);
 				scope[attrs.object].widgets.splice(arrayIndex, 1);
 			};
 
@@ -26,7 +26,7 @@ function postWidgets($compile, $filter, WidgetsService) {
 					scope.addTextColumn[scope.addNewText] = text;
 				}
 
-				WidgetsService.widgets.text(scope, attrs.addform);
+				Widgets.manage.text(scope, attrs.addform);
 
 				if(!editWidget){
 					scope[attrs.object].widgets.push({
@@ -49,7 +49,7 @@ function postWidgets($compile, $filter, WidgetsService) {
 					src = `${scope.galleryUrl}/newsGallery/${image}`;
 				}
 
-				WidgetsService.widgets.image(scope, attrs.addform, src);
+				Widgets.manage.image(scope, attrs.addform, src);
 
 				if(!editWidget){
 					scope[attrs.object].widgets.push({

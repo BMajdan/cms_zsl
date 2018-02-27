@@ -1,4 +1,4 @@
-function loginForm($location, UserDatabase) {
+function loginForm($location, User) {
 	'ngInject';
 
 	return {
@@ -14,7 +14,7 @@ function loginForm($location, UserDatabase) {
 			scope.submit = () => {
 
 				if (scope.userName != undefined && scope.userPassword != undefined) {
-					UserDatabase.authorize(scope.userName, scope.userPassword);
+					User.login.authorize(scope.userName, scope.userPassword);
 				} else {
 					alert('Podaj poprawny login i hasło!');
 				}

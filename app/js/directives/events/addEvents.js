@@ -1,4 +1,4 @@
-function addEvents($location, $compile, $rootScope, EventsDatabase, TeachersDatabase, UploadFiles, WidgetsService, VisualSiteService) {
+function addEvents($location, $compile, $rootScope, Events, Teachers, Files, Widgets, Visual) {
 	'ngInject';
 	return {
 		restrict: 'E',
@@ -16,14 +16,14 @@ function addEvents($location, $compile, $rootScope, EventsDatabase, TeachersData
 				};
 
 				scope.changeEventMiniature = () => {
-					WidgetsService.widgets.imageInputChange('addEventMiniature', 'addEventMiniatureImage');
+					Widgets.manage.input('addEventMiniature', 'addEventMiniatureImage');
 				};
 
 				/* ********************************************************* */
 
 				/* Manage Teachers */
 
-				TeachersDatabase.loadAllTeachers().then(data => {
+				Teachers.load.all().then(data => {
 					if (data.success) scope.teachers = data.object;
 				});
 
@@ -37,7 +37,7 @@ function addEvents($location, $compile, $rootScope, EventsDatabase, TeachersData
 				/* ********************************************************* */
 
 				scope.addEvent = (published) => {
-					VisualSiteService.loadingScreen.start();
+					Visual.loading.start();
 					let newEvent = scope.newEvent,
 						d = new Date(),
 						day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate()),
@@ -85,7 +85,7 @@ function addEvents($location, $compile, $rootScope, EventsDatabase, TeachersData
 											value.image = `${newEvent.eventIdent}/widgets/${document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0].name}`;
 											let imageFolder = `./gallery/eventsGallery/${newEvent.eventIdent}/widgets`,
 												type = 'fullImage';
-											UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
+											Files.upload.image(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
 										}
 										break;
 								}
@@ -93,32 +93,32 @@ function addEvents($location, $compile, $rootScope, EventsDatabase, TeachersData
 
 							let imageFolder = `./gallery/eventsGallery/${newEvent.eventIdent}`;
 							let type = 'miniature';
-							UploadFiles.uploadImage(scope.addEventMiniature, imageFolder, type).then(function () {
+							Files.upload.image(scope.addEventMiniature, imageFolder, type).then(function () {
 								newEvent.eventPublished = published;
-								EventsDatabase.addEvent(newEvent).then(eventData => {
+								Events.manage.add(newEvent).then(eventData => {
 									if (eventData.success) {
-										VisualSiteService.loadingScreen.stop();
+										Visual.loading.stop();
 										swal('Dobra robota!', eventData.message, 'success').then( () => {
 											$location.path(`/wydarzenia/edytuj-wydarzenie/${newEvent.eventIdent}`);
 										});
 									}else{
-										VisualSiteService.loadingScreen.stop();
+										Visual.loading.stop();
 										swal('Upss!', 'Coś poszło nie tak', 'error');
 									}
 								}, err => {
-									VisualSiteService.loadingScreen.stop();
+									Visual.loading.stop();
 									swal('Upss!', err, 'error');
 								});
 							}, err => {
-								VisualSiteService.loadingScreen.stop();
+								Visual.loading.stop();
 								swal('Upss!', err, 'error');
 							});
 						} else {
-							VisualSiteService.loadingScreen.stop(); 
+							Visual.loading.stop(); 
 							swal('Uwaga!', 'Podaj poprawną datę!', 'warning'); 
 						}
 					} else { 
-						VisualSiteService.loadingScreen.stop();
+						Visual.loading.stop();
 						swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning'); 
 					}
 				};

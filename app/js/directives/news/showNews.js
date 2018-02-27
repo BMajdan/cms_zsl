@@ -1,4 +1,4 @@
-function showNews($location, $filter, NewsDatabase, VisualSiteService) {
+function showNews($location, $filter, News, Visual) {
   'ngInject';
 
   return {
@@ -9,22 +9,22 @@ function showNews($location, $filter, NewsDatabase, VisualSiteService) {
       document.getElementById('addNewPostButton').style.display = 'block';
 
       if (($location.path().split('/')[2]) === undefined) {
-        VisualSiteService.loadingScreen.start();
-        NewsDatabase.loadAllNews().then(data => {
+        Visual.loading.start();
+        News.load.all().then(data => {
           if (data.success) {
             scope.newsData = data.object;
             for (let value of scope.newsData) {
               value.display = true;
             }
-            VisualSiteService.loadingScreen.stop();
+            Visual.loading.stop();
           } else {
             scope.newsData = [];
-            VisualSiteService.loadingScreen.stop();
+            Visual.loading.stop();
           }
         }, err => {
           swal('Upss!', err, 'error');
           scope.newsData = [];
-          VisualSiteService.loadingScreen.stop();
+          Visual.loading.stop();
         });
       }
 
@@ -38,22 +38,22 @@ function showNews($location, $filter, NewsDatabase, VisualSiteService) {
         let title = 'Czy jesteś pewien?', text = 'Czy na pewno usunąć ten post?!',
           icon = 'warning', buttons = ['Anuluj', 'Potwierdź'], dangerMode = true;
 
-        VisualSiteService.notifications.asking(title, text, icon, buttons, dangerMode).then(buttonStatus => {
+        Visual.notifications.asking(title, text, icon, buttons, dangerMode).then(buttonStatus => {
           if (buttonStatus) {
-            VisualSiteService.loadingScreen.start();
-            NewsDatabase.deletePost(postIdent).then(function (data) {
+            Visual.loading.start();
+            News.post.delete(postIdent).then(function (data) {
               if (data.success) {
                 let found = $filter('ArrayFilter')('postIdent', postIdent, scope.newsData);
                 scope.newsData.splice(found, 1);
-                VisualSiteService.loadingScreen.stop();
+                Visual.loading.stop();
                 swal('Dobra robota!', data.message, 'success');
-                VisualSiteService.loadingScreen.stop();
+                Visual.loading.stop();
               } else {
-                VisualSiteService.loadingScreen.stop();
+                Visual.loading.stop();
                 swal('Upss!', 'Coś poszło nie tak', 'error');
               }
             }, err => {
-              VisualSiteService.loadingScreen.stop();
+              Visual.loading.stop();
               swal('Upss!', err, 'error');
             });
 

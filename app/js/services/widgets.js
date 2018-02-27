@@ -1,10 +1,10 @@
-function WidgetsService($compile, $filter) {
+function Widgets($compile, $filter) {
 	'ngInject';
 
 	const service = {};
 
-	service.widgets = {
-		imageInputChange: (input, out) => {
+	service.manage = {
+		input: (input, out) => {
 			document.getElementById(input).click();
 			document.getElementById(input).onchange = function () {
 				let vals = this.value,
@@ -71,6 +71,6 @@ function WidgetsService($compile, $filter) {
 }
 
 export default {
-	name: 'WidgetsService',
-	fn: WidgetsService
+	name: 'Widgets',
+	fn: Widgets
 };

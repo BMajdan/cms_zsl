@@ -1,4 +1,4 @@
-function VisualSiteService($location) {
+function Visual($location) {
 	'ngInject';
 
 	const service = {};
@@ -67,7 +67,7 @@ function VisualSiteService($location) {
 		}
 	};
 
-	service.loadingScreen = {
+	service.loading = {
 		start: () => {
 			angular.element(document.querySelector('.loadingOverlay'))[0].style.display = 'block';
 		},
@@ -124,6 +124,6 @@ function VisualSiteService($location) {
 }
 
 export default {
-	name: 'VisualSiteService',
-	fn: VisualSiteService
+	name: 'Visual',
+	fn: Visual
 };

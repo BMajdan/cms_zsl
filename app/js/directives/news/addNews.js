@@ -1,4 +1,4 @@
-function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase, UploadFiles, WidgetsService, VisualSiteService) {
+function addNews($location, $compile, $rootScope, News, Teachers, Files, Widgets, Visual) {
 	'ngInject';
 
 	return {
@@ -18,24 +18,20 @@ function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase
 				};
 
 				scope.changePostMiniature = () => {
-					WidgetsService.widgets.imageInputChange('addPostMiniature', 'addPostMiniatureImage');
+					Widgets.manage.input('addPostMiniature', 'addPostMiniatureImage');
 				};
 
 				/* ********************************************************* */
 
 				/* Manage Teachers */
 
-				TeachersDatabase.loadAllTeachers().then(data => {
-					if (data.success) {
-						scope.teachers = data.object;
-					}
+				Teachers.load.all().then(data => {
+					if (data.success) scope.teachers = data.object;
 				});
 
 				scope.checkTeacher = (teacher) => {
 					for (let value of scope.teachers) {
-						if ((value.name + ' ' + value.surname) == teacher) {
-							return true;
-						}
+						if ((value.name + ' ' + value.surname) == teacher) return true;
 					}
 					return false;
 				};
@@ -43,7 +39,7 @@ function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase
 				/* ********************************************************* */
 
 				scope.addNews = (published) => {
-					VisualSiteService.loadingScreen.start();
+					Visual.loading.start();
 					let newPost = scope.newPost,
 						d = new Date(),
 						day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate()),
@@ -78,7 +74,7 @@ function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase
 										value.image = `${newPost.postIdent}/widgets/${document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0].name}`;
 										let imageFolder = `./gallery/newsGallery/${newPost.postIdent}/widgets`,
 											type = 'fullImage';
-										UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
+										Files.upload.image(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
 									}
 									break;
 							}
@@ -86,29 +82,29 @@ function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase
 
 						let imageFolder = `./gallery/newsGallery/${newPost.postIdent}`;
 						let type = 'miniature';
-						UploadFiles.uploadImage(scope.addPostMiniature, imageFolder, type).then(function () {
+						Files.upload.image(scope.addPostMiniature, imageFolder, type).then(function () {
 							newPost.postPublished = published;
-							NewsDatabase.addPost(newPost).then(newsData => {
+							News.post.add(newPost).then(newsData => {
 								if (newsData.success) {
-									VisualSiteService.loadingScreen.stop();
+									Visual.loading.stop();
 									swal('Dobra robota!', newsData.message, 'success').then(() => {
 										$location.path(`/aktualnosci/edytuj-post/${newPost.postIdent}`);
 									});
 								} else {
-									VisualSiteService.loadingScreen.stop();
+									Visual.loading.stop();
 									swal('Upss!', 'Coś poszło nie tak', 'error');
 								}
 							}, err => {
-								VisualSiteService.loadingScreen.stop();
+								Visual.loading.stop();
 								swal('Upss!', err, 'error');
 							});
 						}, err => {
-							VisualSiteService.loadingScreen.stop();
+							Visual.loading.stop();
 							swal('Upss!', err, 'error');
 						});
 
 					} else {
-						VisualSiteService.loadingScreen.stop();
+						Visual.loading.stop();
 						swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning');
 					}
 				};

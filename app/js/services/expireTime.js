@@ -1,4 +1,4 @@
-function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatabase) {
+function UserExpireTime($rootScope, $location, $interval, AppSettings, User) {
 	'ngInject';
 
 	const service = {};
@@ -6,7 +6,7 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 	service.websiteFunctions = () => {
 
 		window.onbeforeunload = () => {
-			UserDatabase.logout(false);
+			User.logout(false);
 		};
 
 		window.onclick = () => {
@@ -19,7 +19,7 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 
 		if(sessionStorage.getItem('session') == 'true'){
 			if (sessionStorage.getItem('user') != undefined){
-				UserDatabase.shortLogin(sessionStorage.getItem('user')).then(function(data) {
+				User.login.short(sessionStorage.getItem('user')).then(function(data) {
 					if (data.success) {
 						$rootScope.userData = {
 							userName: sessionStorage.getItem('user'),
@@ -56,7 +56,7 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 		if (sessionStorage.getItem('session') == 'true' && $rootScope.userData.sessionTime != undefined){
 			let date = new Date();
 			if(date >= $rootScope.userData.sessionTime){
-				UserDatabase.logout(true);
+				User.logout(true);
 			}
 		}else{
 			$rootScope.userData = undefined;

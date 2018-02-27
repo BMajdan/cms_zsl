@@ -1,4 +1,4 @@
-function editEvents($location, $window, $compile, $rootScope, EventsDatabase, TeachersDatabase, UploadFiles, WidgetsService, VisualSiteService) {
+function editEvents($location, $window, $compile, $rootScope, Events, Teachers, Files, Widgets, Visual) {
 	'ngInject';
 
 	return {
@@ -13,28 +13,28 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 				/* Open, Close, Edit elements etc. */
 
 				let sendEditEvent = (editEvent, published) => {
-					EventsDatabase.editEvent(editEvent).then(eventData => {
+					Events.manage.edit(editEvent).then(eventData => {
 						if (eventData.success) {
 							if (published) {
-								VisualSiteService.loadingScreen.stop();
+								Visual.loading.stop();
 								swal('Dobra robota!', eventData.message, 'success').then(() => {
 									$window.location.reload();
 								});
 							} else {
-								VisualSiteService.loadingScreen.stop();
+								Visual.loading.stop();
 								swal('Uwaga!', 'Trwa przenoszenie na stronę szkoły', 'warning').then(() => {
 									$window.location.reload();
 								});
 							}
 						}
 					}, function (err) {
-						VisualSiteService.loadingScreen.stop();
+						Visual.loading.stop();
 						swal('Upss!', err, 'error');
 					});
 				};
 
 				scope.changeEventMiniature = () => {
-					WidgetsService.widgets.imageInputChange('editEventMiniature', 'editEventMiniatureImage');
+					Widgets.manage.input('editEventMiniature', 'editEventMiniatureImage');
 				};
 
 				scope.openWidgetMenu = () => {
@@ -42,19 +42,19 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 				};
 
 				scope.addImageToPost = (element) => {
-					WidgetsService.widgets.imageInputChange(`addImageInput_${element}`, `addImage_${element}`);
+					Widgets.manage.input(`addImageInput_${element}`, `addImage_${element}`);
 				};
 
 				scope.removeWidget = (type, ident) => {
-					let arrayIndex = WidgetsService.widgets.remove(type, ident, scope.editEvent.widgets);
+					let arrayIndex = Widgets.manage.remove(type, ident, scope.editEvent.widgets);
 					scope.editEvent.widgets.splice(arrayIndex, 1);
 				};
 
 				/* ********************************************************* */
 
 				/*Load events, define variable */
-				VisualSiteService.loadingScreen.start();
-				EventsDatabase.loadOneEvent($location.path().split('/')[3]).then(data => {
+				Visual.loading.start();
+				Events.load.one($location.path().split('/')[3]).then(data => {
 					if (data.success && data.object.length > 0) {
 						scope.events = data.object[0];
 						scope.editEventTitle = scope.events.eventTitle;
@@ -96,25 +96,25 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 							if (value.type == 'image') {
 								scope.addNewImage = value.id.split('_')[1];
 								let src = `${scope.galleryUrl}/eventsGallery/${value.image}`;
-								WidgetsService.widgets.image(scope, '.editEventsForm', src);
+								Widgets.manage.image(scope, '.editEventsForm', src);
 								scope.addNewImage++;
 							} else if (value.type == 'text') {
 								scope.addNewText = value.id.split('_')[1];
 								scope.addTextColumn[scope.addNewText] = value.text;
-								WidgetsService.widgets.text(scope, '.editEventsForm');
+								Widgets.manage.text(scope, '.editEventsForm');
 								scope.addNewText++;
 							}
 						}
-						VisualSiteService.loadingScreen.stop();
+						Visual.loading.stop();
 					} else {
-						VisualSiteService.loadingScreen.stop();
+						Visual.loading.stop();
 						scope.events = [];
 						$location.path('/wydarzenia');
 						return false;
 					}
 				}, err => {
 					console.log(err);
-					VisualSiteService.loadingScreen.stop();
+					Visual.loading.stop();
 					scope.events = [];
 					$location.path('/wydarzenia');
 					return false;
@@ -124,7 +124,7 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 
 				/* Manage Teachers */
 
-				TeachersDatabase.loadAllTeachers().then(data => {
+				Teachers.load.all().then(data => {
 					if (data.success) {
 						scope.teachers = data.object;
 					}
@@ -142,7 +142,7 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 				/* ********************************************************* */
 
 				scope.editEvents = (published) => {
-					VisualSiteService.loadingScreen.start();
+					Visual.loading.start();
 					let editEvent = scope.editEvent,
 						d = new Date(),
 						day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate()),
@@ -188,7 +188,7 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 											value.image = `${editEvent.eventIdent}/widgets/${document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0].name}`;
 											let imageFolder = `./gallery/eventsGallery/${editEvent.eventIdent}/widgets`,
 												type = 'fullImage';
-											UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
+											Files.upload.image(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
 										}
 										break;
 								}
@@ -197,21 +197,21 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 							if (document.querySelector('#editEventMiniature').files[0] != undefined) {
 								let imageFolder = `./gallery/eventsGallery/${editEvent.eventIdent}`;
 								let type = 'miniature';
-								UploadFiles.uploadImage(scope.editEventMiniature, imageFolder, type).then(() => {
+								Files.upload.image(scope.editEventMiniature, imageFolder, type).then(() => {
 									sendEditEvent(editEvent, published);
 								}, err => {
-									VisualSiteService.loadingScreen.stop();
+									Visual.loading.stop();
 									swal('Upss!', err, 'error');
 								});
 							} else {
 								sendEditEvent(editEvent, published);
 							}
 						} else {
-							VisualSiteService.loadingScreen.stop();
+							Visual.loading.stop();
 							swal('Uwaga!', 'Podaj poprawną datę!', 'warning');
 						}
 					} else {
-						VisualSiteService.loadingScreen.stop();
+						Visual.loading.stop();
 						swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning');
 					}
 				};

@@ -1,4 +1,4 @@
-function editNews($location, $compile, $window, $rootScope, NewsDatabase, TeachersDatabase, UploadFiles, WidgetsService, VisualSiteService) {
+function editNews($location, $compile, $window, $rootScope, News, Teachers, Files, Widgets, Visual) {
 	'ngInject';
 
 	return {
@@ -13,40 +13,40 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 				/* Open, Close, Edit elements etc. */
 
 				let sendEditPost = (edit, published) => {
-					NewsDatabase.editPost(edit).then(newsData => {
+					News.post.edit(edit).then(newsData => {
 						if (newsData.success) {
 							if (published) {
-								VisualSiteService.loadingScreen.stop();
+								Visual.loading.stop();
 								swal('Dobra robota!', newsData.message, 'success').then(() => {
 									$window.location.reload();
 								});
 							} else {
-								VisualSiteService.loadingScreen.stop();
+								Visual.loading.stop();
 								swal('Uwaga!', 'Trwa przenoszenie na stronę szkoły', 'warning').then(() => {
 									$window.location.reload();
 								});
 							}
 						} else {
-							VisualSiteService.loadingScreen.stop();
+							Visual.loading.stop();
 							swal('Upss!', 'Coś poszło nie tak', 'error');
 						}
 					}, err => {
-						VisualSiteService.loadingScreen.stop();
+						Visual.loading.stop();
 						swal('Upss!', err, 'error');
 					});
 				};
 
 				scope.removeWidget = (type, ident) => {
-					let arrayIndex = WidgetsService.widgets.remove(type, ident, scope.editPost.widgets);
-					scope.editPost.widgets.splice(arrayIndex, 1);
+					let arrayIndex = Widgets.manage.remove(type, ident, scope.editPost.widgets);
+					scope.editPost.splice(arrayIndex, 1);
 				};
 
 				scope.addImageToPost = (element) => {
-					WidgetsService.widgets.imageInputChange(`addImageInput_${element}`, `addImage_${element}`);
+					Widgets.manage.input(`addImageInput_${element}`, `addImage_${element}`);
 				};
 
 				scope.changePostMiniature = () => {
-					WidgetsService.widgets.imageInputChange('editPostMiniature', 'editPostMiniatureImage');
+					Widgets.manage.input('editPostMiniature', 'editPostMiniatureImage');
 				};
 
 				scope.openWidgetMenu = () => {
@@ -56,8 +56,8 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 				/* ********************************************************* */
 
 				/*Load news, define variable */
-				VisualSiteService.loadingScreen.start();
-				NewsDatabase.loadOnePost($location.path().split('/')[3]).then(data => {
+				Visual.loading.start();
+				News.load.one($location.path().split('/')[3]).then(data => {
 					if (data.success && data.object.length > 0) {
 						scope.news = data.object[0];
 						scope.editArticleTitle = scope.news.postTitle;
@@ -86,25 +86,25 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 							if (value.type == 'image') {
 								scope.addNewImage = value.id.split('_')[1];
 								let src = `${scope.galleryUrl}/newsGallery/${value.image}`;
-								WidgetsService.widgets.image(scope, '.editNewsForm', src);
+								Widgets.manage.image(scope, '.editNewsForm', src);
 								scope.addNewImage++;
 							} else if (value.type == 'text') {
 								scope.addNewText = value.id.split('_')[1];
 								scope.addTextColumn[scope.addNewText] = value.text;
-								WidgetsService.widgets.text(scope, '.editNewsForm');
+								Widgets.manage.text(scope, '.editNewsForm');
 								scope.addNewText++;
 							}
 						}
-						VisualSiteService.loadingScreen.stop();
+						Visual.loading.stop();
 					} else {
-						VisualSiteService.loadingScreen.stop();
+						Visual.loading.stop();
 						scope.news = [];
 						$location.path('/aktualnosci');
 						return false;
 					}
 				}, err => {
 					console.log(err);
-					VisualSiteService.loadingScreen.stop();
+					Visual.loading.stop();
 					scope.news = [];
 					$location.path('/aktualnosci');
 					return false;
@@ -114,7 +114,7 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 
 				/* Manage Teachers */
 
-				TeachersDatabase.loadAllTeachers().then(data => {
+				Teachers.load.all().then(data => {
 					if (data.success) scope.teachers = data.object;
 				});
 
@@ -126,7 +126,7 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 				};
 
 				scope.editNews = published => {
-					VisualSiteService.loadingScreen.start();
+					Visual.loading.start();
 					let editPost = scope.editPost,
 						d = new Date(),
 						day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate()),
@@ -160,7 +160,7 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 										value.image = `${editPost.postIdent}/widgets/${document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0].name}`;
 										let imageFolder = `./gallery/newsGallery/${editPost.postIdent}/widgets`,
 											type = 'fullImage';
-										UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
+										Files.upload.image(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
 									}
 									break;
 							}
@@ -169,17 +169,17 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 						if (document.querySelector('#editPostMiniature').files[0] != undefined) {
 							let imageFolder = `./gallery/newsGallery/${editPost.postIdent}`;
 							let type = 'miniature';
-							UploadFiles.uploadImage(scope.editPostMiniature, imageFolder, type).then(() => {
+							Files.upload.image(scope.editPostMiniature, imageFolder, type).then(() => {
 								sendEditPost(editPost, published);
 							}, err => {
-								VisualSiteService.loadingScreen.stop();
+								Visual.loading.stop();
 								swal('Upss!', err, 'error');
 							});
 						} else {
 							sendEditPost(editPost, published);
 						}
 					} else {
-						VisualSiteService.loadingScreen.stop();
+						Visual.loading.stop();
 						swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning');
 					}
 				};

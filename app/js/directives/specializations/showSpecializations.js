@@ -1,4 +1,4 @@
-function showSpecializations($location, $filter, SpecializationsDatabase, VisualSiteService) {
+function showSpecializations($location, $filter, Specializations, Visual) {
   'ngInject';
 
   return {
@@ -7,22 +7,22 @@ function showSpecializations($location, $filter, SpecializationsDatabase, Visual
     link: (scope) => {
 
       if (($location.path().split('/')[2]) === undefined) {
-        VisualSiteService.loadingScreen.start();
-        SpecializationsDatabase.loadAllSpecializations().then(data => {
+        Visual.loading.start();
+        Specializations.load.all().then(data => {
           if (data.success == true) {
             scope.specializationsData = data.object;
             for (let value of scope.specializationsData) {
               value.display = true;
             }
-            VisualSiteService.loadingScreen.stop();
+            Visual.loading.stop();
           } else {
             scope.specializationsData = [];
-            VisualSiteService.loadingScreen.stop();
+            Visual.loading.stop();
           }
         }, err => {
           swal('Upss!', err, 'error');
           scope.newsData = [];
-          VisualSiteService.loadingScreen.stop();
+          Visual.loading.stop();
         });
       }
 
@@ -35,22 +35,22 @@ function showSpecializations($location, $filter, SpecializationsDatabase, Visual
         let title = 'Czy jesteś pewien?', text = 'Czy na pewno usunąć tą specjalizację?!',
           icon = 'warning', buttons = ['Anuluj', 'Potwierdź'], dangerMode = true;
 
-        VisualSiteService.notifications.asking(title, text, icon, buttons, dangerMode).then(buttonStatus => {
+        Visual.notifications.asking(title, text, icon, buttons, dangerMode).then(buttonStatus => {
           if (buttonStatus) {
-            VisualSiteService.loadingScreen.start();
-            SpecializationsDatabase.deleteSpecialization(specializationIdent).then(data => {
+            Visual.loading.start();
+            Specializations.specialization.delete(specializationIdent).then(data => {
               if (data.success) {
                 let found = $filter('ArrayFilter')('specializationIdent', specializationIdent, scope.specializationsData);
                 scope.specializationsData.splice(found, 1);
-                VisualSiteService.loadingScreen.stop();
+                Visual.loading.stop();
                 swal('Dobra robota!', data.message, 'success');
-                VisualSiteService.loadingScreen.stop();
+                Visual.loading.stop();
               } else {
-                VisualSiteService.loadingScreen.stop();
+                Visual.loading.stop();
                 swal('Upss!', 'Coś poszło nie tak', 'error');
               }
             }, err => {
-              VisualSiteService.loadingScreen.stop();
+              Visual.loading.stop();
               swal('Upss!', err, 'error');
             });
           } else {

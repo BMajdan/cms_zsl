@@ -1,4 +1,4 @@
-function editSpecializations($location, $window, $compile, SpecializationsDatabase, UploadFiles, WidgetsService, VisualSiteService) {
+function editSpecializations($location, $window, $compile, Specializations, Files, Widgets, Visual) {
   'ngInject';
 
   return {
@@ -17,19 +17,19 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
         };
 
         scope.addImageToPost = (element) => {
-          WidgetsService.widgets.imageInputChange(`addImageInput_${element}`, `addImage_${element}`);
+          Widgets.manage.input(`addImageInput_${element}`, `addImage_${element}`);
         };
 
         scope.removeWidget = (type, ident) => {
-          let arrayIndex = WidgetsService.widgets.remove(type, ident, scope.editSpecialization.widgets);
+          let arrayIndex = Widgets.manage.remove(type, ident, scope.editSpecialization.widgets);
           scope.editSpecialization.widgets.splice(arrayIndex, 1);
         };
 
         /* ********************************************************* */
 
         /*Load specializations, define variable */
-        VisualSiteService.loadingScreen.start();
-        SpecializationsDatabase.loadOneSpecialization($location.path().split('/')[3]).then(data => {
+        Visual.loading.start();
+        Specializations.load.one($location.path().split('/')[3]).then(data => {
           if (data.success && data.object.length > 0) {
             scope.specializations = data.object[0];
             scope.editSpecializationName = scope.specializations.specializationName;
@@ -48,25 +48,25 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
               if (value.type == 'image') {
                 scope.addNewImage = value.id.split('_')[1];
                 let src = `${scope.galleryUrl}/specializationsGallery/${value.image}`;
-                WidgetsService.widgets.image(scope, '.editSpecializationsForm', src);
+                Widgets.manage.image(scope, '.editSpecializationsForm', src);
                 scope.addNewImage++;
               } else if (value.type == 'text') {
                 scope.addNewText = value.id.split('_')[1];
                 scope.addTextColumn[scope.addNewText] = value.text;
-                WidgetsService.widgets.text(scope, '.editSpecializationsForm');
+                Widgets.manage.text(scope, '.editSpecializationsForm');
                 scope.addNewText++;
               }
             }
-            VisualSiteService.loadingScreen.stop();
+            Visual.loading.stop();
           } else {
-            VisualSiteService.loadingScreen.stop();
+            Visual.loading.stop();
             scope.specializations = [];
             $location.path('/specjalizacje');
             return false;
           }
         }, err => {
           console.log(err);
-          VisualSiteService.loadingScreen.stop();
+          Visual.loading.stop();
           scope.specializations = [];
           $location.path('/specjalizacje');
           return false;
@@ -75,7 +75,7 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
         /* ********************************************************* */
 
         scope.editSpecializations = () => {
-          VisualSiteService.loadingScreen.start();
+          Visual.loading.start();
           let editSpec = scope.editSpecialization;
           if (editSpec.specializationName.length >= 1 && editSpec.specializationName.length <= 80 &&
             editSpec.specializationSchool.length >= 1 && editSpec.specializationSchool.length <= 300 &&
@@ -91,25 +91,25 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
                     value.image = `${editSpec.specializationIdent}/widgets/${document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0].name}`;
                     let imageFolder = `./gallery/specializationsGallery/${editSpec.specializationIdent}/widgets`,
                       type = 'fullImage';
-                    UploadFiles.uploadImage(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
+                    Files.upload.image(document.querySelector(`#addImageInput_${value.id.split('_')[1]}`).files[0], imageFolder, type).then(function () { });
                   }
                   break;
               }
             }
 
-            SpecializationsDatabase.editSpecialization(editSpec).then(function (specializationData) {
+            Specializations.specialization.edit(editSpec).then(function (specializationData) {
               if (specializationData.success) {
-                VisualSiteService.loadingScreen.stop();
+                Visual.loading.stop();
                 swal('Dobra robota!', specializationData.message, 'success').then(() => {
                   $window.location.reload();
                 });
               }
             }, err => {
-              VisualSiteService.loadingScreen.stop();
+              Visual.loading.stop();
               swal('Upss!', err, 'error');
             });
           } else {
-            VisualSiteService.loadingScreen.stop();
+            Visual.loading.stop();
             swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning');
           }
         };

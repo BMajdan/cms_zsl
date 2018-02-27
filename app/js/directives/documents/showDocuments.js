@@ -1,4 +1,4 @@
-function showDocuments(UploadFiles, AppSettings, VisualSiteService) {
+function showDocuments(Files, AppSettings, Visual) {
   'ngInject';
 
   return {
@@ -42,7 +42,7 @@ function showDocuments(UploadFiles, AppSettings, VisualSiteService) {
           let title = 'Podaj nazwę pliku', icon = 'info', element = 'input', placeholder = '',
             type = 'text', value = scope.addNewFile.name, id = 'fileName';
 
-          VisualSiteService.notifications.input(title, icon, element, placeholder, type, value, id).then(success => {
+          Visual.notifications.input(title, icon, element, placeholder, type, value, id).then(success => {
             let regEx = new RegExp(/^(?!^(PRN|AUX|CLOCK\$|NUL|CON|COM\d|LPT\d|\..*)(\..+)?$)[^\x00-\x1f\\?*:\";|/]+$/g);
             let fileName = angular.element(document.querySelector('#fileName'))[0].value;
 
@@ -60,7 +60,7 @@ function showDocuments(UploadFiles, AppSettings, VisualSiteService) {
               let title = 'Podaj opis pliku', icon = 'info', element = 'input', placeholder = 'Opis pliku...',
                 type = 'text', value = '', id = 'fileDescription';
 
-              VisualSiteService.notifications.input(title, icon, element, placeholder, type, value, id).then(success => {
+              Visual.notifications.input(title, icon, element, placeholder, type, value, id).then(success => {
                 let fileDescription = angular.element(document.querySelector('#fileDescription'))[0].value;
 
                 if (success === 3)
@@ -68,8 +68,8 @@ function showDocuments(UploadFiles, AppSettings, VisualSiteService) {
 
                 if (fileDescription.length >= 3) {
                   let path = './documents';
-                  VisualSiteService.loadingScreen.start();
-                  UploadFiles.uploadFile(scope.addNewFile, path, fileName, oldName).then(({ data }) => {
+                  Visual.loading.start();
+                  Files.upload.file(scope.addNewFile, path, fileName, oldName).then(({ data }) => {
                     if (data.success) {
                       scope.file = {
                         name: fileName,
@@ -77,7 +77,7 @@ function showDocuments(UploadFiles, AppSettings, VisualSiteService) {
                         class: getFileClass(scope.addNewFile.name),
                         display: true
                       };
-                      UploadFiles.addInfoFile(scope.file, oldName).then(secondData => {
+                      Files.add.info(scope.file, oldName).then(secondData => {
                         if (secondData.success) {
                           if (oldName) {
                             scope.documents.splice(ident, 1);
@@ -85,22 +85,22 @@ function showDocuments(UploadFiles, AppSettings, VisualSiteService) {
                           } else
                             scope.documents.push(scope.file);
 
-                          VisualSiteService.loadingScreen.stop();
+                          Visual.loading.stop();
                           swal('Dobra robota!', secondData.message, 'success');
                         } else {
-                          VisualSiteService.loadingScreen.stop();
+                          Visual.loading.stop();
                           swal('Upss!', 'Coś poszło nie tak', 'error');
                         }
                       }, err => {
-                        VisualSiteService.loadingScreen.stop();
+                        Visual.loading.stop();
                         swal('Upss!', err, 'error');
                       });
                     } else {
-                      VisualSiteService.loadingScreen.stop();
+                      Visual.loading.stop();
                       swal('Upss!', 'Coś poszło nie tak', 'error');
                     }
                   }, err => {
-                    VisualSiteService.loadingScreen.stop();
+                    Visual.loading.stop();
                     swal('Upss!', err, 'error');
                   });
                 } else {
@@ -119,47 +119,47 @@ function showDocuments(UploadFiles, AppSettings, VisualSiteService) {
       };
 
       let loadDocuments = () => {
-        VisualSiteService.loadingScreen.start();
-        UploadFiles.loadDocuments().then(data => {
+        Visual.loading.start();
+        Files.load.documents().then(data => {
           if (data.success) {
             scope.documents = data.object;
             scope.documentsUrl = AppSettings.documentsUrl;
-            VisualSiteService.loadingScreen.stop();
+            Visual.loading.stop();
             for (let value of scope.documents) {
               value.display = true;
             }
           } else {
-            VisualSiteService.loadingScreen.stop();
+            Visual.loading.stop();
             swal('Upss!', 'Coś poszło nie tak', 'error');
           }
         }, err => {
-          VisualSiteService.loadingScreen.stop();
+          Visual.loading.stop();
           swal('Upss!', err, 'error');
         });
-      }
+      };
 
       scope.deleteFile = (ident) => {
         let title = 'Czy jesteś pewien?', text = 'Czy na pewno usunąć ten plik?!',
           icon = 'warning', buttons = ['Anuluj', 'Potwierdź'], dangerMode = true;
 
-        VisualSiteService.notifications.asking(title, text, icon, buttons, dangerMode).then(buttonStatus => {
+        Visual.notifications.asking(title, text, icon, buttons, dangerMode).then(buttonStatus => {
           if (buttonStatus) {
-            VisualSiteService.loadingScreen.start();
-            UploadFiles.deleteFile(scope.documents[ident].name).then(data => {
+            Visual.loading.start();
+            Files.delete.file(scope.documents[ident].name).then(data => {
               if (data.success) {
                 scope.documents.splice(ident, 1);
-                VisualSiteService.loadingScreen.stop();
+                Visual.loading.stop();
                 swal('Dobra robota!', data.message, 'success');
               } else {
-                VisualSiteService.loadingScreen.stop();
+                Visual.loading.stop();
                 swal('Upss!', 'Coś poszło nie tak', 'error');
               }
             }, err => {
-              VisualSiteService.loadingScreen.stop();
+              Visual.loading.stop();
               swal('Upss!', err, 'error');
             });
 
-            VisualSiteService.loadingScreen.stop();
+            Visual.loading.stop();
           } else {
             swal('Uff!', 'Plik nie został usunięty', 'info');
           }

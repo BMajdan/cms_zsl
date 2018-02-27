@@ -1,4 +1,4 @@
-function showEvents($location, $filter, EventsDatabase, VisualSiteService) {
+function showEvents($location, $filter, Events, Visual) {
 	'ngInject';
 
 	return {
@@ -9,20 +9,20 @@ function showEvents($location, $filter, EventsDatabase, VisualSiteService) {
 			document.getElementById('addNewEventButton').style.display = 'block';
 
 			if (($location.path().split('/')[2]) === undefined) {
-				VisualSiteService.loadingScreen.start();
-				EventsDatabase.loadAllEvents().then(data => {
+				Visual.loading.start();
+				Events.load.all().then(data => {
 					if (data.success) {
 						scope.eventsData = data.object;
 						for (let value of scope.eventsData) {
 							value.display = true;
 						}
-						VisualSiteService.loadingScreen.stop();
+						Visual.loading.stop();
 					} else {
 						scope.eventsData = [];
-						VisualSiteService.loadingScreen.stop();
+						Visual.loading.stop();
 					}
 				}, err => {
-					VisualSiteService.loadingScreen.stop();
+					Visual.loading.stop();
 					scope.eventsData = [];
 					swal('Upss!', err, 'error');
 				});
@@ -37,21 +37,21 @@ function showEvents($location, $filter, EventsDatabase, VisualSiteService) {
 				let title = 'Czy jesteś pewien?', text = 'Czy na pewno usunąć to wydarzenie?!',
 					icon = 'warning', buttons = ['Anuluj', 'Potwierdź'], dangerMode = true;
 
-				VisualSiteService.notifications.asking(title, text, icon, buttons, dangerMode).then(buttonStatus => {
+				Visual.notifications.asking(title, text, icon, buttons, dangerMode).then(buttonStatus => {
 					if (buttonStatus) {
-						VisualSiteService.loadingScreen.start();
-						EventsDatabase.deleteEvent(eventIdent).then(data => {
+						Visual.loading.start();
+						Events.manage.delete(eventIdent).then(data => {
 							if (data.success) {
 								let found = $filter('ArrayFilter')('eventIdent', eventIdent, scope.eventsData);
 								scope.eventsData.splice(found, 1);
 								swal('Dobra robota!', data.message, 'success');
-								VisualSiteService.loadingScreen.stop();
+								Visual.loading.stop();
 							} else {
-								VisualSiteService.loadingScreen.stop();
+								Visual.loading.stop();
 								swal('Upss!', 'Coś poszło nie tak', 'error');
 							}
 						}, err => {
-							VisualSiteService.loadingScreen.stop();
+							Visual.loading.stop();
 							swal('Upss!', err, 'error');
 						});
 
