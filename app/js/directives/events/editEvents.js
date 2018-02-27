@@ -8,6 +8,8 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 		link: (scope) => {
 			if (($location.path().split('/')[2]) == 'edytuj-wydarzenie') {
 
+				document.querySelector('#addNewEventButton').style.display = 'none';
+
 				/* Open, Close, Edit elements etc. */
 
 				let sendEditEvent = (editEvent, published) => {
@@ -29,25 +31,10 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 						VisualSiteService.loadingScreen.stop();
 						swal('Upss!', err, 'error');
 					});
-				}
-
-				document.querySelector('#addNewEventButton').style.display = 'none';
-
-				scope.changeEventMiniature = () => {
-					document.querySelector('#editEventMiniature').click();
 				};
 
-				document.querySelector('#editEventMiniature').onchange = function () {
-					let vals = this.value,
-						val = vals.length ? vals.split('\\').pop() : '';
-					document.querySelector('#editEventMiniatureImage').value = val;
-					let reader = new FileReader();
-					reader.onload = function () {
-						let dataURL = reader.result;
-						let output = document.querySelector('#editEventMiniatureImage');
-						output.src = dataURL;
-					};
-					reader.readAsDataURL(document.querySelector('#editEventMiniature').files[0]);
+				scope.changeEventMiniature = () => {
+					WidgetsService.widgets.imageInputChange('editEventMiniature', 'editEventMiniatureImage');
 				};
 
 				scope.openWidgetMenu = () => {
@@ -55,11 +42,11 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 				};
 
 				scope.addImageToPost = (element) => {
-					WidgetsService.addImageToPost(element);
+					WidgetsService.widgets.imageInputChange(`addImageInput_${element}`, `addImage_${element}`);
 				};
 
 				scope.removeWidget = (type, ident) => {
-					let arrayIndex = WidgetsService.removeWidget(type, ident, scope.editEvent.widgets);
+					let arrayIndex = WidgetsService.widgets.remove(type, ident, scope.editEvent.widgets);
 					scope.editEvent.widgets.splice(arrayIndex, 1);
 				};
 
@@ -95,9 +82,9 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 						};
 
 						scope.miniatureUrl = `${scope.galleryUrl}/eventsGallery/${scope.editEvent.eventMiniature}`;
-						let hour = parseInt(scope.editEvent.eventStopTime.split(':')[0]) - 1;
-						let minutes = parseInt(scope.editEvent.eventStopTime.split(':')[1]);
-						let date = new Date((hour * 60 * 60 * 1000) + (minutes * 60 * 1000));
+						let hour = parseInt(scope.editEvent.eventStopTime.split(':')[0]) - 1,
+							minutes = parseInt(scope.editEvent.eventStopTime.split(':')[1]),
+							date = new Date((hour * 60 * 60 * 1000) + (minutes * 60 * 1000));
 						scope.eventStopTime = date;
 
 						hour = parseInt(scope.editEvent.eventStartTime.split(':')[0]) - 1;
@@ -108,12 +95,13 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 						for (let value of scope.editEvent.widgets) {
 							if (value.type == 'image') {
 								scope.addNewImage = value.id.split('_')[1];
-								WidgetsService.insertImageBlock(scope, '.editEventsForm', 'eventsGallery', value.image);
+								let src = `${scope.galleryUrl}/eventsGallery/${value.image}`;
+								WidgetsService.widgets.image(scope, '.editEventsForm', src);
 								scope.addNewImage++;
 							} else if (value.type == 'text') {
 								scope.addNewText = value.id.split('_')[1];
 								scope.addTextColumn[scope.addNewText] = value.text;
-								WidgetsService.insertInputBlock(scope, '.editEventsForm');
+								WidgetsService.widgets.text(scope, '.editEventsForm');
 								scope.addNewText++;
 							}
 						}
@@ -125,7 +113,7 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 						return false;
 					}
 				}, err => {
-					console.log(err)
+					console.log(err);
 					VisualSiteService.loadingScreen.stop();
 					scope.events = [];
 					$location.path('/wydarzenia');
@@ -155,15 +143,15 @@ function editEvents($location, $window, $compile, $rootScope, EventsDatabase, Te
 
 				scope.editEvents = (published) => {
 					VisualSiteService.loadingScreen.start();
-					let editEvent = scope.editEvent;
-					let d = new Date();
-					let day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate());
-					let month = ((d.getMonth() + 1 < 10) ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1));
-					let hr = ((d.getHours() < 10) ? `0${d.getHours()}` : d.getHours());
-					let min = ((d.getMinutes() < 10) ? `0${d.getMinutes()}` : d.getMinutes());
-					let sec = ((d.getSeconds() < 10) ? `0${d.getSeconds()}` : d.getSeconds());
+					let editEvent = scope.editEvent,
+						d = new Date(),
+						day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate()),
+						month = ((d.getMonth() + 1 < 10) ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1)),
+						hr = ((d.getHours() < 10) ? `0${d.getHours()}` : d.getHours()),
+						min = ((d.getMinutes() < 10) ? `0${d.getMinutes()}` : d.getMinutes()),
+						sec = ((d.getSeconds() < 10) ? `0${d.getSeconds()}` : d.getSeconds()),
+						eventD = `${day}/${month}/${d.getFullYear()} ${hr}:${min}:${sec}`;
 
-					let eventD = `${day}/${month}/${d.getFullYear()} ${hr}:${min}:${sec}`;
 					editEvent.eventData = eventD;
 					if (document.querySelector('#editEventMiniature').files[0] != undefined) {
 						editEvent.eventMiniature = `${editEvent.eventIdent}/${document.querySelector('#editEventMiniature').files[0].name}`;

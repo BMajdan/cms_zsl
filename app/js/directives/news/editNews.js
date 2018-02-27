@@ -8,10 +8,11 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 		link: (scope) => {
 			if (($location.path().split('/')[2]) == 'edytuj-post') {
 
+				document.querySelector('#addNewPostButton').style.display = 'none';
+
 				/* Open, Close, Edit elements etc. */
 
 				let sendEditPost = (edit, published) => {
-					console.log(edit);
 					NewsDatabase.editPost(edit).then(newsData => {
 						if (newsData.success) {
 							if (published) {
@@ -35,32 +36,17 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 					});
 				};
 
-				document.querySelector('#addNewPostButton').style.display = 'none';
-
 				scope.removeWidget = (type, ident) => {
-					let arrayIndex = WidgetsService.removeWidget(type, ident, scope.editPost.widgets);
+					let arrayIndex = WidgetsService.widgets.remove(type, ident, scope.editPost.widgets);
 					scope.editPost.widgets.splice(arrayIndex, 1);
 				};
 
 				scope.addImageToPost = (element) => {
-					WidgetsService.addImageToPost(element);
+					WidgetsService.widgets.imageInputChange(`addImageInput_${element}`, `addImage_${element}`);
 				};
 
 				scope.changePostMiniature = () => {
-					document.querySelector('#editPostMiniature').click();
-				};
-
-				document.querySelector('#editPostMiniature').onchange = function () {
-					let vals = this.value,
-						val = vals.length ? vals.split('\\').pop() : '';
-					document.querySelector('#editPostMiniatureImage').value = val;
-					let reader = new FileReader();
-					reader.onload = function () {
-						let dataURL = reader.result;
-						let output = document.querySelector('#editPostMiniatureImage');
-						output.src = dataURL;
-					};
-					reader.readAsDataURL(document.querySelector('#editPostMiniature').files[0]);
+					WidgetsService.widgets.imageInputChange('editPostMiniature', 'editPostMiniatureImage');
 				};
 
 				scope.openWidgetMenu = () => {
@@ -99,12 +85,13 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 						for (let value of scope.editPost.widgets) {
 							if (value.type == 'image') {
 								scope.addNewImage = value.id.split('_')[1];
-								WidgetsService.insertImageBlock(scope, '.editNewsForm', 'newsGallery', value.image);
+								let src = `${scope.galleryUrl}/newsGallery/${value.image}`;
+								WidgetsService.widgets.image(scope, '.editNewsForm', src);
 								scope.addNewImage++;
 							} else if (value.type == 'text') {
 								scope.addNewText = value.id.split('_')[1];
 								scope.addTextColumn[scope.addNewText] = value.text;
-								WidgetsService.insertInputBlock(scope, '.editNewsForm');
+								WidgetsService.widgets.text(scope, '.editNewsForm');
 								scope.addNewText++;
 							}
 						}
@@ -128,31 +115,27 @@ function editNews($location, $compile, $window, $rootScope, NewsDatabase, Teache
 				/* Manage Teachers */
 
 				TeachersDatabase.loadAllTeachers().then(data => {
-					if (data.success) {
-						scope.teachers = data.object;
-					}
+					if (data.success) scope.teachers = data.object;
 				});
 
 				scope.checkTeacher = (teacher) => {
 					for (let value of scope.teachers) {
-						if ((`${value.name} ${value.surname}`) == teacher) {
-							return true;
-						}
+						if ((`${value.name} ${value.surname}`) == teacher) return true;
 					}
 					return false;
 				};
 
 				scope.editNews = published => {
 					VisualSiteService.loadingScreen.start();
-					let editPost = scope.editPost;
-					let d = new Date();
-					let day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate());
-					let month = ((d.getMonth() + 1 < 10) ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1));
-					let hr = ((d.getHours() < 10) ? `0${d.getHours()}` : d.getHours());
-					let min = ((d.getMinutes() < 10) ? `0${d.getMinutes()}` : d.getMinutes());
-					let sec = ((d.getSeconds() < 10) ? `0${d.getSeconds()}` : d.getSeconds());
+					let editPost = scope.editPost,
+						d = new Date(),
+						day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate()),
+						month = ((d.getMonth() + 1 < 10) ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1)),
+						hr = ((d.getHours() < 10) ? `0${d.getHours()}` : d.getHours()),
+						min = ((d.getMinutes() < 10) ? `0${d.getMinutes()}` : d.getMinutes()),
+						sec = ((d.getSeconds() < 10) ? `0${d.getSeconds()}` : d.getSeconds()),
+						postD = `${day}/${month}/${d.getFullYear()} ${hr}:${min}:${sec}`;
 
-					let postD = `${day}/${month}/${d.getFullYear()} ${hr}:${min}:${sec}`;
 					editPost.postData = postD;
 
 					if (document.querySelector('#editPostMiniature').files[0] != undefined) {

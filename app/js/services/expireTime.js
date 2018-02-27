@@ -4,6 +4,19 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 	const service = {};
 
 	service.websiteFunctions = () => {
+
+		window.onbeforeunload = () => {
+			UserDatabase.logout(false);
+		};
+
+		window.onclick = () => {
+			service.extendUserExpire();
+		};
+
+		window.onkeypress = () => {
+			service.extendUserExpire();
+		};
+
 		if(sessionStorage.getItem('session') == 'true'){
 			if (sessionStorage.getItem('user') != undefined){
 				UserDatabase.shortLogin(sessionStorage.getItem('user')).then(function(data) {
@@ -27,18 +40,6 @@ function UserExpireTime($rootScope, $location, $interval, AppSettings, UserDatab
 			sessionStorage.clear();
 			$location.path('/login');
 		}
-
-		window.onbeforeunload = () => {
-			UserDatabase.logout(false);
-		};
-
-		window.onclick = () => {
-			service.extendUserExpire();
-		};
-
-		window.onkeypress = () => {
-			service.extendUserExpire();
-		};
 	};
 
 	service.extendUserExpire = () => {

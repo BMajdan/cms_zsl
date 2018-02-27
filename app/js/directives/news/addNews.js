@@ -1,4 +1,4 @@
-function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase, UploadFiles, VisualSiteService) {
+function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase, UploadFiles, WidgetsService, VisualSiteService) {
 	'ngInject';
 
 	return {
@@ -18,20 +18,7 @@ function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase
 				};
 
 				scope.changePostMiniature = () => {
-					document.querySelector('#addPostMiniature').click();
-				};
-
-				document.querySelector('#addPostMiniature').onchange = function () {
-					let vals = this.value,
-						val = vals.length ? vals.split('\\').pop() : '';
-					document.querySelector('#addPostMiniatureImage').value = val;
-					let reader = new FileReader();
-					reader.onload = function () {
-						let dataURL = reader.result;
-						let output = document.querySelector('#addPostMiniatureImage');
-						output.src = dataURL;
-					};
-					reader.readAsDataURL(document.querySelector('#addPostMiniature').files[0]);
+					WidgetsService.widgets.imageInputChange('addPostMiniature', 'addPostMiniatureImage');
 				};
 
 				/* ********************************************************* */
@@ -57,15 +44,15 @@ function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase
 
 				scope.addNews = (published) => {
 					VisualSiteService.loadingScreen.start();
-					let newPost = scope.newPost;
-					let d = new Date();
-					let day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate());
-					let month = ((d.getMonth() + 1 < 10) ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1));
-					let hr = ((d.getHours() < 10) ? `0${d.getHours()}` : d.getHours());
-					let min = ((d.getMinutes() < 10) ? `0${d.getMinutes()}` : d.getMinutes());
-					let sec = ((d.getSeconds() < 10) ? `0${d.getSeconds()}` : d.getSeconds());
+					let newPost = scope.newPost,
+						d = new Date(),
+						day = ((d.getDate() < 10) ? `0${d.getDate()}` : d.getDate()),
+						month = ((d.getMonth() + 1 < 10) ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1)),
+						hr = ((d.getHours() < 10) ? `0${d.getHours()}` : d.getHours()),
+						min = ((d.getMinutes() < 10) ? `0${d.getMinutes()}` : d.getMinutes()),
+						sec = ((d.getSeconds() < 10) ? `0${d.getSeconds()}` : d.getSeconds()),
+						postD = `${day}/${month}/${d.getFullYear()} ${hr}:${min}:${sec}`;
 
-					let postD = `${day}/${month}/${d.getFullYear()} ${hr}:${min}:${sec}`;
 					newPost.postData = postD;
 					newPost.postIdent = (`${newPost.postTitle.trim().replace(/ /g, '-')}-${postD.replace(/\//g, '-').replace(/ /g, '-').replace(/:/g, '-')}`).toLowerCase();
 
@@ -107,7 +94,7 @@ function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase
 									swal('Dobra robota!', newsData.message, 'success').then(() => {
 										$location.path(`/aktualnosci/edytuj-post/${newPost.postIdent}`);
 									});
-								}else{
+								} else {
 									VisualSiteService.loadingScreen.stop();
 									swal('Upss!', 'Coś poszło nie tak', 'error');
 								}
@@ -122,7 +109,7 @@ function addNews($location, $compile, $rootScope, NewsDatabase, TeachersDatabase
 
 					} else {
 						VisualSiteService.loadingScreen.stop();
-						swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning'); 
+						swal('Uwaga!', 'Uzupełnij wszystkie wymagane pola!', 'warning');
 					}
 				};
 			}

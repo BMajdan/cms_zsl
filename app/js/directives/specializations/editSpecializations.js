@@ -16,8 +16,12 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
           angular.element(document.querySelector('#widget-manage')).append($compile('<post-widgets class="newWidget" object="editSpecialization" addform=".editSpecializationsForm"></post-widgets>')(scope));
         };
 
+        scope.addImageToPost = (element) => {
+          WidgetsService.widgets.imageInputChange(`addImageInput_${element}`, `addImage_${element}`);
+        };
+
         scope.removeWidget = (type, ident) => {
-          let arrayIndex = WidgetsService.removeWidget(type, ident, scope.editSpecialization.widgets);
+          let arrayIndex = WidgetsService.widgets.remove(type, ident, scope.editSpecialization.widgets);
           scope.editSpecialization.widgets.splice(arrayIndex, 1);
         };
 
@@ -43,12 +47,13 @@ function editSpecializations($location, $window, $compile, SpecializationsDataba
             for (let value of scope.editSpecialization.widgets) {
               if (value.type == 'image') {
                 scope.addNewImage = value.id.split('_')[1];
-                WidgetsService.insertImageBlock(scope, '.editSpecializationsForm', 'specializationsGallery', value.image);
+                let src = `${scope.galleryUrl}/specializationsGallery/${value.image}`;
+                WidgetsService.widgets.image(scope, '.editSpecializationsForm', src);
                 scope.addNewImage++;
               } else if (value.type == 'text') {
                 scope.addNewText = value.id.split('_')[1];
                 scope.addTextColumn[scope.addNewText] = value.text;
-                WidgetsService.insertInputBlock(scope, '.editSpecializationsForm');
+                WidgetsService.widgets.text(scope, '.editSpecializationsForm');
                 scope.addNewText++;
               }
             }

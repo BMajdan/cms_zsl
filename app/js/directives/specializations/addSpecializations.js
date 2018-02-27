@@ -15,11 +15,6 @@ function addSpecializations($location, $compile, SpecializationsDatabase, Upload
           angular.element(document.querySelector('#widget-manage')).append($compile('<post-widgets class="newWidget" object="newSpecialization" addform=".addSpecializationsForm"></post-widgets>')(scope));
         };
 
-        scope.removeWidget = (type, ident) => {
-          let arrayIndex = WidgetsService.removeWidget(type, ident, scope.newSpecialization.widgets);
-          scope.newSpecialization.widgets.splice(arrayIndex, 1);
-        };
-
         /* ********************************************************* */
 
         scope.addSpecialization = () => {
