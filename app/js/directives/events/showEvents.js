@@ -34,19 +34,31 @@ function showEvents($location, $filter, EventsDatabase, VisualSiteService) {
 			};
 
 			scope.removeEvent = (eventIdent) => {
-				VisualSiteService.loadingScreen.start();
-				EventsDatabase.deleteEvent(eventIdent).then(data => {
-					if (data.success) {
-						let found = $filter('ArrayFilter')('eventIdent', eventIdent, scope.eventsData);
-						scope.eventsData.splice(found, 1);
-						swal('Dobra robota!', data.message, 'success')
-						VisualSiteService.loadingScreen.stop();
-					}else{
-						VisualSiteService.loadingScreen.stop();
-						swal('Upss!', 'Coś poszło nie tak', 'error');
+				let title = 'Czy jesteś pewien?', text = 'Czy na pewno usunąć to wydarzenie?!',
+					icon = 'warning', buttons = ['Anuluj', 'Potwierdź'], dangerMode = true;
+
+				VisualSiteService.notifications.asking(title, text, icon, buttons, dangerMode).then(buttonStatus => {
+					if (buttonStatus) {
+						VisualSiteService.loadingScreen.start();
+						EventsDatabase.deleteEvent(eventIdent).then(data => {
+							if (data.success) {
+								let found = $filter('ArrayFilter')('eventIdent', eventIdent, scope.eventsData);
+								scope.eventsData.splice(found, 1);
+								swal('Dobra robota!', data.message, 'success');
+								VisualSiteService.loadingScreen.stop();
+							} else {
+								VisualSiteService.loadingScreen.stop();
+								swal('Upss!', 'Coś poszło nie tak', 'error');
+							}
+						}, err => {
+							VisualSiteService.loadingScreen.stop();
+							swal('Upss!', err, 'error');
+						});
+
+					} else {
+						swal('Uff!', 'Wydarzenie nie zostało usunięte', 'info');
 					}
 				}, err => {
-					VisualSiteService.loadingScreen.stop();
 					swal('Upss!', err, 'error');
 				});
 			};

@@ -32,20 +32,31 @@ function showSpecializations($location, $filter, SpecializationsDatabase, Visual
       };
 
       scope.removeSpecialization = (specializationIdent) => {
-        VisualSiteService.loadingScreen.start();
-        SpecializationsDatabase.deleteSpecialization(specializationIdent).then(data => {
-          if (data.success) {
-            let found = $filter('ArrayFilter')('specializationIdent', specializationIdent, scope.specializationsData);
-            scope.specializationsData.splice(found, 1);
-            VisualSiteService.loadingScreen.stop();
-            swal('Dobra robota!', data.message, 'success');
-            VisualSiteService.loadingScreen.stop();
-          }else{
-            VisualSiteService.loadingScreen.stop();
-            swal('Upss!', 'Coś poszło nie tak', 'error');
+        let title = 'Czy jesteś pewien?', text = 'Czy na pewno usunąć tą specjalizację?!',
+          icon = 'warning', buttons = ['Anuluj', 'Potwierdź'], dangerMode = true;
+
+        VisualSiteService.notifications.asking(title, text, icon, buttons, dangerMode).then(buttonStatus => {
+          if (buttonStatus) {
+            VisualSiteService.loadingScreen.start();
+            SpecializationsDatabase.deleteSpecialization(specializationIdent).then(data => {
+              if (data.success) {
+                let found = $filter('ArrayFilter')('specializationIdent', specializationIdent, scope.specializationsData);
+                scope.specializationsData.splice(found, 1);
+                VisualSiteService.loadingScreen.stop();
+                swal('Dobra robota!', data.message, 'success');
+                VisualSiteService.loadingScreen.stop();
+              } else {
+                VisualSiteService.loadingScreen.stop();
+                swal('Upss!', 'Coś poszło nie tak', 'error');
+              }
+            }, err => {
+              VisualSiteService.loadingScreen.stop();
+              swal('Upss!', err, 'error');
+            });
+          } else {
+            swal('Uff!', 'Specjalizacja nie została usunięta', 'info');
           }
         }, err => {
-          VisualSiteService.loadingScreen.stop();
           swal('Upss!', err, 'error');
         });
       };

@@ -1,3 +1,5 @@
+<search-bar from="documents" value="name" placeholder="Wpisz nazwę dokumentu..."></search-bar>
+
 <div class="show-documents">
   <div class="jumbotron">
     <div class="container">
@@ -12,14 +14,14 @@
             </tr>
           </thead>
           <tbody id="fileTableBody">
-            <tr ng-repeat="(key, document) in documents">
+            <tr ng-repeat="(key, document) in documents" ng-if="document.display">
               <th scope="row" class="fileExtension">
                 <i class="{{document.class}}"></i>
               </th>
-              <td class="fileName"><a href="{{documentsUrl + '/' + document.name}}" target='_blank'>{{document.name}}</a></td><!--ui-tinymce="oneLineEditorOptions"-->
+              <td class="fileName"><a href="{{documentsUrl + '/' + document.name}}" target='_blank'>{{document.name}}</a></td>
               <td class="fileDescription"><div ng-model="document.description">{{document.description}}</div></td>
               <td class="fileOptions">
-                <div class="col-md-6 remove" ng-click="removeFile(key)">
+                <div class="col-md-6 remove" ng-click="deleteFile(key)">
                   <i class="fas fa-trash"></i>
                 </div>
 

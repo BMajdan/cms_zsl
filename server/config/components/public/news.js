@@ -17,8 +17,6 @@ apiRoutes.get('/load-one-post', function (req, res) {
   News.find({ postIdent: req.query.postIdent }, function (err, obj) {
     if (err) throw err;
 
-    console.log(req)
-
     res.json({
       success: true,
       message: 'Poprawnie załadowo jeden post',

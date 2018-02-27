@@ -74,7 +74,50 @@ function VisualSiteService($location) {
 		stop: () =>{
 			angular.element(document.querySelector('.loadingOverlay'))[0].style.display = 'none';
 		}
-	}
+	};
+
+	service.notifications = {
+		input: (title, icon, element, placeholder, type, value, id) => {
+			let succesCallback = (data) => { return data; };
+			let errorCallback = (err) => { return err; };
+			return swal({
+				title: title,
+				icon: icon,
+				content: {
+					element: element,
+					attributes: {
+						placeholder: placeholder,
+						type: type,
+						value: value,
+						id: id
+					},
+				},
+				buttons: {
+					cancel: {
+						text: 'Anuluj',
+						value: 3,
+						visible: true,
+						closeModal: true,
+					},
+					confirm: {
+						text: 'Potwierdź'
+					}
+				}
+			}).then(succesCallback, errorCallback);
+		},
+
+		asking: (title, text, icon, buttons, dangerMode) => {
+			let succesCallback = (data) => { return data; };
+			let errorCallback = (err) => { return err; };
+			return swal({
+				title: title,
+				text: text,
+				icon: icon,
+				buttons: buttons,
+				dangerMode: dangerMode,
+			}).then(succesCallback, errorCallback);
+		}
+	};
 
 	return service;
 
