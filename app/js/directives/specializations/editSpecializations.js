@@ -45,16 +45,31 @@ function editSpecializations($location, $window, $compile, Specializations, File
             };
 
             for (let value of scope.editSpecialization.widgets) {
-              if (value.type == 'image') {
-                scope.addNewImage = value.id.split('_')[1];
-                let src = `${scope.galleryUrl}/specializationsGallery/${value.image}`;
-                Widgets.manage.image(scope, '.editSpecializationsForm', src);
-                scope.addNewImage++;
-              } else if (value.type == 'text') {
-                scope.addNewText = value.id.split('_')[1];
-                scope.addTextColumn[scope.addNewText] = value.text;
-                Widgets.manage.text(scope, '.editSpecializationsForm');
-                scope.addNewText++;
+              switch (value.type) {
+                case 'image':
+                  scope.addNewImage = value.id.split('_')[1];
+                  let src = `${scope.galleryUrl}/specializationsGallery/${value.image}`;
+                  Widgets.manage.image(scope, '.editSpecializationsForm', src);
+                  scope.addNewImage++;
+                  break;
+                case 'text':
+                  scope.addNewText = value.id.split('_')[1];
+                  scope.addTextColumn[scope.addNewText] = value.text;
+                  Widgets.manage.text(scope, '.editSpecializationsForm');
+                  scope.addNewText++;
+                break;
+                case 'document':
+                  scope.addNewDocument = value.id.split('_')[1];
+                  //scope.addTextColumn[scope.addNewDocument] = value.text;
+                  Widgets.manage.document(scope, '.editSpecializationsForm');
+                  scope.addNewDocument++;
+                break;
+                case 'gallery':
+                  scope.addNewGallery = value.id.split('_')[1];
+                  //scope.addTextColumn[scope.addNewGallery] = value.text;
+                  Widgets.manage.gallery(scope, '.editSpecializationsForm');
+                  scope.addNewGallery++;
+                break;
               }
             }
             Visual.loading.stop();

@@ -92,7 +92,6 @@ apiRoutes.delete('/delete-file', ensureAuthorized, function (req, res) {
 });
 
 apiRoutes.post('/upload-file', ensureAuthorized, function (req, res) {
-
   function saveFile() {
     let file = req.files.file;
     mkdirp(req.body.path, function () {
@@ -107,14 +106,18 @@ apiRoutes.post('/upload-file', ensureAuthorized, function (req, res) {
     });
   }
 
-  if (req.body.oldName == 'undefined') {
+  if (req.body.oldName == 'undefined') 
     saveFile();
-  } else {
-    fs.unlink('./documents/' + req.body.oldName, function (err) {
+   else 
+    fs.rename('./documents/' + req.body.oldName, './documents/' + req.body.name, function (err) { 
       if (err) throw err;
-      saveFile();
+      
+      res.json({
+        success: true,
+        message: 'Poprawnie wrzucono plik na serwer.'
+      });
     });
-  }
+  
 });
 
 module.exports = {};

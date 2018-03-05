@@ -23,8 +23,8 @@ function Widgets($compile, $filter) {
 			scope.form = angular.element(document.querySelector(form));
 			scope.form.append($compile(`
 			<div id="columnImage_${scope.addNewImage}">
-				<h3 class="widgetIndent">Widget: Kolumna ze zdjęciem <span class="removeWidget" ng-click="removeWidget(2, ${scope.addNewImage})">[Usuń widget]</span></h3>
-				<div class="col-md-12[attrs.object]Image">
+				<h3 class="widgetIndent">Widget: Kolumna ze zdjęciem <span class="removeWidget" ng-click="removeWidget(1, ${scope.addNewImage})">[Usuń widget]</span></h3>
+				<div class="col-md-12">
 					<div class="postImage">
 						<img alt="new column image" ng-src="${src}" class="addImagePost img-responsive" ng-click="addImageToPost(${scope.addNewImage}); $event.stopPropagation();" id="addImage_${scope.addNewImage}">
 						<input type="file" ng-model="addImageInput[${scope.addNewImage}]" id="addImageInput_${scope.addNewImage}" class="hiddenInput" accept="image/*">
@@ -36,7 +36,7 @@ function Widgets($compile, $filter) {
 			scope.form = angular.element(document.querySelector(form));
 			scope.form.append($compile(`
 			<div id="columnText_${scope.addNewText}">
-				<h3 class="widgetIndent">Widget: Kolumna tekstowa <span class="removeWidget" ng-click="removeWidget(1, ${scope.addNewText})">[Usuń widget]</span></h3>
+				<h3 class="widgetIndent">Widget: Kolumna tekstowa <span class="removeWidget" ng-click="removeWidget(2, ${scope.addNewText})">[Usuń widget]</span></h3>
 				<div class="row">
 					<div class="col-md-12 inputBox">
 						<div ui-tinymce="addTextEditorOptions" ng-model="addTextColumn[${scope.addNewText}]" ></div>
@@ -44,24 +44,44 @@ function Widgets($compile, $filter) {
 				</div>
 			</div>`)(scope));
 		},
-		document: () => {
-
+		document: (scope, form) => {
+			scope.form = angular.element(document.querySelector(form));
+			scope.form.append($compile(`
+			<div id="columnDocument_${scope.addNewDocument}">
+				<h3 class="widgetIndent">Widget: Kolumna z dokumentami <span class="removeWidget" ng-click="removeWidget(3, ${scope.addNewDocument})">[Usuń widget]</span></h3>
+				<div class="row">
+					<div class="col-md-12 inputBox">
+					
+					</div>
+				</div>
+			</div>`)(scope));
 		},
-		gallery: () => {
-
+		gallery: (scope, form) => {
+			scope.form = angular.element(document.querySelector(form));
+			scope.form.append($compile(`
+			<div id="columnGallery_${scope.addNewGallery}">
+				<h3 class="widgetIndent">Widget: Kolumna z galeriami <span class="removeWidget" ng-click="removeWidget(4, ${scope.addNewGallery})">[Usuń widget]</span></h3>
+				<div class="row">
+					<div class="col-md-12 inputBox">
+						
+					</div>
+				</div>
+			</div>`)(scope));
 		},
 		remove: (type, ident, object) => {
 			switch (type) {
 				case 1:
-					angular.element(document.getElementById(`columnText_${ident}`))[0].remove();
-					return $filter('ArrayFilter')('id', `columnText_${ident}`, object);
-				case 2:
 					angular.element(document.getElementById(`columnImage_${ident}`))[0].remove();
 					return $filter('ArrayFilter')('id', `columnImage_${ident}`, object);
+				case 2:
+					angular.element(document.getElementById(`columnText_${ident}`))[0].remove();
+					return $filter('ArrayFilter')('id', `columnText_${ident}`, object);
 				case 3:
-					break;
+					angular.element(document.getElementById(`columnDocument_${ident}`))[0].remove();
+					return $filter('ArrayFilter')('id', `columnDocument_${ident}`, object);
 				case 4:
-					break;
+					angular.element(document.getElementById(`columnGallery_${ident}`))[0].remove();
+					return $filter('ArrayFilter')('id', `columnGallery_${ident}`, object);
 			}
 		}
 	};

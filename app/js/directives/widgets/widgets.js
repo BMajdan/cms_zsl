@@ -63,11 +63,44 @@ function postWidgets($compile, $filter, Widgets) {
 				scope.closePopup();
 			};
 
-			scope.addGallery = () => {
+			scope.addGallery = (editWidget, id) => {
+				if (editWidget) {
+					scope.addNewGallery = id;
+				}
+
+				Widgets.manage.gallery(scope, attrs.addform);
+
+				if (!editWidget) {
+					scope[attrs.object].widgets.push({
+						type: 'gallery',
+						id: `columnGallery_${scope.addNewGallery}`,
+						data: {
+							name: 'name',
+							images: []
+						}
+					});
+				}
+
+				scope.addNewGallery++;
 				scope.closePopup();
 			};
 
-			scope.addDocument = () => {
+			scope.addDocument = (editWidget, id) => {
+				if (editWidget) {
+					scope.addNewDocument = id;
+				}
+
+				Widgets.manage.document(scope, attrs.addform);
+
+				if (!editWidget) {
+					scope[attrs.object].widgets.push({
+						type: 'document',
+						id: `columnDocument_${scope.addNewDocument}`,
+						documents: []
+					});
+				}
+
+				scope.addNewDocument++;
 				scope.closePopup();
 			};
 

@@ -38,7 +38,9 @@ function Files($http, $location, AppSettings, $rootScope) {
       let errorCallback = (err) => { return err; };
 
       let fd = new FormData();
-      fd.append('file', file);
+      if(file)
+        fd.append('file', file);
+      
       fd.append('oldName', oldName);
       fd.append('name', name);
       fd.append('path', path);

@@ -10,6 +10,8 @@ function AddSpecializationsController($scope, $rootScope, AppSettings) {
 
   $scope.addNewText = 0;
   $scope.addNewImage = 0;
+  $scope.addNewDocument = 0;
+  $scope.addNewGallery = 0;
 
   $scope.oneLineEditorOptions = AppSettings.oneLineEditorOptions;
   $scope.addTextEditorOptions = AppSettings.addTextEditorOptions;

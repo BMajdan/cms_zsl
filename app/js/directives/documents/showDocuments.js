@@ -32,89 +32,110 @@ function showDocuments(Files, AppSettings, Visual) {
             return 'fas fa-file-archive';
           case 'xml':
             return 'fas fa-file-code';
+          default: 
+            return 'fas fa-file';
         }
       };
 
-      let uploadFile = (ident, oldName) => {
-        document.querySelector('#addNewFile').value = null;
-        document.querySelector('#addNewFile').click();
-        document.querySelector('#addNewFile').onchange = function () {
-          let title = 'Podaj nazwę pliku', icon = 'info', element = 'input', placeholder = '',
-            type = 'text', value = scope.addNewFile.name, id = 'fileName';
+      let showNotification = (ident, oldName, isEdited) => {
+        let title = 'Podaj nazwę pliku', icon = 'info', element = 'input', placeholder = '',
+          type = 'text', value = '', id = 'fileName';
 
-          Visual.notifications.input(title, icon, element, placeholder, type, value, id).then(success => {
-            let regEx = new RegExp(/^(?!^(PRN|AUX|CLOCK\$|NUL|CON|COM\d|LPT\d|\..*)(\..+)?$)[^\x00-\x1f\\?*:\";|/]+$/g);
-            let fileName = angular.element(document.querySelector('#fileName'))[0].value;
+        if (isEdited)
+          value = scope.documents[ident].name;
+        else
+          value = scope.addNewFile.name;
 
-            for (let i = 0; i < scope.documents.length; i++) {
-              if (fileName == scope.documents[i].name) {
-                swal('Upss!', 'Plik o podanej nazwie już istnieje', 'error');
-                return;
-              }
-            }
+        Visual.notifications.input(title, icon, element, placeholder, type, value, id).then(success => {
+          let regEx = new RegExp(/^(?!^(PRN|AUX|CLOCK\$|NUL|CON|COM\d|LPT\d|\..*)(\..+)?$)[^\x00-\x1f\\?*:\";|/]+$/g);
+          let fileName = angular.element(document.querySelector('#fileName'))[0].value;
 
-            if (success === 3)
+          if (success === 3)
+            return;
+
+          for (let i = 0; i < scope.documents.length; i++) {
+            if (fileName == scope.documents[i].name) {
+              swal('Upss!', 'Plik o podanej nazwie już istnieje', 'error');
               return;
-
-            if (fileName.length >= 3 && regEx.test(fileName)) {
-              let title = 'Podaj opis pliku', icon = 'info', element = 'input', placeholder = 'Opis pliku...',
-                type = 'text', value = '', id = 'fileDescription';
-
-              Visual.notifications.input(title, icon, element, placeholder, type, value, id).then(success => {
-                let fileDescription = angular.element(document.querySelector('#fileDescription'))[0].value;
-
-                if (success === 3)
-                  return;
-
-                if (fileDescription.length >= 3) {
-                  let path = './documents';
-                  Visual.loading.start();
-                  Files.upload.file(scope.addNewFile, path, fileName, oldName).then(({ data }) => {
-                    if (data.success) {
-                      scope.file = {
-                        name: fileName,
-                        description: fileDescription,
-                        class: getFileClass(scope.addNewFile.name),
-                        display: true
-                      };
-                      Files.add.info(scope.file, oldName).then(secondData => {
-                        if (secondData.success) {
-                          if (oldName) {
-                            scope.documents.splice(ident, 1);
-                            scope.documents.splice(ident, 0, scope.file);
-                          } else
-                            scope.documents.push(scope.file);
-
-                          Visual.loading.stop();
-                          swal('Dobra robota!', secondData.message, 'success');
-                        } else {
-                          Visual.loading.stop();
-                          swal('Upss!', 'Coś poszło nie tak', 'error');
-                        }
-                      }, err => {
-                        Visual.loading.stop();
-                        swal('Upss!', err, 'error');
-                      });
-                    } else {
-                      Visual.loading.stop();
-                      swal('Upss!', 'Coś poszło nie tak', 'error');
-                    }
-                  }, err => {
-                    Visual.loading.stop();
-                    swal('Upss!', err, 'error');
-                  });
-                } else {
-                  swal('Upss!', 'Opis pliku jest niepoprawny', 'error');
-                }
-              }, err => {
-                swal('Upss!', err, 'error');
-              });
-            } else {
-              swal('Upss!', 'Niepoprawna nazwa pliku', 'error');
             }
-          }, err => {
-            swal('Upss!', err, 'error');
-          });
+          }
+
+          if (fileName.length >= 3 && regEx.test(fileName)) {
+
+            let title = 'Podaj opis pliku', icon = 'info', element = 'input', placeholder = 'Opis pliku...',
+              type = 'text', value = '', id = 'fileDescription';
+
+            if (isEdited)
+              value = scope.documents[ident].description;
+
+            Visual.notifications.input(title, icon, element, placeholder, type, value, id).then(success => {
+              let fileDescription = angular.element(document.querySelector('#fileDescription'))[0].value;
+
+              if (success === 3)
+                return;
+
+              if (fileDescription.length >= 3) {
+                let path = './documents';
+                Visual.loading.start();
+
+                Files.upload.file(scope.addNewFile, path, fileName, oldName).then(({ data }) => {
+                  if (data.success) {
+                    scope.file = {
+                      name: fileName,
+                      description: fileDescription,
+                      class: getFileClass(fileName),
+                      display: true
+                    };
+                    Files.add.info(scope.file, oldName).then(secondData => {
+                      if (secondData.success) {
+                        if (oldName) {
+                          scope.documents.splice(ident, 1);
+                          scope.documents.splice(ident, 0, scope.file);
+                        } else
+                          scope.documents.push(scope.file);
+
+                        Visual.loading.stop();
+                        swal('Dobra robota!', secondData.message, 'success');
+                      } else {
+                        Visual.loading.stop();
+                        swal('Upss!', 'Coś poszło nie tak', 'error');
+                      }
+                    }, err => {
+                      Visual.loading.stop();
+                      swal('Upss!', err, 'error');
+                    });
+                  } else {
+                    Visual.loading.stop();
+                    swal('Upss!', 'Coś poszło nie tak', 'error');
+                  }
+                }, err => {
+                  Visual.loading.stop();
+                  swal('Upss!', err, 'error');
+                });
+              } else {
+                swal('Upss!', 'Opis pliku jest niepoprawny', 'error');
+              }
+            }, err => {
+              swal('Upss!', err, 'error');
+            });
+          } else {
+            swal('Upss!', 'Niepoprawna nazwa pliku', 'error');
+          }
+        }, err => {
+          swal('Upss!', err, 'error');
+        });
+      };
+
+      let uploadFile = (ident, oldName, isEdited) => {
+        document.querySelector('#addNewFile').value = null;
+        if (isEdited)
+          showNotification(ident, oldName, isEdited);
+        else
+          document.querySelector('#addNewFile').click();
+
+
+        document.querySelector('#addNewFile').onchange = function () {
+          showNotification(ident, oldName, isEdited);
         };
       };
 
@@ -169,7 +190,7 @@ function showDocuments(Files, AppSettings, Visual) {
       };
 
       scope.editFile = (ident) => {
-        uploadFile(ident, scope.documents[ident].name);
+        uploadFile(ident, scope.documents[ident].name, true);
       };
 
       scope.addFile = () => {

@@ -93,16 +93,31 @@ function editEvents($location, $window, $compile, $rootScope, Events, Teachers, 
 						scope.eventStartTime = date;
 
 						for (let value of scope.editEvent.widgets) {
-							if (value.type == 'image') {
-								scope.addNewImage = value.id.split('_')[1];
-								let src = `${scope.galleryUrl}/eventsGallery/${value.image}`;
-								Widgets.manage.image(scope, '.editEventsForm', src);
-								scope.addNewImage++;
-							} else if (value.type == 'text') {
-								scope.addNewText = value.id.split('_')[1];
-								scope.addTextColumn[scope.addNewText] = value.text;
-								Widgets.manage.text(scope, '.editEventsForm');
-								scope.addNewText++;
+							switch (value.type) {
+								case 'image':
+									scope.addNewImage = value.id.split('_')[1];
+									let src = `${scope.galleryUrl}/eventsGallery/${value.image}`;
+									Widgets.manage.image(scope, '.editEventsForm', src);
+									scope.addNewImage++;
+									break;
+								case 'text':
+									scope.addNewText = value.id.split('_')[1];
+									scope.addTextColumn[scope.addNewText] = value.text;
+									Widgets.manage.text(scope, '.editEventsForm');
+									scope.addNewText++;
+									break;
+								case 'document':
+									scope.addNewDocument = value.id.split('_')[1];
+									//scope.addTextColumn[scope.addNewDocument] = value.text;
+									Widgets.manage.document(scope, '.editEventsForm');
+									scope.addNewDocument++;
+									break;
+								case 'gallery':
+									scope.addNewGallery = value.id.split('_')[1];
+									//scope.addTextColumn[scope.addNewGallery] = value.text;
+									Widgets.manage.gallery(scope, '.editEventsForm');
+									scope.addNewGallery++;
+									break;
 							}
 						}
 						Visual.loading.stop();
