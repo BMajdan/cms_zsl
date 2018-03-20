@@ -1,6 +1,6 @@
 # Content Management System
 
-## **Content Management System for the ZSŁ school in Cracow.**
+## **Content Management System for the ZSŁ in Cracow.**
 
 ***Features:***
  - adding news, events, teachers and specializations
